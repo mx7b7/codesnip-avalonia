@@ -1,0 +1,596 @@
+<codesnip:Window
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		x:Class="CodeSnip.Views.MainWindowView.MainWindow"
+		xmlns:vm="using:CodeSnip.Views.MainWindowView"
+		xmlns:AvaloniaEdit="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit"
+		xmlns:codesnip="clr-namespace:CodeSnip.ControlsEx.Window"
+		xmlns:helpers="clr-namespace:CodeSnip.Helpers"
+		xmlns:langcat="using:CodeSnip.Views.LanguageCategoryView"
+		xmlns:snippet="using:CodeSnip.Views.SnippetView"
+		xmlns:editing="using:AvaloniaEdit.Editing"
+		xmlns:i="using:Avalonia.Xaml.Interactivity"
+		xmlns:behaviors="using:CodeSnip.Helpers"
+        x:DataType="vm:MainWindowViewModel"
+        Title ="{Binding WindowTitle}"
+		WindowStartupLocation="CenterScreen"
+	    Width="1200"
+	    Height="720"
+		BorderBrush="{DynamicResource AccentBrush}">
+	
+	<codesnip:Window.LogoContent>
+		<PathIcon
+            Data="{StaticResource AppIcon}"
+            Height="24"
+            Margin="5 0 0 0"
+            Width="24"
+			Foreground="{DynamicResource AccentBrush}" />
+	</codesnip:Window.LogoContent>
+
+	<codesnip:Window.RightWindowTitleBarContent>
+		<StackPanel Orientation="Horizontal" Spacing="8">
+			<Button
+			  Command="{Binding ToggleThemeCommand}"
+			  Background="Transparent"
+			  BorderThickness="0"
+			  Height="30"
+			  ToolTip.Tip="Switch Theme"
+			  Width="30">
+				<Button.Styles>
+					<Style Selector="Button:pressed /template/ ContentPresenter#PART_ContentPresenter">
+						<Setter Property="Background" Value="Transparent"/>
+					</Style>
+				</Button.Styles>
+				<PathIcon Data="{StaticResource ThemeLightDark}"
+						  Width="20" Height="20"
+						  Foreground="{DynamicResource AccentBrush}"/>
+			</Button>
+		</StackPanel>
+	</codesnip:Window.RightWindowTitleBarContent>
+
+	<codesnip:Window.Resources>
+		<helpers:EnumToBooleanConverter x:Key="EnumToBooleanConverter"/>
+		<helpers:LanguageToBoolConverter x:Key="LanguageToBoolConverter"/>
+	</codesnip:Window.Resources>
+
+	<codesnip:Window.Styles>
+		<Style Selector="Button.IconButton">
+			<Setter Property="Width" Value="36"/>
+			<Setter Property="Height" Value="36"/>
+		</Style>
+		<!-- Hover efekt -->
+		<Style Selector="Button.IconButton:pointerover">
+			<Setter Property="Opacity" Value="0.7"/>
+		</Style>
+
+		<!-- Focus visible efekt -->
+		<Style Selector="Button.IconButton:focus-visible">
+			<Setter Property="Opacity" Value="0.5"/>
+		</Style>
+	</codesnip:Window.Styles>
+	<codesnip:Window.KeyBindings>
+		<!-- Ctrl + S : Save snippet code -->
+		<KeyBinding Gesture="Ctrl+S"
+					Command="{Binding SaveCodeCommand}" />
+		<!-- Ctrll+Shift + A : Add new snippet -->
+		<KeyBinding Gesture="Ctrl+Shift+A"
+					Command="{Binding AddSnippetCommand}" />
+		<!-- Ctrll+Shift + E : Edit current cnippet metadata -->
+		<KeyBinding Gesture="Ctrl+Shift+E"
+					Command="{Binding EditSnippetCommand}" />
+		<!-- Ctrll+Shift + D : Delete current snippet -->
+		<KeyBinding Gesture="Ctrl+Shift+D"
+					Command="{Binding DeleteSnippetCommand}" />
+		<!-- Ctrll+Shift + L : Edit Language/Category -->
+		<KeyBinding Gesture="Ctrl+Shift+L"
+					Command="{Binding EditLanguageCategoryCommand}" />
+
+		<!-- Toggle Single Line Comment: Ctrl+K -->
+		<KeyBinding Gesture="Ctrl+K"
+					Command="{Binding ToggleSingleLineCommentCommand}" />
+
+		<!-- Toggle Multi Line Comment: Ctrl+Shift+K -->
+		<KeyBinding Gesture="Ctrl+Shift+K"
+					Command="{Binding ToggleMultiLineCommentCommand}" />
+
+		<!-- Toggle Selection Comment: Ctrl+Shift+I -->
+		<KeyBinding Gesture="Ctrl+Shift+I"
+					Command="{Binding ToggleCommentSelectionCommand}" />
+
+		<!-- Ctrl+Shift++ (numpad plus) -->
+		<KeyBinding Gesture="Ctrl+Shift+OemPlus"
+					Command="{Binding IncreasePaneWidthCommand}"/>
+
+		<!-- Ctrl+Shift+- -->
+		<KeyBinding Gesture="Ctrl+Shift+OemMinus"
+					Command="{Binding DecreasePaneWidthCommand}"/>
+
+	</codesnip:Window.KeyBindings>
+
+	<codesnip:Window.DataTemplates>
+		<DataTemplate DataType="snippet:SnippetViewModel">
+			<snippet:SnippetView />
+		</DataTemplate>
+		<DataTemplate DataType="langcat:LanguageCategoryViewModel">
+			<langcat:LanguageCategoryView />
+		</DataTemplate>
+	</codesnip:Window.DataTemplates>
+	<Border>
+		<Grid>
+			<SplitView Name="MainSplitView" DisplayMode="CompactInline" CompactPaneLength="0"
+							   OpenPaneLength="{Binding SplitViewOpenPaneLength, Mode=OneWay}"
+							   IsPaneOpen="{Binding IsPaneOpen, Mode=TwoWay}" Padding="0">
+				<SplitView.Pane>
+					<Grid RowDefinitions="Auto, *">
+						<Expander  Grid.Row="0" IsExpanded="False" HorizontalAlignment="Stretch" VerticalAlignment="Top" Padding="5"
+								   Background="{DynamicResource ThemeBackgroundBrush}" ExpandDirection="Down"
+								   BorderBrush="{DynamicResource AccentBrush}" BorderThickness="0 1 1 1" >
+							<Expander.Header>
+								<Border BorderBrush="{DynamicResource AccentBrush}" BorderThickness="0 0 0 1">
+									<StackPanel Orientation="Horizontal" Spacing="10">
+										<PathIcon Data="{StaticResource FileSearch}" Width="25" Height="25" Foreground="{DynamicResource AccentBrush}"
+												  Margin="2 0 0 0"/>
+										<TextBlock Text="SEARCH"
+												   FontSize="16"
+												   FontWeight="DemiBold"
+												   Foreground="{DynamicResource AccentBrush}"
+												   VerticalAlignment="Center" />
+									</StackPanel>
+								</Border>
+							</Expander.Header>
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="Auto" />
+									<!-- RadioButton "by Name" -->
+									<ColumnDefinition Width="Auto" />
+									<!-- RadioButton "by Tag" -->
+									<ColumnDefinition Width="10" />
+									<!-- Razmak -->
+									<ColumnDefinition Width="*" />
+									<!-- TextBox za filter -->
+								</Grid.ColumnDefinitions>
+								<RadioButton x:Name="rbName" Content="Name" GroupName="FilterMode"
+											Grid.Column="0" ToolTip.Tip="Search by Name"
+											IsChecked="{Binding FilterMode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Name}" />
+								<RadioButton x:Name="rbTag" Content="Tag" Grid.Column="1" Margin="10,0,0,0"  GroupName="FilterMode"
+											 ToolTip.Tip="Search by Tag"
+											IsChecked="{Binding FilterMode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Tag}" />
+								<TextBox x:Name="txtFilter"
+										 Watermark="Search snippets..."
+										 Grid.Column="3"
+										 CornerRadius="16"
+										 Height="25"
+										 Padding="10 0 0 0"
+										 VerticalContentAlignment="Center"
+										 IsEnabled="{Binding IsFilteringEnabled, Mode=TwoWay}"
+										 Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}">
+									<TextBox.InnerRightContent>
+										<PathIcon
+											Data="{x:Static codesnip:Icons.Search}"
+											Opacity="0.75"
+											Width="12" 
+											Margin="0 0 10 0" />
+									</TextBox.InnerRightContent>
+								</TextBox>
+							</Grid>
+						</Expander>
+						<Expander Grid.Row="1" IsExpanded="True" HorizontalAlignment="Stretch" Padding="0" VerticalAlignment="Stretch"
+								   Background="{DynamicResource ThemeBackgroundBrush}" ExpandDirection="Down"
+								   BorderBrush="{DynamicResource AccentBrush}" BorderThickness="0 0 1 0" >
+							<Expander.Header>
+								<Border BorderBrush="{DynamicResource AccentBrush}" BorderThickness="0 0 0 1">
+									<StackPanel Orientation="Horizontal" Spacing="10">
+										<PathIcon Data="{StaticResource FolderHomeOutline}" Width="25" Height="25" Foreground="{DynamicResource AccentBrush}"
+												  Margin="2 0 0 0"/>
+										<TextBlock Text="SNIPPETS"
+												   FontSize="16"
+												   FontWeight="DemiBold"
+												   Foreground="{DynamicResource AccentBrush}"
+												   VerticalAlignment="Center"/>
+									</StackPanel>
+								</Border>
+							</Expander.Header>
+							<Grid RowDefinitions="*, Auto">
+								<TreeView Grid.Row="0" Name="TreeSnippets" AutoScrollToSelectedItem="True" x:CompileBindings="False"
+										  ItemsSource="{Binding Languages}"
+										  SelectionChanged="TreeView_SelectionChanged" BorderThickness="0">
+									
+									<TreeView.Styles>
+										<Style Selector="TreeViewItem">
+											<Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+											<Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
+											<Setter Property="IsVisible" Value="{Binding IsVisible}"/>
+										</Style>
+									</TreeView.Styles>
+
+									<TreeView.DataTemplates>
+										<TreeDataTemplate DataType="langcat:Language" ItemsSource="{Binding Categories}">
+											<StackPanel Orientation="Horizontal" Spacing="5">
+												<PathIcon Data="{StaticResource LanguageIcon}" Width="20" Height="20"
+														  VerticalAlignment="Center" Foreground="{DynamicResource AccentBrush}" />
+												<TextBlock Text="{Binding Name}"
+														   FontWeight="SemiBold" FontSize="14"/>
+											</StackPanel>
+										</TreeDataTemplate>
+
+										<TreeDataTemplate DataType="langcat:Category" ItemsSource="{Binding Snippets}">
+											<StackPanel Orientation="Horizontal" Spacing="5">
+												<PathIcon Data="{StaticResource CategoryIcon}" Width="20" Height="20"
+														  VerticalAlignment="Center" Foreground="{DynamicResource AccentBrush}"/>
+												<TextBlock Text="{Binding Name}"
+														   FontWeight="Medium" FontSize="14"/>
+											</StackPanel>
+										</TreeDataTemplate>
+
+										<DataTemplate DataType="snippet:Snippet">
+											<StackPanel Orientation="Horizontal" Spacing="5">
+												<PathIcon Data="{StaticResource SnippetIcon}" Width="16" Height="16"
+														  VerticalAlignment="Center" Foreground="{DynamicResource AccentBrush}"/>
+												<TextBlock Text="{Binding Title}"
+														   FontWeight="Normal"
+														   FontSize="14"/>
+											</StackPanel>
+										</DataTemplate>
+									</TreeView.DataTemplates>
+									<TreeView.ContextFlyout>
+										<MenuFlyout>
+											<MenuItem Header="Add Snippet" Command="{Binding AddSnippetCommand}"/>
+											<MenuItem Header="Edit Snippet" Command="{Binding EditSnippetCommand}"/>
+											<MenuItem Header="Delete Snippet" Command="{Binding DeleteSnippetCommand}"/>
+											<Separator />
+											<MenuItem Header="Edit LangCat" Command="{Binding EditLanguageCategoryCommand}"/>
+										</MenuFlyout>
+									</TreeView.ContextFlyout>
+								</TreeView>
+
+								<Expander  Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Padding="0"
+										  Background="{DynamicResource ThemeBackgroundBrush}" ExpandDirection="Up"
+											BorderBrush="{DynamicResource ThemeBorderLowBrush}" BorderThickness="0 1 0 0" >
+									<Expander.Header>
+										<Border BorderBrush="{DynamicResource AccentBrush}" BorderThickness="0">
+											<StackPanel Orientation="Horizontal" Spacing="10">
+												<PathIcon Data="{StaticResource FileInfoLine}" Width="25" Height="25" 
+														  Foreground="{DynamicResource ThemeBorderMidBrush}"
+												  Margin="2 0 0 0"/>
+												<TextBlock Text="Snippet Metadata"
+														   FontSize="14"
+														   FontWeight="Medium"
+														   Foreground="{DynamicResource ThemeBorderMidBrush}"
+														   VerticalAlignment="Center"/>
+											</StackPanel>
+										</Border>
+									</Expander.Header>
+									<Grid>
+										<Grid.RowDefinitions>
+											<RowDefinition Height="Auto"/>
+											<!-- Description label -->
+											<RowDefinition Height="*"/>
+											<!-- Description TextBox  -->
+											<RowDefinition Height="Auto"/>
+											<!-- Tag Label -->
+											<RowDefinition Height="Auto"/>
+											<!-- Tag TextBox -->
+										</Grid.RowDefinitions>
+										<!-- Description label -->
+										<TextBlock Text="Description:" Margin="0,5,0,5" Grid.Row="0" />
+										<!-- Description TextBox that stretches-->
+										<TextBox x:Name="txtDescription" Grid.Row="1" TextWrapping="Wrap"
+												 IsReadOnly="True" VerticalContentAlignment="Top"
+												 Height="150"
+												 Text="{Binding SelectedSnippet.Description}" />
+										<!-- Tag label -->
+										<TextBlock Text="Tags:" Margin="0,5,0,5" Grid.Row="2" />
+										<!-- Tag TextBox -->
+										<TextBox x:Name="txtTag" Grid.Row="3" Text="{Binding SelectedSnippet.Tag}"
+												 IsReadOnly="True"  BorderThickness="0.5" />
+									</Grid>
+								</Expander>
+							</Grid>
+						</Expander>
+					</Grid>
+
+				</SplitView.Pane>
+				<SplitView.Content>
+					<DockPanel>
+						<StackPanel DockPanel.Dock="Top"
+							Orientation="Horizontal"
+							Height="36"
+							Classes="Toolbar" Spacing="2"  Background="{DynamicResource ThemeBackgroundBrush}">
+							<Button Classes="IconButton" Background="Transparent" Command="{Binding TogglePanelCommand}" ToolTip.Tip="Open/Close"
+									BorderThickness="0">
+								<PathIcon Data="{Binding OpenCloseIcon}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
+							</Button>
+							<Button Classes="IconButton" Margin="10,0,0,0" Background="Transparent"
+									Command="{Binding SaveCodeCommand}" ToolTip.Tip="Save snippet&#xA;Ctrl+S"
+									BorderThickness="0">
+								<PathIcon Data="{StaticResource Save}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
+							</Button>
+							<Button Classes="IconButton"  Background="Transparent"
+									Command="{Binding AddSnippetCommand}"  ToolTip.Tip="Add snippet&#xA;Ctrl+Shift+A"
+									BorderThickness="0">
+								<PathIcon Data="{StaticResource FileAdd}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
+							</Button>
+							<Button Classes="IconButton"  Background="Transparent"
+									Command="{Binding EditSnippetCommand}" ToolTip.Tip="Edit snippet&#xA;Ctrl+Shift+E"
+									BorderThickness="0">
+								<PathIcon Data="{StaticResource FileEdit}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
+							</Button>
+							<Button Classes="IconButton" Background="Transparent"
+									Command="{Binding DeleteSnippetCommand}" ToolTip.Tip="Delete snippet&#xA;Ctrl+Shift+D"
+									BorderThickness="0">
+								<PathIcon Data="{StaticResource Trash}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
+							</Button>
+							<Button Classes="IconButton" Background="Transparent"
+									Command="{Binding EditLanguageCategoryCommand}" ToolTip.Tip="Language/Category edit&#xA;Ctrl+Shift+L"
+									BorderThickness="0">
+								<PathIcon Data="{StaticResource CategoryEdit}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
+							</Button>
+							<Button Classes="IconButton" Background="Transparent"
+									ToolTip.Tip="Load snippets" BorderThickness="0">
+								<PathIcon Data="{StaticResource DatabaseRefresh}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
+							</Button>
+							<Border Width="1" Height="24"  VerticalAlignment="Center" Background="{DynamicResource ThemeBorderLowBrush}"/>
+							<Button Classes="IconButton" Background="Transparent" BorderThickness="0">
+								<PathIcon Data="{StaticResource DebugStart}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
+							</Button>
+							<Button Classes="IconButton" Background="Transparent" BorderThickness="0">
+								<PathIcon Data="{StaticResource CompilerExplorer}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
+							</Button>
+							<Border Width="1" Height="24"  VerticalAlignment="Center" Background="{DynamicResource ThemeBorderLowBrush}"/>
+							<Button Classes="IconButton" Background="Transparent" BorderThickness="0">
+								<PathIcon Data="{StaticResource ZoomIn}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
+							</Button>
+							<Button Classes="IconButton" Background="Transparent" BorderThickness="0">
+								<PathIcon Data="{StaticResource ZoomOut}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
+							</Button>
+							<Button Classes="IconButton" Background="Transparent" BorderThickness="0">
+								<PathIcon Data="{StaticResource ZoomOutMap}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}">
+									<PathIcon.RenderTransform>
+										<ScaleTransform ScaleY="-1"/>
+									</PathIcon.RenderTransform>
+								</PathIcon>
+							</Button>
+							<Button Classes="IconButton" Background="Transparent" BorderThickness="0">
+								<PathIcon Data="{StaticResource FormatText}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
+							</Button>
+							<Button Classes="IconButton" Background="Transparent" ToolTip.Tip="Disable intendation" BorderThickness="0">
+								<PathIcon Data="{StaticResource FormatIndentDecrease}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
+							</Button>
+							<Border Width="1" Height="24"  VerticalAlignment="Center" Background="{DynamicResource ThemeBorderLowBrush}"/>
+							<Button Classes="IconButton" Background="Transparent" BorderThickness="0">
+								<PathIcon Data="{StaticResource ColorPaletteiOS}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
+							</Button>
+							<Button Classes="IconButton"  Background="Transparent" ToolTip.Tip="Settings&#xA;Ctrl+Shift+P" BorderThickness="0">
+								<PathIcon Data="{StaticResource GearBold}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
+							</Button>
+						</StackPanel>
+						<Border DockPanel.Dock="Bottom"
+								BorderBrush="{DynamicResource ThemeBorderLowBrush}"
+								BorderThickness="0 1 0 0"
+								Height="28"
+								Background="{DynamicResource ThemeBackgroundBrush}">
+							<StackPanel Orientation="Horizontal">
+								<TextBlock VerticalAlignment="Center" Margin="5,0" Text="{Binding StatusMessage}" />
+							</StackPanel>
+						</Border>
+						<AvaloniaEdit:TextEditor
+									   x:Name="textEditor"
+									   ShowLineNumbers="True"
+									   FontFamily="Consolas, Cascadia Code,Menlo,Monospace"
+									   FontSize="14"
+									   Background="{DynamicResource ThemeBackgroundBrush}">
+							<i:Interaction.Behaviors>
+								<behaviors:AvaloniaEditTextBindingBehavior
+									BoundText="{Binding EditorText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+							</i:Interaction.Behaviors>
+							<AvaloniaEdit:TextEditor.Options>
+								<AvaloniaEdit:TextEditorOptions
+									ConvertTabsToSpaces="True"
+									IndentationSize="4"
+									EnableHyperlinks="False"
+									EnableEmailHyperlinks="False"
+									ShowSpaces="False"
+									ShowTabs="False"
+									ShowEndOfLine="False"
+									HighlightCurrentLine="True"
+									AllowScrollBelowDocument="False">
+								</AvaloniaEdit:TextEditorOptions>
+							</AvaloniaEdit:TextEditor.Options>
+							<AvaloniaEdit:TextEditor.ContextFlyout>
+								<MenuFlyout>
+									<MenuItem Header="Undo"
+											  InputGesture="Ctrl+Z"
+											  Command="{Binding UndoCommand}"
+											  CommandParameter="{Binding #textEditor}">
+										<MenuItem.Icon>
+											<PathIcon Data="{StaticResource UndoMD}" Width="16" Height="16"/>
+										</MenuItem.Icon>
+									</MenuItem>
+									<MenuItem Header="Redo"
+											  InputGesture="Ctrl+Y"
+											  Command="{Binding RedoCommand}"
+											  CommandParameter="{Binding #textEditor}">
+										<MenuItem.Icon>
+											<PathIcon Data="{StaticResource RedoMD}" Width="16" Height="16"/>
+										</MenuItem.Icon>
+									</MenuItem>
+									<Separator />
+									<MenuItem Header="Copy"
+											  InputGesture="Ctrl+C"
+											  Command="{Binding CopyCommand}"
+											  CommandParameter="{Binding #textEditor}">
+										<MenuItem.Icon>
+											<PathIcon Data="{StaticResource CopyMD}" Width="16" Height="16"/>
+										</MenuItem.Icon>
+									</MenuItem>
+									<MenuItem Header="Cut"
+											  InputGesture="Ctrl+X"
+											  Command="{Binding CutCommand}"
+											  CommandParameter="{Binding #textEditor}">
+										<MenuItem.Icon>
+											<PathIcon Data="{StaticResource CutMD}" Width="16" Height="16"/>
+										</MenuItem.Icon>
+									</MenuItem>
+									<MenuItem Header="Paste"
+											  InputGesture="Ctrl+V"
+											  Command="{Binding PasteCommand}"
+											  CommandParameter="{Binding #textEditor}">
+										<MenuItem.Icon>
+											<PathIcon Data="{StaticResource Paste}" Width="16" Height="16"/>
+										</MenuItem.Icon>
+									</MenuItem>
+									<Separator />
+									<MenuItem Header="Comment">
+										<MenuItem.Icon>
+											<PathIcon Data="{StaticResource CommentTextBold}" Width="16" Height="16"/>
+										</MenuItem.Icon>
+										<MenuItem Header="Toggle SingleLine" InputGesture="Ctrl+K" Command="{Binding ToggleSingleLineCommentCommand}"  >
+											<MenuItem.Icon>
+												<PathIcon Data="{StaticResource CommentTextThin}" Width="16" Height="16" />
+											</MenuItem.Icon>
+										</MenuItem>
+										<MenuItem Header="Toggle MultiLine" InputGesture="Ctrl+Shift+K" Command="{Binding ToggleMultiLineCommentCommand}">
+											<MenuItem.Icon>
+												<PathIcon Data="{StaticResource CommentTextThin}" Width="16" Height="16" />
+											</MenuItem.Icon>
+										</MenuItem>
+										<MenuItem Header="Toggle Selection" InputGesture="Ctrl+Shift+I" Command="{Binding ToggleCommentSelectionCommand}">
+											<MenuItem.Icon>
+												<PathIcon Data="{StaticResource CommentTextThin}" Width="16" Height="16" />
+											</MenuItem.Icon>
+										</MenuItem>
+									</MenuItem>
+									<Separator />
+									<MenuItem Header="Format with">
+										<MenuItem.Icon>
+											<PathIcon Data="{StaticResource FormatText}" Width="16" Height="16"/>
+										</MenuItem.Icon>
+										<MenuItem Header="black"
+												IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
+										Converter={StaticResource LanguageToBoolConverter},
+										ConverterParameter='py'}">
+											<MenuItem.Icon>
+												<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"/>
+											</MenuItem.Icon>
+										</MenuItem>
+										<MenuItem Header="autopep8"
+												IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
+										Converter={StaticResource LanguageToBoolConverter},
+										ConverterParameter='py'}">
+											<MenuItem.Icon>
+												<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"/>
+											</MenuItem.Icon>
+										</MenuItem>
+										<MenuItem Header="clang-format"
+												 IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
+													Converter={StaticResource LanguageToBoolConverter},
+													ConverterParameter='c,cpp,cs,java,js,d,h,mjs,ts,json,m,mm,proto,protodevel,td,txtpb,textpb,textproto,asciipb,sv,svh,v,vh'}"
+															Click="FormatClang_Click">
+											<MenuItem.Icon>
+												<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"/>
+											</MenuItem.Icon>
+										</MenuItem>
+										<MenuItem Header="csharpier"
+												IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
+										Converter={StaticResource LanguageToBoolConverter},
+										ConverterParameter='cs,xml'}" Click="FormatCSharpier_Click">
+											<MenuItem.Icon>
+												<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"/>
+											</MenuItem.Icon>
+										</MenuItem>
+										<MenuItem Header="dfmt"
+												IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
+										Converter={StaticResource LanguageToBoolConverter},
+										ConverterParameter='d'}">
+											<MenuItem.Icon>
+												<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"/>
+											</MenuItem.Icon>
+										</MenuItem>
+										<MenuItem Header="fantomas"
+												IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
+										Converter={StaticResource LanguageToBoolConverter},
+										ConverterParameter='fs,fsx'}" Click="FormatFantomas_Click">
+											<MenuItem.Icon>
+												<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"/>
+											</MenuItem.Icon>
+										</MenuItem>
+										<MenuItem Header="gofmt"
+												IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
+										Converter={StaticResource LanguageToBoolConverter},
+										ConverterParameter='go'}">
+											<MenuItem.Icon>
+												<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"/>
+											</MenuItem.Icon>
+										</MenuItem>
+										<MenuItem Header="pasfmt"
+												IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
+										Converter={StaticResource LanguageToBoolConverter},
+										ConverterParameter='pas'}">
+											<MenuItem.Icon>
+												<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"/>
+											</MenuItem.Icon>
+										</MenuItem>
+										<MenuItem Header="prettier"
+												IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
+										Converter={StaticResource LanguageToBoolConverter},
+										ConverterParameter='js,jsx,ts,tsx,css,scss,html,json,md,mdx,vue,yaml,yml'}" Click="FormatPrettier_Click">
+											<MenuItem.Icon>
+												<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"/>
+											</MenuItem.Icon>
+										</MenuItem>
+										<MenuItem Header="ruff"
+												IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
+										Converter={StaticResource LanguageToBoolConverter},
+										ConverterParameter='py'}">
+											<MenuItem.Icon>
+												<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"/>
+											</MenuItem.Icon>
+										</MenuItem>
+										<MenuItem Header="rustfmt"
+												IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
+										Converter={StaticResource LanguageToBoolConverter},
+										ConverterParameter='rs'}">
+											<MenuItem.Icon>
+												<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"/>
+											</MenuItem.Icon>
+										</MenuItem>
+										<MenuItem Header="stylua"
+												IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
+										Converter={StaticResource LanguageToBoolConverter},
+										ConverterParameter='lua'}">
+											<MenuItem.Icon>
+												<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"/>
+											</MenuItem.Icon>
+										</MenuItem>
+									</MenuItem>
+								</MenuFlyout>
+							</AvaloniaEdit:TextEditor.ContextFlyout>
+							<AvaloniaEdit:TextEditor.Styles>
+								<Style Selector="editing|LineNumberMargin">
+									<Setter Property="MinWidthInDigits" Value="3" />
+								</Style>
+							</AvaloniaEdit:TextEditor.Styles>
+						</AvaloniaEdit:TextEditor>
+					</DockPanel>
+				</SplitView.Content>
+			</SplitView>
+			<!-- LEFT OVERLAY PANEL -->
+			<Border Background="Transparent" ZIndex="1000" IsVisible="{Binding IsLeftOverlayOpen}"
+					Width="{Binding LeftOverlayWidth}"
+					HorizontalAlignment="Left" VerticalAlignment="Stretch"
+				BorderBrush="{DynamicResource ThemeAccentBrush}" BorderThickness="0 0 .5 0" >
+				<ContentControl Content="{Binding LeftOverlayContent}"/>
+				<Border.Transitions>
+					<Transitions>
+						<DoubleTransition Property="Width" Duration="0:0:0.25" Easing="CircularEaseOut"/>
+					</Transitions>
+				</Border.Transitions>
+			</Border>
+			<!-- RIGHT OVERLAY PANEL -->
+			<Border Background="#AA000000" ZIndex="1000" HorizontalAlignment="Right" IsVisible="{Binding IsRightOverlayOpen}">
+				<ContentControl Content="{Binding RightOverlayContent}" />
+			</Border>
+		</Grid>
+	</Border>
+</codesnip:Window>

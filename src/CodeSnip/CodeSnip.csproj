@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net10.0</TargetFramework>
+		<!--Change runtime to linux-x64 or osx-x64 as needed.-->
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+		<Nullable>enable</Nullable>
+		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<Version>1.0.0</Version>
+		<Authors>mx7b7</Authors>
+		<Company>mx7b7</Company>
+		<Product>CodeSnip</Product>
+		<Description>A personal snippet manager &amp; code runner built with .NET / C# / Avalonia.</Description>
+		<Copyright>Copyright © mx7b7 $([System.DateTime]::Now.Year)</Copyright>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+		<ApplicationIcon>Assets\icon.ico</ApplicationIcon>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<AvaloniaResource Include="Assets\**" />
+		<AvaloniaResource Include="Resources\**" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="Avalonia" Version="11.3.11" />
+		<PackageReference Include="Avalonia.Desktop" Version="11.3.11" />
+		<PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.11" />
+		<PackageReference Include="MessageBox.Avalonia" Version="3.3.1.1" />
+		<PackageReference Include="Xaml.Behaviors.Interactivity" Version="11.3.9.3" />
+
+		<!--CodeSnip libs.-->
+		<PackageReference Include="System.Data.SQLite" Version="2.0.2" />
+		<PackageReference Include="SourceGear.sqlite3" Version="3.50.4.5" />
+		<PackageReference Include="Dapper" Version="2.1.66" />
+		<PackageReference Include="CSharpier.Core" Version="1.2.4" />
+		<PackageReference Include="Avalonia.AvaloniaEdit" Version="11.3.0" PrivateAssets="all" />
+		<PackageReference Include="AvaloniaEdit.TextMate" Version="11.3.0" PrivateAssets="all" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+		<PackageReference Include="Avalonia.Themes.Simple" Version="11.3.11" />
+		
+		<!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+		<PackageReference Include="Avalonia.Diagnostics" Version="11.3.11">
+			<IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
+			<PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
+		</PackageReference>
+	</ItemGroup>
+</Project>

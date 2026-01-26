@@ -1,0 +1,361 @@
+﻿using AvaloniaEdit;
+using AvaloniaEdit.Document;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace CodeSnip.Services
+{
+    /// <summary>
+    /// Provides utility methods for toggling single-line and multi-line comments in an AvalonEdit TextEditor.
+    /// </summary>
+    public static class CommentService
+    {
+        // Languages with single-line comments
+        private static readonly Dictionary<string, string> singleLineComments = new()
+        {
+    { "as", "//" },      // ActionScript3
+    { "aspx", "//" },    // ASP/XHTML
+    { "atg", "//" },     // Coco
+    { "bat", "REM" },    // BAT
+    { "boo", "#" },      // Boo
+    { "cpp", "//" },     // C++
+    { "cs", "//" },      // C#
+    { "d", "//" },       // D
+    { "fs", "//" },      // F#
+    { "fx", "//" },      // HLSL
+    { "go", "//" },      // Go
+    { "ini", ";" },      // INI
+    { "java", "//" },    // Java
+    { "js", "//" },      // JavaScript
+    { "lua", "--" },     // Lua
+    { "nut", "//" },     // Squirrel
+    { "pas", "//" },     // Pascal
+    { "php", "//" },     // PHP
+    { "plsql", "--" },   // PLSQL
+    { "ps1", "#" },      // PowerShell
+    { "py", "#" },       // Python
+    { "rb", "#" },       // Ruby
+    { "rs", "//" },      // Rust
+    { "sql", "--" },     // SQL
+    { "tex", "%" },      // TeX
+    { "vb", "'" },       // VB
+    { "vtl","##" },      // Velocity Template Language ( After this line no embedded syntax definition aviable )
+    { "vbs", "'" },      // VBScript
+    { "vhdl", "--" },    // VHDL
+    { "yaml", "#" },     // YAML
+    { "yml", "#" },      // YML
+    {"zig", "//" },      // Zig
+    {"f90", "!" },       // Fortran90
+    {"f95", "!" },       // Fortran95
+    {"f03", "!" },       // Fortran03
+    {"f08", "!" },       // Fortran08
+    {"m", "!" },          // MATLAB
+    {"mm", "//" },        // Objective-C++
+    {"m4", "dnl" },       // M4
+    {"sed", "#" },        // Sed
+    {"awk", "#" },        // Awk
+    {"raku", "#" },       // Raku (Perl 6)
+    {"pl", "#" },         // Perl
+    {"pm", "#" },         // Perl Module
+    {"t", "#" },          // Perl Test Script
+    {"swift", "//" },     // Swift
+    {"kt", "//" },        // Kotlin
+    {"kts", "//" },       // Kotlin Script
+    {"groovy", "//" },    // Groovy
+    {"rsrc", "//" },      // Resource Script
+    {"rc", "//" },        // Resource Script
+    {"nim", "#" },        // Nim
+    {"dart", "//" },      // Dart
+    {"jl", "#" },         // Julia
+    {"r", "#" },          // R
+    {"v", "//" },         // Verilog
+    {"sv", "//" },        // SystemVerilog
+    {"coffee", "#" },     // CoffeeScript
+    {"clj", ";" },        // Clojure
+    {"cljs", ";" },       // ClojureScript
+    {"scm", ";" },        // Scheme
+    {"lisp", ";" },       // Lisp
+    {"rkt", ";" },        // Racket
+    {"erl", "%" },        // Erlang
+    {"hs", "--" },        // Haskell
+    {"elm", "--" },       // Elm
+    {"ex", "#" },         // Elixir
+    {"exs", "#" },        // Elixir Script
+    {"vba", "'" },        // VBA
+    {"psm1", "#" },       // PowerShell Module
+    {"psd1", "#" },       // PowerShell Data File
+    {"makefile", "#" },   // Makefile
+    {"mk", "#" },         // Makefile alternative extension
+    {"dockerfile", "#" }, // Dockerfile
+    {"tf", "#" },         // Terraform
+    {"hcl","#" },        // HashiCorp Configuration Language
+};
+
+        // Languages with multi-line comments
+        private static readonly Dictionary<string, (string Start, string End)> multiLineComments = new()
+{
+    { "cpp", ("/*", "*/") },      // C++
+    { "cs", ("/*", "*/") },       // C#
+    { "css", ("/*", "*/") },      // CSS
+    { "d", ("/*", "*/") },        // D
+    { "fs", ("(*", "*)") },       // F#
+    { "go", ("/*", "*/") },       // Go
+    { "fx", ("/*", "*/") },       // HLSL
+    { "java", ("/*", "*/") },     // Java
+    { "js", ("/*", "*/") },       // JavaScript
+    { "lua", ("--[[", "]]") },    // Lua
+    { "pas", ("{", "}") },        // Pascal
+    { "php", ("/*", "*/") },      // PHP
+    { "py", ("\"\"\"", "\"\"\"") }, // Python
+    { "plsql", ("/*", "*/") },    // PLSQL
+    { "rs", ("/*", "*/") },       // Rust
+    { "sql", ("/*", "*/") },      // SQL
+    { "html", ("<!--", "-->") },  // HTML
+    { "xml", ("<!--", "-->") },   // XML
+    { "md", ("<!--", "-->") },    // Markdown ( After this line no embedded syntax definition aviable )
+    { "zig", ("/*", "*/") },          // Zig
+    { "mm", ("/*", "*/") },           // Objective-C++
+    { "raku", ("=pod", "=cut") },     // Raku (Perl 6) - POD blokovi
+    { "pl", ("=pod", "=cut") },       // Perl - POD blokovi
+    { "pm", ("=pod", "=cut") },       // Perl Module - POD blokovi
+    { "t", ("=pod", "=cut") },        // Perl Test Script - POD blokovi
+    { "swift", ("/*", "*/") },        // Swift
+    { "kt", ("/*", "*/") },           // Kotlin
+    { "kts", ("/*", "*/") },          // Kotlin Script
+    { "groovy", ("/*", "*/") },       // Groovy
+    { "dart", ("/*", "*/") },         // Dart
+    { "jl", ("#=", "=#") },           // Julia
+    { "v", ("/*", "*/") },            // Verilog
+    { "sv", ("/*", "*/") },           // SystemVerilog
+    { "clj", ("#|", "|#") },          // Clojure
+    { "cljs", ("#|", "|#") },         // ClojureScript
+    { "scm", ("#|", "|#") },          // Scheme
+    { "lisp", ("#|", "|#") },         // Lisp
+    { "rkt", ("#|", "|#") },          // Racket
+    { "hs", ("{-", "-}") },           // Haskell
+    { "psm1", ("<#", "#>") },         // PowerShell Module
+    { "psd1", ("<#", "#>") },         // PowerShell Data File
+    { "hcl", ("/*", "*/") },          // HashiCorp Config Language
+};
+
+        /// <summary>
+        /// Toggles comments for the selected lines in the TextEditor based on the language's file extension.
+        /// It can handle both single-line and multi-line comment styles.
+        /// </summary>
+        /// <param name="textEditor">The TextEditor instance containing the code.</param>
+        /// <param name="fileExtension">The file extension (e.g., "cs", "py") to determine the comment style.</param>
+        /// <param name="useMultiLine">If true, attempts to use multi-line comments; otherwise, defaults to single-line.</param>
+        public static void ToggleCommentByExtension(TextEditor textEditor, string fileExtension, bool useMultiLine = false)
+        {
+            if (string.IsNullOrEmpty(fileExtension) || textEditor.Document == null)
+                return;
+
+            string ext = fileExtension.ToLower();
+
+            if (useMultiLine)
+            {
+                if (multiLineComments.TryGetValue(ext, out var multi))
+                {
+                    ToggleMultiLineComment(textEditor, multi.Start, multi.End);
+                    return;
+                }
+            }
+
+            if (singleLineComments.TryGetValue(ext, out string? single) && !string.IsNullOrEmpty(single))
+            {
+                ToggleSingleLineComment(textEditor, single);
+
+                return;
+            }
+        }
+
+        private static void ToggleSingleLineComment(TextEditor textEditor, string commentToken)
+        {
+            var document = textEditor.Document;
+            int selectionStart = textEditor.SelectionStart;
+            int selectionLength = textEditor.SelectionLength;
+            int selectionEnd = selectionStart + selectionLength;
+
+            var startLine = document.GetLineByOffset(selectionStart);
+            var endLine = document.GetLineByOffset(selectionEnd);
+
+            // If selection ends exactly at the beginning of a new line, and it's not a zero-length selection,
+            // do not include that line in the operation.
+            if (selectionLength > 0 && endLine.Offset == selectionEnd && endLine.LineNumber > startLine.LineNumber)
+            {
+                endLine = endLine.PreviousLine;
+            }
+
+            var linesToModify = new List<DocumentLine>();
+            for (var line = startLine; line != null && line.LineNumber <= endLine.LineNumber; line = line.NextLine)
+            {
+                linesToModify.Add(line);
+            }
+
+            var nonEmptyLines = linesToModify.Where(l => !string.IsNullOrWhiteSpace(document.GetText(l))).ToList();
+
+            if (nonEmptyLines.Count == 0)
+                return; // Nothing to do on empty or whitespace-only selection
+
+            // Check if all non-empty lines are commented to decide on the action
+            bool allLinesCommented = nonEmptyLines.All(line => document.GetText(line).TrimStart().StartsWith(commentToken));
+
+            string commentTokenWithSpace = commentToken + " ";
+
+            using (document.RunUpdate())
+            {
+                if (allLinesCommented)
+                {
+                    // --- UNCOMMENT ---
+                    foreach (var line in nonEmptyLines)
+                    {
+                        string lineText = document.GetText(line);
+                        int indentLength = lineText.Length - lineText.TrimStart().Length;
+                        int commentStartOffset = line.Offset + indentLength;
+
+                        if (lineText.TrimStart().StartsWith(commentTokenWithSpace))
+                        {
+                            document.Remove(commentStartOffset, commentTokenWithSpace.Length);
+                        }
+                        else // This is safe because allLinesCommented is true, so it must start with commentToken
+                        {
+                            document.Remove(commentStartOffset, commentToken.Length);
+                        }
+                    }
+                }
+                else
+                {
+                    // --- COMMENT ---
+                    foreach (var line in linesToModify)
+                    {
+                        string lineText = document.GetText(line);
+                        // Do not comment empty lines to keep them clean
+                        if (string.IsNullOrWhiteSpace(lineText))
+                            continue;
+
+                        int indentLength = lineText.Length - lineText.TrimStart().Length;
+                        document.Insert(line.Offset + indentLength, commentTokenWithSpace);
+                    }
+                }
+            }
+        }
+
+        private static void ToggleMultiLineComment(TextEditor textEditor, string startComment, string endComment)
+        {
+            var document = textEditor.Document;
+            int selectionStart = textEditor.SelectionStart;
+            int selectionLength = textEditor.SelectionLength;
+
+            int selectionEnd = selectionStart + selectionLength;
+
+            var startLine = document.GetLineByOffset(selectionStart);
+            var endLine = document.GetLineByOffset(selectionEnd);
+
+            // If selection ends exactly at the beginning of a new line, exclude that line
+            if (selectionLength > 0 && endLine.Offset == selectionEnd && endLine.LineNumber > startLine.LineNumber)
+            {
+                endLine = endLine.PreviousLine;
+            }
+
+            int blockStartOffset = startLine.Offset;
+            int blockEndOffset = endLine.Offset + endLine.Length;
+
+            // finds comments regardless of leading/trailing whitespace
+            var commentPositions = FindCommentPositions(document, blockStartOffset, blockEndOffset, startComment, endComment);
+
+            using (document.RunUpdate())
+            {
+                if (commentPositions.HasValue)
+                {
+                    // UNCOMMENT: remove comment delimiters at detected positions
+                    var (startPos, endPos) = commentPositions.Value;
+
+                    // Remove end delimiter first to preserve offsets
+                    document.Remove(endPos, endComment.Length);
+                    // Remove start delimiter
+                    document.Remove(startPos, startComment.Length);
+                }
+                else
+                {
+                    // COMMENT: wrap selection with comment delimiters
+                    // Insert end first to preserve start offset
+                    document.Insert(blockEndOffset, endComment);
+                    document.Insert(blockStartOffset, startComment);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Finds multi-line comment positions within the block, tolerant to indentation/whitespace.
+        /// Handles cases where formatters add spaces/tabs before/after comment markers.
+        /// </summary>
+        /// <returns>Tuple of (start position, end position) if found, null otherwise</returns>
+        private static (int startPos, int endPos)? FindCommentPositions(TextDocument document,
+            int blockStart, int blockEnd, string startComment, string endComment)
+        {
+            // Search for startComment in first line/block start (up to 100 chars)
+            int maxStartSearch = Math.Min(blockStart + 100, blockEnd - endComment.Length);
+            string startSearch = document.GetText(blockStart, maxStartSearch - blockStart);
+            int startRelPos = startSearch.IndexOf(startComment);
+            if (startRelPos == -1) return null;
+
+            int startPos = blockStart + startRelPos;
+
+            // Search for endComment in last line/block end (last 100 chars, backwards)
+            int endSearchStart = Math.Max(blockEnd - 100, startPos + startComment.Length);
+            string endSearch = document.GetText(endSearchStart, blockEnd - endSearchStart);
+            int endRelPos = endSearch.LastIndexOf(endComment);
+            if (endRelPos == -1) return null;
+
+            int endPos = endSearchStart + endRelPos;
+
+            return (startPos, endPos);
+        }
+
+        /// <summary>
+        /// Toggles an inline block comment around the exact selected text in the editor.
+        /// This is useful for commenting out a specific part of a line.
+        /// </summary>
+        /// <param name="textEditor">The TextEditor instance.</param>
+        /// <param name="fileExtension">The file extension to determine the block comment delimiters.</param>
+        public static void ToggleInlineCommentByExtension(TextEditor textEditor, string fileExtension)
+        {
+            if (string.IsNullOrEmpty(fileExtension) || textEditor.Document == null)
+                return;
+
+            string ext = fileExtension.ToLower();
+
+            if (multiLineComments.TryGetValue(ext, out var multi))
+            {
+                ToggleInlineBlockComment(textEditor, multi.Start, multi.End);
+            }
+            // No fallback to single-line, as this is explicitly for block-commenting a selection.
+        }
+
+        private static void ToggleInlineBlockComment(TextEditor textEditor, string startComment, string endComment)
+        {
+            var document = textEditor.Document;
+            int selectionStart = textEditor.SelectionStart;
+            int selectionLength = textEditor.SelectionLength;
+
+            if (selectionLength == 0) return;
+
+            string selectedText = document.GetText(selectionStart, selectionLength);
+            using (document.RunUpdate())
+            {
+                if (selectedText.StartsWith(startComment) && selectedText.EndsWith(endComment))
+                {
+                    int contentLength = selectedText.Length - startComment.Length - endComment.Length;
+                    string content = selectedText.Substring(startComment.Length, contentLength);
+                    document.Replace(selectionStart, selectionLength, content);
+                }
+                else
+                {
+                    string newText = startComment + selectedText + endComment;
+                    document.Replace(selectionStart, selectionLength, newText);
+                }
+            }
+        }
+    }
+}

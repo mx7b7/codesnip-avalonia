@@ -1,0 +1,786 @@
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Media;
+using Avalonia.Styling;
+using AvaloniaEdit;
+using AvaloniaEdit.Search;
+using CodeSnip.Services;
+using CodeSnip.Views.LanguageCategoryView;
+using CodeSnip.Views.SnippetView;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Enums;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace CodeSnip.Views.MainWindowView;
+
+public partial class MainWindowViewModel : ObservableObject
+{
+    public TextEditor? Editor { get; set; }
+   
+    [ObservableProperty]
+    private string _windowTitle = "CodeSnip";
+
+    private readonly Geometry? _panelOpenIcon;
+    private readonly Geometry? _panelCloseIcon;
+
+    private readonly DatabaseService _databaseService = new();
+
+    [ObservableProperty]
+    private bool _isPaneOpen = true;
+
+    [ObservableProperty]
+    private double _splitViewOpenPaneLength = 280; // temporary this will be set from settings later
+
+    public ObservableCollection<Language> Languages { get; } = [];
+
+    [ObservableProperty]
+    private Snippet? _selectedSnippet;
+
+    [ObservableProperty]
+    private Category? _selectedCategory;
+
+    [ObservableProperty]
+    private bool _isEditorModified;
+
+    [ObservableProperty]
+    private string _statusMessage = "Ready";
+
+    [ObservableProperty]
+    private Snippet? _editingSnippet;
+
+    [ObservableProperty]
+    private string _editorText = string.Empty;
+
+    private bool _isInternalTextUpdate = true;
+
+    [ObservableProperty]
+    private bool _isFilteringEnabled = true; // temporary this will be set from settings later
+
+    [ObservableProperty]
+    private string _filterText = string.Empty;
+
+    public enum SnippetFilterMode
+    {
+        Name,
+        Tag
+    }
+
+    [ObservableProperty]
+    private SnippetFilterMode _filterMode = SnippetFilterMode.Name;
+
+    [ObservableProperty]
+    private bool _showEmptyLanguages = false;
+
+    [ObservableProperty]
+    private bool _showEmptyCategories = false;
+
+    [ObservableProperty]
+    private bool isLeftOverlayOpen;
+    [ObservableProperty] private bool isRightOverlayOpen;
+    [ObservableProperty] private object? leftOverlayContent;
+    [ObservableProperty] private object? rightOverlayContent;
+    [ObservableProperty] private double leftOverlayWidth = 0;
+
+    public MainWindowViewModel()
+    {
+        _panelOpenIcon = Application.Current?.FindResource("PanelLeftOpen") as Geometry;
+        _panelCloseIcon = Application.Current?.FindResource("PanelLeftClose") as Geometry;
+       
+    }
+
+    public Geometry? OpenCloseIcon
+    {
+        get
+        {
+            return (_panelOpenIcon != null && _panelCloseIcon != null)
+                ? (IsPaneOpen ? _panelCloseIcon! : _panelOpenIcon!)
+                : null;
+        }
+    }
+
+    [RelayCommand]
+    private void TogglePanel()
+    {
+        IsPaneOpen = !IsPaneOpen;
+        OnPropertyChanged(nameof(OpenCloseIcon));
+    }
+
+    public void LoadSnippets()
+    {
+        var languages = _databaseService.GetSnippets();
+        PopulateLanguagesCollection(languages);
+    }
+
+    public async Task InitializeAsync()
+    {
+        await Task.Run(() => _databaseService.InitializeDatabaseIfNeeded());
+
+        var languages = await Task.Run(() => _databaseService.GetSnippets());
+
+        var languageList = languages.ToList();
+
+        if (languageList.Count == 0 && _databaseService.GetSnippets().Any()) // Check if loading failed
+        {
+            _ = await MessageBoxManager.GetMessageBoxStandard("CodeSnip", "Database Load Error \nCould not load snippets. The database file might be corrupted or the schema might have changed.", ButtonEnum.Ok).ShowAsync();
+        }
+        else
+        {
+            PopulateLanguagesCollection(languageList);
+            ExpandAndSelectSnippet(1, 1, 2);// temporary this will be set from settings later
+        }
+    }
+
+    private void PopulateLanguagesCollection(IEnumerable<Language> languages)
+    {
+        Languages.Clear();
+        foreach (var lang in languages)
+        {
+            bool languageHasAnySnippets = false;
+            foreach (var cat in lang.Categories)
+            {
+                bool categoryHasSnippets = cat.Snippets.Any();
+                if (categoryHasSnippets)
+                {
+                    languageHasAnySnippets = true;
+                }
+
+                // A category is visible if the setting is on, OR if it has snippets.
+                cat.IsVisible = ShowEmptyCategories || categoryHasSnippets;
+            }
+            // A language is visible if the setting is on, OR if it has any snippets.
+            lang.IsVisible = ShowEmptyLanguages || languageHasAnySnippets;
+            Languages.Add(lang);
+        }
+    }
+
+    public void ExpandAndSelectSnippet(int languageId, int categoryId, int snippetId)
+    {
+        var lang = Languages.FirstOrDefault(l => l.Id == languageId);
+        if (lang == null) return;
+
+        lang.IsExpanded = true;
+
+        var cat = lang.Categories.FirstOrDefault(c => c.Id == categoryId);
+        if (cat == null) return;
+
+        cat.IsExpanded = true;
+
+        var snip = cat.Snippets.FirstOrDefault(s => s.Id == snippetId);
+
+        if (snip == null) return;
+
+        snip.IsSelected = true;
+        SelectedSnippet = snip;
+        // Selection in the TreeView should be handled via data binding in the View.
+    }
+
+    partial void OnEditorTextChanged(string value)
+    {
+
+        if (_isInternalTextUpdate) return;
+
+        IsEditorModified = true;
+        UpdateWindowTitle();
+    }
+
+    private void UpdateSnippetInMemory(Snippet snippet)
+    {
+        if (snippet == null) return;
+
+        var language = Languages.FirstOrDefault(l => l.Id == snippet.Category?.Language?.Id);
+        if (language == null) return;
+
+        var category = language.Categories.FirstOrDefault(c => c.Id == snippet.CategoryId);
+        if (category == null) return;
+
+        var snippetInCollection = category.Snippets.FirstOrDefault(s => s.Id == snippet.Id);
+        if (snippetInCollection != null)
+        {
+            snippetInCollection.Code = snippet.Code;
+        }
+    }
+
+    public async Task ChangeSelectedSnippetAsync(Snippet? newSnippet)
+    {
+        if (newSnippet == null) return;
+
+        // need this because if click Cancel and select node with SelectedSnippet then will prompt again for unsaved changes
+        // because avalonia SelectionChangedEventArgs work diferently than WPF RoutedPropertyChangedEventArgs
+        if (newSnippet == EditingSnippet)
+            return;
+
+        if (IsEditorModified && EditingSnippet != null)
+        {
+            var result = await MessageBoxManager.GetMessageBoxStandard($"Unsaved Changes for {EditingSnippet?.Title}",
+                $"You have unsaved changes. Do you want to save them?", ButtonEnum.YesNoCancel).ShowAsync();
+
+            if (result == ButtonResult.Yes)
+            {
+                try
+                {
+                    _databaseService.UpdateSnippetCode(EditingSnippet!.Id, EditorText);
+                    EditingSnippet.Code = EditorText;
+                    UpdateSnippetInMemory(EditingSnippet);
+                    IsEditorModified = false;
+                    StatusMessage = $"Snippet '{EditingSnippet.Title}' saved at {DateTime.Now:HH:mm:ss}";
+                }
+                catch (Exception ex)
+                {
+                    StatusMessage = $"Error saving snippet '{EditingSnippet?.Title}': {ex.Message}";
+                    _ = await MessageBoxManager.GetMessageBoxStandard("Save Error", $"Failed to save snippet '{EditingSnippet?.Title}'.\n\nDetails: {ex.Message}", ButtonEnum.Ok).ShowAsync();
+                    // If save failed, keep IsEditorModified as true and don't proceed with changing the selected snippet
+                    return;
+                }
+            }
+            else if (result == ButtonResult.No)
+            {
+                IsEditorModified = false;
+            }
+            // cancel
+            else
+            {
+                SelectedSnippet = EditingSnippet;
+                return;
+            }
+        }
+        // Lazy load the snippet code if it hasn't been loaded yet.
+        if (!newSnippet.IsCodeLoaded)
+        {
+            try
+            {
+                newSnippet.Code = _databaseService.GetSnippetCode(newSnippet.Id);
+                newSnippet.IsCodeLoaded = true;
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Error loading snippet '{newSnippet.Title}'";
+                _ = await MessageBoxManager.GetMessageBoxStandard("Load Error", $"Failed to load content for snippet '{newSnippet.Title}'.\n\nDetails: {ex.Message}", ButtonEnum.Ok).ShowAsync();
+                // Revert the TreeView selection and stop the switch.
+                SelectedSnippet = EditingSnippet;
+                return;
+            }
+        }
+
+        SelectedSnippet = newSnippet;
+        EditingSnippet = newSnippet;
+        SelectedCategory = newSnippet.Category;
+
+        _isInternalTextUpdate = true;
+        EditorText = newSnippet.Code ?? string.Empty;
+        _isInternalTextUpdate = false;
+
+        UpdateWindowTitle();
+    }
+
+    private void UpdateWindowTitle()
+    {
+        var title = "CodeSnip";
+        if (SelectedSnippet != null)
+            title += " - " + SelectedSnippet.Title;
+        if (IsEditorModified)
+            title += " *";
+        WindowTitle = title;
+    }
+
+    partial void OnLeftOverlayContentChanged(object? oldValue, object? newValue)
+    {
+        if (newValue is IOverlayViewModel overlay)
+            overlay.CloseOverlay = CloseLeftOverlay;
+
+    }
+
+    partial void OnRightOverlayContentChanged(object? oldValue, object? newValue)
+    {
+        if (newValue is IOverlayViewModel overlay)
+            overlay.CloseOverlay = CloseRightOverlay;
+    }
+
+    #region FILTERING
+
+    partial void OnFilterTextChanged(string? oldValue, string newValue)
+    {
+        if (!IsFilteringEnabled) return;
+
+        ApplySnippetFilter();
+
+        // If the filter has just been cleared (transition from filled to empty string)
+        if (!string.IsNullOrWhiteSpace(oldValue) && string.IsNullOrWhiteSpace(newValue))
+        {
+            // 1. First collapse all nodes
+            foreach (var lang in Languages)
+            {
+                lang.IsExpanded = false;
+                foreach (var cat in lang.Categories)
+                {
+                    cat.IsExpanded = false;
+                }
+            }
+
+            // 2. Then expand only the path to the currently selected snippet
+            if (SelectedSnippet != null)
+            {
+                if (SelectedSnippet.Category?.Language != null)
+                {
+                    SelectedSnippet.Category.Language.IsExpanded = true;
+                }
+                if (SelectedSnippet.Category != null)
+                {
+                    SelectedSnippet.Category.IsExpanded = true;
+                }
+                SelectedSnippet.IsSelected = true;
+            }
+        }
+    }
+
+    partial void OnFilterModeChanged(SnippetFilterMode value)
+    {
+        if (!IsFilteringEnabled) return;
+
+        ApplySnippetFilter();
+    }
+
+    partial void OnIsFilteringEnabledChanged(bool value)
+    {
+        if (!IsFilteringEnabled) return;
+
+        ApplySnippetFilter();
+    }
+
+    private void ApplySnippetFilter()
+    {
+        bool isFilterActive = IsFilteringEnabled && !string.IsNullOrWhiteSpace(FilterText);
+
+        foreach (var lang in Languages)
+        {
+            bool langVisible = false;
+            foreach (var cat in lang.Categories)
+            {
+                bool catVisible = false;
+                foreach (var snip in cat.Snippets)
+                {
+                    // The snippet is visible if the filter is not active, or if it matches the filter
+                    bool snipVisible = !isFilterActive || FilterMatch(snip);
+                    snip.IsVisible = snipVisible;
+                    if (snipVisible)
+                    {
+                        catVisible = true; // If at least one snippet is visible, the category is also visible
+                    }
+                }
+                cat.IsVisible = catVisible;
+                if (catVisible)
+                {
+                    langVisible = true; // If at least one category is visible, the language is also visible
+                }
+            }
+            lang.IsVisible = langVisible;
+
+            // Automatically expand nodes if the filter is active and they are visible
+            if (isFilterActive && langVisible)
+            {
+                lang.IsExpanded = true;
+                foreach (var cat in lang.Categories)
+                {
+                    if (cat.IsVisible)
+                    {
+                        cat.IsExpanded = true;
+                    }
+                }
+            }
+        }
+    }
+
+    private bool MatchOnWordStart(string? textToSearch, string filter)
+    {
+        if (string.IsNullOrEmpty(textToSearch))
+            return false;
+
+        var words = textToSearch.Split([' ', ',', ';', ':', '-', '_', '.'], StringSplitOptions.RemoveEmptyEntries);
+
+        return words.Any(word => word.StartsWith(filter, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private bool FilterMatch(Snippet snippet)
+    {
+        if (string.IsNullOrWhiteSpace(FilterText)) return true;
+
+        var filterWords = FilterText.Split([' '], StringSplitOptions.RemoveEmptyEntries);
+        if (filterWords.Length == 0) return true;
+
+        foreach (var word in filterWords)
+        {
+            bool wordMatch = FilterMode switch
+            {
+                SnippetFilterMode.Name => MatchOnWordStart(snippet.Title, word),
+                SnippetFilterMode.Tag => MatchOnWordStart(snippet.Tag, word),
+                _ => false
+            };
+
+            if (!wordMatch)
+                return false;
+        }
+        return true;
+    }
+
+   
+    #endregion
+
+    #region TOOLBAR ACTIONS
+
+    private void PerformSave()
+    {
+        try
+        {
+            // This method assumes EditingSnippet is not null.
+            _databaseService.UpdateSnippetCode(EditingSnippet!.Id, EditorText);
+
+            EditingSnippet.Code = EditorText; // need this because otherwise the old text is displayed ...
+            UpdateSnippetInMemory(EditingSnippet);
+            StatusMessage = $"Snippet '{EditingSnippet.Title}' saved at {DateTime.Now:HH:mm:ss}";
+            IsEditorModified = false;
+            UpdateWindowTitle();
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Error saving snippet '{EditingSnippet?.Title}': {ex.Message}";
+            _ = MessageBoxManager.GetMessageBoxStandard("Save Error", $"Failed to save snippet '{EditingSnippet?.Title}'.\n\nDetails: {ex.Message}", ButtonEnum.Ok).ShowAsync();
+        }
+    }
+
+    [RelayCommand]
+    private async Task SaveCode()
+    {
+        if (EditingSnippet is null)
+        {
+            _ = await MessageBoxManager.GetMessageBoxStandard("Cannot Save",
+                "There is no active snippet to save. Please select a snippet first.", ButtonEnum.Ok).ShowAsync();
+            return;
+        }
+
+        if (IsEditorModified)
+        {
+            PerformSave();
+
+        }
+    }
+
+    [RelayCommand]
+    private async Task DeleteSnippet()
+    {
+        if (IsLeftOverlayOpen) return;
+
+        if (SelectedSnippet is null)
+        {
+            _ = await MessageBoxManager.GetMessageBoxStandard("No Snippet Selected",
+                "Select a snippet from the list before attempting to delete it.", ButtonEnum.Ok).ShowAsync();
+            return;
+        }
+
+        ButtonResult confirm = await MessageBoxManager.GetMessageBoxStandard("Delete Confirmation",
+            $"Are you sure you want to delete the snippet '{SelectedSnippet.Title}'?", ButtonEnum.YesNo).ShowAsync();
+
+        if (confirm == ButtonResult.No)
+            return;
+
+        try
+        {
+            string snippetTitle = SelectedSnippet.Title;
+            _databaseService.DeleteSnippet(SelectedSnippet.Id);
+
+            var category = Languages
+                .SelectMany(l => l.Categories)
+                .FirstOrDefault(c => c.Id == SelectedSnippet.CategoryId);
+
+            category?.Snippets.Remove(SelectedSnippet);
+
+            // Reset the VM state and clear the editor
+            SelectedSnippet = null;
+
+            _isInternalTextUpdate = true;
+            EditorText = string.Empty;
+            _isInternalTextUpdate = false;
+
+            IsEditorModified = false;
+            EditingSnippet = null;
+
+            StatusMessage = $"Snippet '{snippetTitle}' deleted successfully.";
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Error deleting snippet '{SelectedSnippet?.Title}'";
+            _ = await MessageBoxManager.GetMessageBoxStandard("Delete Error", $"Failed to delete snippet '{SelectedSnippet?.Title}'.\n\nDetails: {ex.Message}", ButtonEnum.Ok).ShowAsync();
+        }
+    }
+
+
+    [RelayCommand]
+    private async Task AddSnippet()
+    {
+        if (IsLeftOverlayOpen) return;
+
+        if (!Languages.Any())
+            return;
+
+        LeftOverlayContent = new SnippetViewModel(
+            isEditMode: false,
+            snippet: new Snippet(),
+            languages: [.. Languages],
+            databaseService: _databaseService,
+            preselectedCategory: SelectedCategory);
+
+        LeftOverlayWidth = 400;
+        IsLeftOverlayOpen = true;
+    }
+
+    [RelayCommand]
+    private async Task EditSnippet()
+    {
+        if (IsLeftOverlayOpen) return;
+
+        if (SelectedSnippet is null)
+            return;
+
+        LeftOverlayContent = new SnippetViewModel(
+           isEditMode: true,
+           snippet: SelectedSnippet,
+           languages: [.. Languages],
+           databaseService: _databaseService,
+           preselectedCategory: SelectedSnippet?.Category);
+
+        LeftOverlayWidth = 400;
+        IsLeftOverlayOpen = true;
+    }
+
+    [RelayCommand]
+    private async Task EditLanguageCategory()
+    {
+        if (IsLeftOverlayOpen) return;
+
+        var vm = new LanguageCategoryViewModel(
+            dbService: _databaseService);
+
+        vm.RequestClose += OnLanguageCategoryViewClosed;
+
+        LeftOverlayContent = vm;
+        LeftOverlayWidth = 400;
+        IsLeftOverlayOpen = true;
+    }
+
+    private void OnLanguageCategoryViewClosed()
+    {
+        if (LeftOverlayContent is LanguageCategoryViewModel vm)
+        {
+            vm.RequestClose -= OnLanguageCategoryViewClosed;
+        }
+
+        Snippet? tmpSnippet = null;
+        if (EditingSnippet != null)
+        {
+            tmpSnippet = EditingSnippet;
+            if (IsEditorModified)
+            {
+                PerformSave();
+            }
+        }
+        LoadSnippets(); // Reload the entire snippet collection from the database
+        CloseLeftOverlay(); // Close the overlay panel
+        if (tmpSnippet != null)
+        {
+            // Flatten the entire collection of snippets from the newly loaded data and check if our snippet's ID is still present.
+            bool snippetStillExists = Languages
+                .SelectMany(l => l.Categories)
+                .SelectMany(c => c.Snippets)
+                .Any(s => s.Id == tmpSnippet.Id);
+
+            if (snippetStillExists)
+            {
+                // The snippet was not deleted. Restore the selection in the TreeView
+                ExpandAndSelectSnippet(
+                    tmpSnippet.Category?.Language?.Id ?? 0,
+                    tmpSnippet.CategoryId,
+                    tmpSnippet.Id);
+            }
+            else
+            {
+                // The snippet was deleted. Reset the editor state completely.
+                SelectedSnippet = null;
+                EditingSnippet = null;
+                EditorText = string.Empty;
+                IsEditorModified = false;
+                UpdateWindowTitle();
+                StatusMessage = "The previously selected snippet was deleted.";
+            }
+        }
+    }
+
+    [RelayCommand]
+    private void ToggleTheme()
+    {
+        if (Application.Current is App app)
+        {
+            var current = app.RequestedThemeVariant ?? ThemeVariant.Light; // fallback
+            var next = current == ThemeVariant.Light ? ThemeVariant.Dark : ThemeVariant.Light;
+
+            app.RequestedThemeVariant = next;
+
+            if (Editor != null)
+                HighlightingService.ApplyHighlighting(Editor, SelectedSnippet?.Category?.Language?.Code);
+
+        }
+    }
+
+    [RelayCommand]
+    private void IncreasePaneWidth()
+    {
+        SplitViewOpenPaneLength = Math.Min(SplitViewOpenPaneLength + 2, 500);
+        StatusMessage = $"Pane width: {SplitViewOpenPaneLength}px";
+    }
+
+    [RelayCommand]
+    private void DecreasePaneWidth()
+    {
+        SplitViewOpenPaneLength = Math.Max(SplitViewOpenPaneLength - 2, 50);
+        StatusMessage = $"Pane width: {SplitViewOpenPaneLength}px";
+    }
+
+    #endregion
+
+    #region CONTEXT MENU COMMANDS
+
+    [RelayCommand]
+    private void Copy()
+    {
+        Editor?.Copy();
+    }
+
+    [RelayCommand]
+    private void Cut()
+    {
+        Editor?.Cut();
+    }
+
+    [RelayCommand]
+    private void Paste()
+    {
+        Editor?.Paste();
+    }
+
+
+    [RelayCommand]
+    private void Undo()
+    {
+        if (Editor?.Document?.UndoStack.CanUndo == true)
+            Editor.Document.UndoStack.Undo();
+    }
+
+    [RelayCommand]
+    private void Redo()
+    {
+        if (Editor?.Document?.UndoStack.CanRedo == true)
+            Editor.Document.UndoStack.Redo();
+    }
+
+    [RelayCommand]
+    private void ToggleSingleLineComment()
+    {
+        var editor = Editor;
+        if (editor == null) return;
+
+        string? code = SelectedSnippet?.Category?.Language?.Code;
+        if (code is not null)
+        {
+            try
+            {
+                CommentService.ToggleCommentByExtension(editor, code, useMultiLine: false);
+            }
+            catch (Exception ex) { Debug.WriteLine(ex.Message); }
+        }
+    }
+
+    [RelayCommand]
+    private void ToggleMultiLineComment()
+    {
+        if (Editor == null) return;
+
+        string? code = SelectedSnippet?.Category?.Language?.Code;
+        if (code is not null)
+        {
+            try
+            {
+                CommentService.ToggleCommentByExtension(Editor, code, useMultiLine: true);
+            }
+            catch { }
+        }
+    }
+
+    [RelayCommand]
+    private void ToggleCommentSelection()
+    {
+        if (Editor == null) return;
+
+        string? code = SelectedSnippet?.Category?.Language?.Code;
+        if (code is not null)
+        {
+            try
+            {
+                CommentService.ToggleInlineCommentByExtension(Editor, code);
+            }
+            catch { }
+        }
+    }
+
+
+    #endregion
+
+    // CLOSE LEFT PANEL
+    [RelayCommand]
+    public void CloseLeftOverlay()
+    {
+        if (LeftOverlayContent is IDisposable d)
+            d.Dispose();
+
+        LeftOverlayWidth = 0;
+
+        Task.Delay(250).ContinueWith(_ =>
+        {
+            LeftOverlayContent = null;
+            IsLeftOverlayOpen = false;
+        });
+    }
+
+    // CLOSE RIGHT PANEL
+    [RelayCommand]
+    public void CloseRightOverlay()
+    {
+        if (RightOverlayContent is IDisposable d)
+            d.Dispose();
+
+        RightOverlayContent = null;
+        IsRightOverlayOpen = false;
+    }
+
+    public async Task HandleHighlightingErrorAsync(string errorMessage)
+    {
+        // Ensure this runs on the UI thread if called from a background thread,
+        // though OnUnhandledException is usually on the UI thread.
+        await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(async () =>
+        {                               
+            await MessageBoxManager.GetMessageBoxStandard("Syntax Highlighting Error",
+                "A critical error occurred in the syntax highlighting definition (.xshd file).\n" +
+                "Highlighting has been disabled to prevent the application from crashing.\n\n" +
+                "Please check the .xshd file for rules that might match zero-length text (e.g., regex like '^' or '$' inside a <Span> tag).\n\n" +
+                $"Original error: {errorMessage}",
+                ButtonEnum.Ok, Icon.Error).ShowAsync();
+
+            StatusMessage = "Syntax highlighting error.";
+        });
+    }
+
+    
+}
