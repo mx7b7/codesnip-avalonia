@@ -178,6 +178,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         snip.IsSelected = true;
         SelectedSnippet = snip;
+        SelectedCategory = cat; // SlelectedCategory is needed for AddSnippet command
         // Selection in the TreeView should be handled via data binding in the View.
     }
 
