@@ -14,7 +14,7 @@
 		xmlns:behaviors="using:CodeSnip.Helpers"
         x:DataType="vm:MainWindowViewModel"
         Title ="{Binding WindowTitle}"
-		WindowStartupLocation="CenterScreen"
+		WindowStartupLocation="CenterScreen" x:CompileBindings="False"
 	    Width="1200"
 	    Height="720"
 		BorderBrush="{DynamicResource AccentBrush}">
@@ -52,6 +52,20 @@
 	<codesnip:Window.Resources>
 		<helpers:EnumToBooleanConverter x:Key="EnumToBooleanConverter"/>
 		<helpers:LanguageToBoolConverter x:Key="LanguageToBoolConverter"/>
+
+		<Flyout x:Key="SearchFilterFlyout" Placement="Bottom">
+			<Grid ColumnDefinitions="Auto,10,Auto" Margin="10">
+				<RadioButton Grid.Column="0"
+							 Content="Name"
+							 GroupName="FilterMode"
+							 IsChecked="{Binding FilterMode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Name}"/>
+				<RadioButton Grid.Column="2"
+							 Content="Tag"
+							 Margin="10,0,0,0"
+							 GroupName="FilterMode"
+							 IsChecked="{Binding FilterMode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Tag}"/>
+			</Grid>
+		</Flyout>
 	</codesnip:Window.Resources>
 
 	<codesnip:Window.KeyBindings>
@@ -106,73 +120,28 @@
 						   OpenPaneLength="{Binding SplitViewOpenPaneLength, Mode=OneWay}"
 						   IsPaneOpen="{Binding IsPaneOpen, Mode=TwoWay}">
 			<SplitView.Pane>
-				<Grid RowDefinitions="Auto, *">
-					<Expander  Grid.Row="0" IsExpanded="False" HorizontalAlignment="Stretch" VerticalAlignment="Top" Padding="5"
-							   Background="{DynamicResource ThemeBackgroundBrush}" ExpandDirection="Down" 
-							   BorderBrush="{DynamicResource AccentBrush}" BorderThickness="0 1 1 1">
-						<Expander.Header>
-							<Border BorderBrush="{DynamicResource AccentBrush}" BorderThickness="0 0 0 1">
-								<StackPanel Orientation="Horizontal" Spacing="10">
-									<PathIcon Data="{StaticResource FileSearch}" Width="25" Height="25" Foreground="{DynamicResource AccentBrush}"
-											  Margin="2 0 0 0"/>
-									<TextBlock Text="SEARCH"
-											   FontSize="16"
-											   FontWeight="DemiBold"
-											   Foreground="{DynamicResource AccentBrush}"
-											   VerticalAlignment="Center" />
-								</StackPanel>
-							</Border>
-						</Expander.Header>
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<!-- RadioButton "by Name" -->
-								<ColumnDefinition Width="Auto" />
-								<!-- RadioButton "by Tag" -->
-								<ColumnDefinition Width="10" />
-								<!-- Razmak -->
-								<ColumnDefinition Width="*" />
-								<!-- TextBox za filter -->
-							</Grid.ColumnDefinitions>
-							<RadioButton x:Name="rbName" Content="Name" GroupName="FilterMode"
-										Grid.Column="0" ToolTip.Tip="Search by Name"
-										IsChecked="{Binding FilterMode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Name}" />
-							<RadioButton x:Name="rbTag" Content="Tag" Grid.Column="1" Margin="10,0,0,0"  GroupName="FilterMode"
-										 ToolTip.Tip="Search by Tag"
-										IsChecked="{Binding FilterMode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Tag}" />
-							<TextBox x:Name="txtFilter"
-									 Watermark="Search snippets..."
-									 Grid.Column="3"
-									 CornerRadius="16"
-									 Height="25"
-									 Padding="10 0 0 0"
-									 VerticalContentAlignment="Center"
-									 IsEnabled="{Binding IsFilteringEnabled, Mode=TwoWay}"
-									 Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}">
-								<TextBox.InnerRightContent>
-									<PathIcon
-										Data="{x:Static codesnip:Icons.Search}"
-										Opacity="0.75"
-										Width="12"
-										Margin="0 0 10 0" />
-								</TextBox.InnerRightContent>
-							</TextBox>
-						</Grid>
-					</Expander>
-					<Expander Grid.Row="1" IsExpanded="True" HorizontalAlignment="Stretch" Padding="0" VerticalAlignment="Stretch"
+				<Grid>
+					<Expander IsExpanded="True" HorizontalAlignment="Stretch" Padding="0" VerticalAlignment="Stretch"
 							   Background="{DynamicResource ThemeBackgroundBrush}" ExpandDirection="Down"
 							   BorderBrush="{DynamicResource AccentBrush}" BorderThickness="0 0 1 0" >
 						<Expander.Header>
-							<Border BorderBrush="{DynamicResource AccentBrush}" BorderThickness="0 0 0 1">
-								<StackPanel Orientation="Horizontal" Spacing="10">
-									<PathIcon Data="{StaticResource FolderHomeOutline}" Width="25" Height="25" Foreground="{DynamicResource AccentBrush}"
-											  Margin="2 0 0 0"/>
-									<TextBlock Text="SNIPPETS"
-											   FontSize="16"
-											   FontWeight="DemiBold"
-											   Foreground="{DynamicResource AccentBrush}"
-											   VerticalAlignment="Center"/>
-								</StackPanel>
+							<Border BorderBrush="{DynamicResource AccentBrush}" BorderThickness="0 1 0 1">
+								<TextBox x:Name="txtFilter"
+										 Watermark="Search snippets..."
+										 BorderBrush="Transparent"
+										 HorizontalAlignment="Stretch"
+										 VerticalContentAlignment="Stretch"
+										 IsEnabled="{Binding IsFilteringEnabled, Mode=TwoWay}"
+										 Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
+										 FontSize="14">
+									<TextBox.InnerRightContent>
+										<Button Classes="IconButton"
+												Width="22" Height="22" Content="▼" Cursor="Hand" Flyout="{StaticResource SearchFilterFlyout}"
+												Foreground="{DynamicResource ThemeAccentBrush}"
+												ToolTip.Tip="Search Mode">
+										</Button>
+									</TextBox.InnerRightContent>
+								</TextBox>
 							</Border>
 						</Expander.Header>
 						<Grid RowDefinitions="*, Auto">
@@ -237,7 +206,7 @@
 											<PathIcon Data="{StaticResource FileInfoLine}" Width="25" Height="25"
 													  Foreground="{DynamicResource ThemeBorderMidBrush}"
 											  Margin="2 0 0 0"/>
-											<TextBlock Text="Snippet Metadata"
+											<TextBlock Text="SNIPPET METADATA"
 													   FontSize="14"
 													   FontWeight="Medium"
 													   Foreground="{DynamicResource ThemeBorderMidBrush}"
