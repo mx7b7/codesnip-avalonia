@@ -20,16 +20,16 @@
 			</Grid.RowDefinitions>
 			<!-- BLOK 1: Language + Category -->
 			<StackPanel Grid.Row="0">
-				<TextBlock Text="Language:" FontWeight="Bold"/>
+				<TextBlock Text="Language:" FontWeight="Bold" Margin="0 10 0 2"/>
 				<!-- ComboBox za Add mode -->
 				<ComboBox ItemsSource="{Binding Languages}"
 						  SelectedItem="{Binding SelectedLanguage}"
 						  DisplayMemberBinding="{Binding Name}"
 						  IsVisible="{Binding !IsEditMode}"
 						  HorizontalAlignment="Stretch"/>
-				<!-- TextBox za Edit mode -->
+				<!-- TextBox Edit mode -->
 				<TextBox Text="{Binding SelectedLanguageName}" IsReadOnly="True" IsVisible="{Binding IsEditMode}" IsHitTestVisible="False"/>
-				<TextBlock Text="Category:" FontWeight="Medium" Margin="0,10,0,0"/>
+				<TextBlock Text="Category:" FontWeight="Bold" Margin="0,10,0,2"/>
 				<ComboBox ItemsSource="{Binding AvailableCategories}"
 						  SelectedItem="{Binding SelectedCategory}"
 						  DisplayMemberBinding="{Binding Name}"
@@ -44,18 +44,18 @@
 					<!-- Title textbox -->
 					<RowDefinition Height="Auto"/>
 					<!-- Description label -->
-					<RowDefinition Height="*"/>
+					<RowDefinition Height="Auto"/>
 					<!-- Description textbox -->
 					<RowDefinition Height="Auto"/>
 					<!-- Tags label -->
 					<RowDefinition Height="Auto"/>
 					<!-- Tags textbox -->
 				</Grid.RowDefinitions>
-				<TextBlock Text="Title:" FontWeight="Bold" Grid.Row="0" Margin="0,10,0,0"/>
+				<TextBlock Text="Title:" FontWeight="Bold" Grid.Row="0" Margin="0,10,0,2"/>
 				<TextBox Grid.Row="1" Watermark="Enter title" Text="{Binding Title}" />
-				<TextBlock Text="Description:" FontWeight="Bold" Grid.Row="2" Margin="0,10,0,0"/>
-				<TextBox Grid.Row="3" AcceptsReturn="True" TextWrapping="Wrap" Text="{Binding Snippet.Description}"/>
-				<TextBlock Text="Tags:" FontWeight="Bold" Grid.Row="4" Margin="0,10,0,0"/>
+				<TextBlock Text="Description:" FontWeight="Bold" Grid.Row="2" Margin="0,10,0,2"/>
+				<TextBox Grid.Row="3" AcceptsReturn="True" TextWrapping="Wrap" Text="{Binding Snippet.Description}" Height="200"/>
+				<TextBlock Text="Tags:" FontWeight="Bold" Grid.Row="4" Margin="0,10,0,2"/>
 				<TextBox Grid.Row="5" ToolTip.Tip="Tags can be separated by space, period, comma, colon, semicolon, hyphen" Text="{Binding Snippet.Tag}" />
 			</Grid>
 			<!-- BLOK 3: Buttons -->

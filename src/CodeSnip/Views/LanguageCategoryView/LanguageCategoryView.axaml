@@ -17,37 +17,36 @@
 		<StackPanel Margin="10">
 
 			<!-- LANGUAGES SECTION -->
-			<TextBlock Text="Languages:" FontWeight="Bold" Margin="0,10,0,5"/>
+			<TextBlock Text="Languages:" FontWeight="Bold" Margin="0,10,0,3"/>
 			<ListBox ItemsSource="{Binding Languages}"
                      SelectedItem="{Binding SelectedLanguage}"
 					 DisplayMemberBinding="{Binding Name}"
                      Height="100"
 					 SelectionMode="Single"/>
 
-			<TextBlock Text="Language Extension:" FontWeight="Bold" Margin="0,10,0,0"/>
+			<TextBlock Text="Language Extension:" FontWeight="Bold" Margin="0,10,0,3"/>
 			<TextBox Text="{Binding NewLanguageCode}" />
 
-			<TextBlock Text="Language Name:" FontWeight="Bold" Margin="0,5,0,0"/>
+			<TextBlock Text="Language Name:" FontWeight="Bold" Margin="0,5,0,3"/>
 			<TextBox Text="{Binding NewLanguageName}" />
-			<StackPanel Margin="0,10,0,0" Orientation="Horizontal" HorizontalAlignment="Left" Spacing="10">
+			<StackPanel Margin="0,10,0,0" Orientation="Horizontal" HorizontalAlignment="Left" Spacing="10" Height="25">
 				<Button  Content="{Binding IsAddingLanguage, Converter={StaticResource BoolToAddCancelConverter}}"
-						Command="{Binding ToggleAddLanguageCommand}"/>
-				<Button Content="Save" Command="{Binding SaveLanguageCommand}"/>
-				<Button Content="Delete" Command="{Binding DeleteLanguageCommand}"/>
-				<Button Command="{Binding ForceDeleteLanguageCommand}" Background="Transparent"
+						Command="{Binding ToggleAddLanguageCommand}" Width="80"/>
+				<Button Content="Save" Command="{Binding SaveLanguageCommand}" Width="80"/>
+				<Button Content="Delete" Command="{Binding DeleteLanguageCommand}" Width="80"/>
+				<Button Classes="IconButton" Command="{Binding ForceDeleteLanguageCommand}"
 						ToolTip.Tip="Deletes the language and ALL its categories and snippets">
-					<Path Data="{StaticResource DeleteAlert}" Fill="Red" Width="28" Height="28" Stretch="Uniform"/>
+					<Path Data="{StaticResource DeleteAlert}" Fill="Red" Width="25" Height="25" Stretch="UniformToFill"/>
 				</Button>
 			</StackPanel>
 
-			<Separator Margin="0,40,0,40"/>
+			<Separator Margin="0,30,0,30"/>
 
 			<!-- CATEGORIES SECTION -->
-			<TextBlock Text="Categories for selected language:" FontWeight="Bold" />
+			<TextBlock Text="Categories for selected language:" FontWeight="Bold" Margin="0,0,0,3"/>
 			<ComboBox ItemsSource="{Binding Languages}"
                       SelectedItem="{Binding SelectedLanguageForCategory}"
 				      DisplayMemberBinding="{Binding Name}"
-                      Margin="0,5,0,0"
 					  HorizontalAlignment="Stretch"/>
 
 			<ListBox ItemsSource="{Binding FilteredCategories}"
@@ -57,21 +56,21 @@
                      Margin="0,10,0,0"
 					 SelectionMode="Single"/>
 
-			<TextBlock Text="Category Name:" FontWeight="Bold" Margin="0,10,0,0"/>
+			<TextBlock Text="Category Name:" FontWeight="Bold" Margin="0,10,0,3"/>
 			<TextBox Text="{Binding NewCategoryName}" />
 
-			<StackPanel  Margin="0,10,0,0" Orientation="Horizontal" HorizontalAlignment="Left" Spacing="10">
+			<StackPanel  Margin="0,10,0,0" Orientation="Horizontal" HorizontalAlignment="Left" Spacing="10" Height="25">
 				<Button Content="{Binding IsAddingCategory, Converter={StaticResource BoolToAddCancelConverter}}"
-						Command="{Binding ToggleAddCategoryCommand}"/>
-				<Button Content="Save" Command="{Binding SaveCategoryCommand}"/>
-				<Button Content="Delete" Command="{Binding DeleteCategoryCommand}"/>
-				<Button Command="{Binding ForceDeleteCategoryCommand}" Background="Transparent"
+						Command="{Binding ToggleAddCategoryCommand}" Width="80"/>
+				<Button Content="Save" Command="{Binding SaveCategoryCommand}" Width="80"/>
+				<Button Content="Delete" Command="{Binding DeleteCategoryCommand}" Width="80"/>
+				<Button Classes="IconButton" Command="{Binding ForceDeleteCategoryCommand}"
 						ToolTip.Tip="Deletes the category and ALL its snippets">
-					<Path Data="{StaticResource DeleteAlert}" Fill="Red" Width="28" Height="28"  Stretch="Uniform"/>
+					<Path Data="{StaticResource DeleteAlert}" Fill="Red" Width="25" Height="25"  Stretch="UniformToFill"/>
 				</Button>
 			</StackPanel>
 
-			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,30,0,0">
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,30,0,0" Height="25">
 				<Button Content="Close" Width="80" Margin="0,0,10,0" Command="{Binding CloseCommand}"
 						HorizontalContentAlignment="Center"/>
 			</StackPanel>

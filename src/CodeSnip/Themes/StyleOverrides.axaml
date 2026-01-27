@@ -1,0 +1,68 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+
+	<!-- ..............RepeatButton temporary for treeview scrollbar....................... -->
+	<Style Selector="RepeatButton.repeat">
+		<Setter Property="Padding" Value="0" />
+		<Setter Property="BorderThickness" Value="0" />
+	</Style>
+	<!-- ........................TreeView ScrollBar......................................-->
+	<Style Selector="TreeView ScrollBar:vertical">
+		<Setter Property="Width" Value="6"/>
+	</Style>
+	<Style Selector="TreeView ScrollBar:vertical /template/ Thumb#thumb">
+		<Setter Property="MinHeight" Value="24"/>
+		<Setter Property="Width" Value="5"/>
+		<Setter Property="Background" Value="{DynamicResource ThemeControlHighBrush}"/>
+	</Style>
+
+	<Style Selector="TreeView ScrollBar:horizontal">
+		<Setter Property="Width" Value="6"/>
+	</Style>
+	<Style Selector="TreeView ScrollBar:horizontal /template/ Thumb#thumb">
+		<Setter Property="MinWidth" Value="24"/>
+		<Setter Property="Height" Value="4"/>
+		<Setter Property="Background" Value="{DynamicResource ThemeControlHighBrush}"/>
+	</Style>
+	<!--- ............................ListBox ScrollBar................................... -->
+	<Style Selector="ListBox ScrollBar:vertical">
+		<Setter Property="Width" Value="6"/>
+	</Style>
+	<Style Selector="ListBox ScrollBar:vertical /template/ Thumb#thumb">
+		<Setter Property="MinHeight" Value="24"/>
+		<Setter Property="Width" Value="5"/>
+		<Setter Property="Background" Value="{DynamicResource ThemeControlHighBrush}"/>
+	</Style>
+
+	<Style Selector="ListBox ScrollBar:horizontal">
+		<Setter Property="Width" Value="6"/>
+	</Style>
+	<Style Selector="ListBox ScrollBar:horizontal /template/ Thumb#thumb">
+		<Setter Property="MinWidth" Value="24"/>
+		<Setter Property="Height" Value="4"/>
+		<Setter Property="Background" Value="{DynamicResource ThemeControlHighBrush}"/>
+	</Style>
+	<!-- ................IconButton Toolbar Style .......................................... -->
+	<Style Selector="Button.IconButton">
+		<Setter Property="Width" Value="32"/>
+		<Setter Property="Height" Value="32"/>
+		<Setter Property="BorderThickness" Value="0"/>
+		<Setter Property="Background" Value="Transparent"/>
+	</Style>
+	<!-- Hover efekt -->
+	<Style Selector="Button.IconButton:pointerover">
+		<Setter Property="Opacity" Value="0.7"/>
+	</Style>
+
+	<!-- Focus visible efekt -->
+	<Style Selector="Button.IconButton:focus-visible">
+		<Setter Property="Opacity" Value="0.5"/>
+	</Style>
+	<!-- Disabled efekt -->
+	<Style Selector="Button.IconButton:disabled">
+		<Setter Property="Opacity" Value="0.3"/>
+	</Style>
+	<!-- .................................................................................. -->
+
+</Styles>

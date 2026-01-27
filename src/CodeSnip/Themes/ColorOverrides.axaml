@@ -1,0 +1,47 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+	<!-- Accent Color Definition for toolbar buttons, borders...-->
+	<SolidColorBrush x:Key="AccentBrush" Color="#FFCD853F"/>
+	
+	<!-- Temporary SimpleTheme accent colors override for testing -->
+	<ResourceDictionary.ThemeDictionaries>
+		<ResourceDictionary x:Key="Default">
+			<!-- ...........TitleBar colors.........................-->
+			<Color x:Key="BorderColor30">#4CCECECE</Color>
+			<Color x:Key="BorderColor60">#DEDEDE</Color>
+			<Color x:Key="TitleBarBackgroundColor">#00000000</Color>
+			<!--.....................................................-->
+		</ResourceDictionary>
+		<ResourceDictionary x:Key="Dark">
+			<!-- ...........TitleBar colors.........................-->
+			<Color x:Key="BorderColor30">#4C353535</Color>
+			<Color x:Key="BorderColor60">#262626</Color>
+			<Color x:Key="TitleBarBackgroundColor">#00000000</Color>
+			<!--.....................................................-->
+			
+			<Color x:Key="ThemeAccentColor"> #FFCD853F</Color>
+			<Color x:Key="ThemeAccentColor2"> #CCCD853F</Color>
+			<Color x:Key="ThemeAccentColor3"> #66CD853F</Color>
+			<Color x:Key="ThemeAccentColor4"> #33CD853F</Color>
+
+			<Color x:Key="HighlightColor"> #FFCD853F</Color>
+			<Color x:Key="HighlightColor2"> #66CD853F</Color>
+
+			<Color x:Key="ThemeControlHighlightHighColor"> #CCCD853F</Color>
+			<Color x:Key="ThemeControlHighlightMidColor"> #66CD853F</Color>
+			<Color x:Key="ThemeControlHighlightLowColor"> #33CD853F</Color>
+
+			<SolidColorBrush x:Key="ThemeAccentBrush2" Color="{StaticResource ThemeAccentColor2}" />
+			<SolidColorBrush x:Key="ThemeAccentBrush3" Color="{StaticResource ThemeAccentColor3}" />
+			<SolidColorBrush x:Key="ThemeAccentBrush4" Color="{StaticResource ThemeAccentColor4}" />
+			<SolidColorBrush x:Key="ThemeAccentBrush" Color="{StaticResource ThemeAccentColor}" />
+			<SolidColorBrush x:Key="HighlightBrush" Color="{StaticResource HighlightColor}" />
+			<SolidColorBrush x:Key="HighlightBrush2" Color="{StaticResource HighlightColor2}" />
+			<SolidColorBrush x:Key="ThemeControlHighlightLowBrush" Color="{StaticResource ThemeControlHighlightLowColor}" />
+			<SolidColorBrush x:Key="ThemeControlHighlightMidBrush" Color="{StaticResource ThemeControlHighlightMidColor}" />
+			<SolidColorBrush x:Key="ThemeControlHighlightHighBrush" Color="{StaticResource ThemeControlHighlightHighColor}" />
+			<SolidColorBrush x:Key="ThemeBorderHighBrush" Color="{StaticResource ThemeControlHighlightLowColor}" />
+		</ResourceDictionary>
+	</ResourceDictionary.ThemeDictionaries>
+</ResourceDictionary>
