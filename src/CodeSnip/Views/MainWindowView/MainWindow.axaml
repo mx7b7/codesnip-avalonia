@@ -267,12 +267,12 @@
 					<StackPanel DockPanel.Dock="Top"
 						Orientation="Horizontal"
 						Height="32"
-						Spacing="3" Margin="0 0 0 10"  Background="{DynamicResource ThemeBackgroundBrush}">
+						Spacing="5" Background="{DynamicResource ThemeBackgroundBrush}">
 						<Button Classes="IconButton" Command="{Binding TogglePanelCommand}"
 								ToolTip.Tip="Open/Close">
 							<PathIcon Data="{Binding OpenCloseIcon}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
 						</Button>
-						<Button Classes="IconButton" Margin="10,0,0,0" Command="{Binding SaveCodeCommand}"
+						<Button Classes="IconButton" Command="{Binding SaveCodeCommand}"
 								ToolTip.Tip="Save snippet&#xA;Ctrl+S">
 							<PathIcon Data="{StaticResource Save}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
 						</Button>
@@ -342,7 +342,7 @@
 					<AvaloniaEdit:TextEditor
 								   x:Name="textEditor"
 								   ShowLineNumbers="True"
-								   FontFamily="Consolas, Cascadia Code, Menlo, Monospace"
+								   FontFamily="Consolas, 'Cascadia Code', JetBrains Mono, Menlo, Monaco, monospace"
 								   FontSize="14"
 								   Background="{DynamicResource ThemeBackgroundBrush}">
 						<i:Interaction.Behaviors>
