@@ -1,0 +1,156 @@
+<UserControl x:Class="CodeSnip.Views.SettingsView.SettingsView"
+			 xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="clr-namespace:CodeSnip.Views.SettingsView"
+			 x:DataType="vm:SettingsViewModel"
+			 Background="{DynamicResource ThemeBackgroundBrush}">
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		<Button Grid.Row="0" Content="Close" Margin="10" HorizontalAlignment="Left"
+				Command="{Binding CloseCommand}"/>
+		<TabControl Grid.Row="1" TabStripPlacement="Left" Margin="10" HorizontalAlignment="">
+			<!-- Appearance -->
+			<TabItem Header="Appearance">
+				<ScrollViewer Margin="10, 0" VerticalScrollBarVisibility="Auto">
+					<StackPanel>
+						<!-- Theme -->
+						<Border CornerRadius="5" BorderBrush="{DynamicResource ThemeControlHighlightMidBrush}"
+								BorderThickness="1" Padding="10" Margin=" 0, 0, 0, 10">
+							<StackPanel>
+								<TextBlock Text="Base theme" FontWeight="Bold" FontSize="16"/>
+								<StackPanel Orientation="Horizontal">
+									<RadioButton Content="Light"  Margin="0,5"
+												 IsChecked="{Binding !IsDarkTheme, Mode=TwoWay}"/>
+									<RadioButton Content="Dark" Margin="20,5"
+												 IsChecked="{Binding IsDarkTheme}"/>
+								</StackPanel>
+							</StackPanel>
+						</Border>
+					</StackPanel>
+				</ScrollViewer>
+			</TabItem>
+			<!-- MAIN WINDOW -->
+			<TabItem Header="Window">
+				<ScrollViewer Margin="10">
+					<StackPanel>
+						<Border CornerRadius="5" BorderBrush="{DynamicResource ThemeControlHighlightMidBrush}" BorderThickness="1" Padding="10">
+							<StackPanel Spacing="5" Margin="0 0 0 12">
+								<TextBlock Text="Main Window" FontWeight="Bold" FontSize="16"/>
+								<CheckBox Content="Load snippets on startup" IsChecked="{Binding LoadSnippetsOnStartup}"/>
+								<CheckBox Content="Show empty languages" IsChecked="{Binding ShowEmptyLanguages}"/>
+								<CheckBox Content="Show empty categories" IsChecked="{Binding ShowEmptyCategories}"/>
+								<TextBlock Text="SplitView width:" FontWeight="Bold"/>
+								<Slider Minimum="150" Maximum="500" Value="{Binding SplitViewOpenPaneLength, Mode=TwoWay}"
+										TickFrequency="2" IsSnapToTickEnabled="True"/>
+								<TextBlock Text="{Binding SplitViewOpenPaneLength, StringFormat='{}{0}'} "
+										   VerticalAlignment="Center" Width="50"/>
+							</StackPanel>
+						</Border>
+					</StackPanel>
+				</ScrollViewer>
+			</TabItem>
+			<!-- Editor -->
+			<TabItem Header="Editor">
+				<ScrollViewer Margin="10">
+					<StackPanel>
+						<Border CornerRadius="5" BorderBrush="{DynamicResource ThemeControlHighlightMidBrush}" BorderThickness="1" Padding="10">
+							<StackPanel Spacing="5" Margin="0 0 0 12">
+								<TextBlock Text="Editor" FontWeight="Bold" FontSize="16"/>
+								<CheckBox Content="Tabs to spaces" IsChecked="{Binding TabToSpaces, Mode=TwoWay}" />
+								<CheckBox Content="Enable email hyperlinks" IsChecked="{Binding EmailLinks, Mode=TwoWay}" />
+								<CheckBox Content="Enable hyperlinks" IsChecked="{Binding HyperLinks, Mode=TwoWay}" />
+								<CheckBox Content="Highlight current line" IsChecked="{Binding HighlightLine, Mode=TwoWay}" />
+								<CheckBox Content="Show line numbers" IsChecked="{Binding ShowLineNumbers, Mode=TwoWay}" />
+								<TextBlock Text="Indentation size:" FontWeight="Bold" />
+								<NumericUpDown Maximum="10" Minimum="1" Increment="1" ParsingNumberStyle="Integer"
+                                               KeyDown="NumericUpDown_KeyDown" Value="{Binding IntendationSize, Mode=TwoWay}" />
+								<TextBlock Text="Font:" FontWeight="Bold" />
+								<ComboBox ItemsSource="{Binding SystemFonts}" SelectedItem="{Binding SelectedEditorFont, Mode=TwoWay}" />
+								<TextBlock Text="Font size:" FontWeight="Bold" />
+								<NumericUpDown Maximum="30" Minimum="8" ParsingNumberStyle="Integer" Increment="1"
+											   KeyDown="NumericUpDown_KeyDown" Value="{Binding EditorFontSize, Mode=TwoWay}" />
+							</StackPanel>
+						</Border>
+					</StackPanel>
+				</ScrollViewer>
+			</TabItem>
+			<!-- Database -->
+			<TabItem Header="Database">
+				<StackPanel Margin="10" Spacing="20">
+					<Button Content="Reindex Database" Command="{Binding ReindexCommand}"
+							ToolTip.Tip="Rebuilds all indexes for optimal query performance">
+						<Button.Styles>
+							<Style Selector="Button TextBlock#txtReindexBadge">
+								<Setter Property="Foreground" Value="Green"/>
+								<Setter Property="FontWeight" Value="Bold"/>
+								<Setter Property="Margin" Value="5,0,0,0"/>
+							</Style>
+						</Button.Styles>
+						<Button.Content>
+							<StackPanel Orientation="Horizontal" Spacing="5">
+								<TextBlock Text="Reindex Database"/>
+								<TextBlock x:Name="txtReindexBadge" Text="{Binding ReindexBadge}"
+										   Foreground="{Binding BadgeColor}"/>
+							</StackPanel>
+						</Button.Content>
+					</Button>
+					<Button Content="Integrity Check" Command="{Binding IntegrityCheckCommand}"
+							ToolTip.Tip=" Verifies database file integrity and consistency">
+						<Button.Styles>
+							<Style Selector="Button TextBlock#txtIntegrityBadge">
+								<Setter Property="Foreground" Value="Green"/>
+								<Setter Property="FontWeight" Value="Bold"/>
+								<Setter Property="Margin" Value="5,0,0,0"/>
+							</Style>
+						</Button.Styles>
+						<Button.Content>
+							<StackPanel Orientation="Horizontal" Spacing="5">
+								<TextBlock Text="Integrity Check"/>
+								<TextBlock x:Name="txtIntegrityBadge" Text="{Binding IntegrityCheckBadge}"
+										   Foreground="{Binding BadgeColor}"/>
+							</StackPanel>
+						</Button.Content>
+					</Button>
+					<Button Content="Vacuum" Command="{Binding VacuumCommand}"
+							ToolTip.Tip="Rebuilds database, removes unused space, optimizes performance">
+						<Button.Styles>
+							<Style Selector="Button TextBlock#txtVacuumBadge">
+								<Setter Property="Foreground" Value="Green"/>
+								<Setter Property="FontWeight" Value="Bold"/>
+								<Setter Property="Margin" Value="5,0,0,0"/>
+							</Style>
+						</Button.Styles>
+						<Button.Content>
+							<StackPanel Orientation="Horizontal" Spacing="5">
+								<TextBlock Text="Vacuum"/>
+								<TextBlock x:Name="txtVacuumBadge" Text="{Binding VacuumBadge}"
+										   Foreground="{Binding BadgeColor}"/>
+							</StackPanel>
+						</Button.Content>
+					</Button>
+					<Button Content="Backup Database" Command="{Binding BackupCommand}"
+							ToolTip.Tip="Creates full backup copy of the SQLite database file">
+						<Button.Styles>
+							<Style Selector="Button TextBlock#txtBackupBadge">
+								<Setter Property="Foreground" Value="Green"/>
+								<Setter Property="FontWeight" Value="Bold"/>
+								<Setter Property="Margin" Value="5,0,0,0"/>
+							</Style>
+						</Button.Styles>
+						<Button.Content>
+							<StackPanel Orientation="Horizontal" Spacing="5">
+								<TextBlock Text="Backup Database"/>
+								<TextBlock x:Name="txtBackupBadge" Text="{Binding BackupBadge}"
+										   Foreground="{Binding BadgeColor}"/>
+							</StackPanel>
+						</Button.Content>
+					</Button>
+				</StackPanel>
+			</TabItem>
+		</TabControl>
+	</Grid>
+</UserControl>

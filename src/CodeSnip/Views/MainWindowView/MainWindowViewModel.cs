@@ -4,6 +4,7 @@ using Avalonia.Media;
 using Avalonia.Styling;
 using AvaloniaEdit;
 using AvaloniaEdit.Search;
+using CodeSnip.ControlsEx.Window;
 using CodeSnip.Services;
 using CodeSnip.Views.LanguageCategoryView;
 using CodeSnip.Views.SnippetView;
@@ -14,6 +15,7 @@ using MsBox.Avalonia.Enums;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,49 +24,49 @@ namespace CodeSnip.Views.MainWindowView;
 
 public partial class MainWindowViewModel : ObservableObject
 {
-    public TextEditor? Editor { get; set; }
-   
-    [ObservableProperty]
-    private string _windowTitle = "CodeSnip";
+    private readonly DatabaseService _databaseService = new();
+    private readonly SettingsService settingsService = new();
 
+    public TextEditor? Editor { get; set; }
+    public TextEditorOptions EditorOptions = new();
     private readonly Geometry? _panelOpenIcon;
     private readonly Geometry? _panelCloseIcon;
 
-    private readonly DatabaseService _databaseService = new();
-
-    [ObservableProperty]
-    private bool _isPaneOpen = true;
-
-    [ObservableProperty]
-    private double _splitViewOpenPaneLength = 280; // temporary this will be set from settings later
-
     public ObservableCollection<Language> Languages { get; } = [];
 
-    [ObservableProperty]
-    private Snippet? _selectedSnippet;
-
-    [ObservableProperty]
-    private Category? _selectedCategory;
-
-    [ObservableProperty]
-    private bool _isEditorModified;
-
-    [ObservableProperty]
-    private string _statusMessage = "Ready";
-
-    [ObservableProperty]
-    private Snippet? _editingSnippet;
-
-    [ObservableProperty]
-    private string _editorText = string.Empty;
-
+    [ObservableProperty] private bool _isPaneOpen = true;
+    [ObservableProperty] private string _windowTitle = "CodeSnip";
+    [ObservableProperty] private Snippet? _selectedSnippet;
+    [ObservableProperty] private Category? _selectedCategory;
+    [ObservableProperty] private bool _isEditorModified;
+    [ObservableProperty] private string _statusMessage = "Ready";
+    [ObservableProperty] private Snippet? _editingSnippet;
+    [ObservableProperty] private string _editorText = string.Empty;
+    [ObservableProperty] private string _filterText = string.Empty;
+    [ObservableProperty] private SnippetFilterMode _filterMode = SnippetFilterMode.Name;
+    [ObservableProperty] private bool isLeftOverlayOpen;
+    [ObservableProperty] private bool isRightOverlayOpen;
+    [ObservableProperty] private object? leftOverlayContent;
+    [ObservableProperty] private object? rightOverlayContent;
+    [ObservableProperty] private double leftOverlayWidth = 0;
+    [ObservableProperty] private double rightOverlayWidth = 0;
+    [ObservableProperty] private bool _wordWrap = false;
     private bool _isInternalTextUpdate = true;
 
-    [ObservableProperty]
-    private bool _isFilteringEnabled = true; // temporary this will be set from settings later
+    #region SETTINGS PROPERTIES
 
-    [ObservableProperty]
-    private string _filterText = string.Empty;
+    [ObservableProperty] private bool _isLoadSnippetEnabled = false;
+    [ObservableProperty] private double _splitViewOpenPaneLength = 280;
+    [ObservableProperty] private bool _showEmptyLanguages = false;
+    [ObservableProperty] private bool _showEmptyCategories = false;
+    [ObservableProperty] private string _editorFontFamily = "Consolas";
+    [ObservableProperty] private double _editorFontSize = 14;
+    [ObservableProperty] private double _windowWidth = 1200;
+    [ObservableProperty] private double _windowHeight = 720;
+    [ObservableProperty] public WindowState _windowState = WindowState.Normal;
+    [ObservableProperty] private bool _showLineNumbers = true;
+
+    #endregion
 
     public enum SnippetFilterMode
     {
@@ -72,27 +74,42 @@ public partial class MainWindowViewModel : ObservableObject
         Tag
     }
 
-    [ObservableProperty]
-    private SnippetFilterMode _filterMode = SnippetFilterMode.Name;
-
-    [ObservableProperty]
-    private bool _showEmptyLanguages = false;
-
-    [ObservableProperty]
-    private bool _showEmptyCategories = false;
-
-    [ObservableProperty]
-    private bool isLeftOverlayOpen;
-    [ObservableProperty] private bool isRightOverlayOpen;
-    [ObservableProperty] private object? leftOverlayContent;
-    [ObservableProperty] private object? rightOverlayContent;
-    [ObservableProperty] private double leftOverlayWidth = 0;
-
     public MainWindowViewModel()
     {
         _panelOpenIcon = Application.Current?.FindResource("PanelLeftOpen") as Geometry;
         _panelCloseIcon = Application.Current?.FindResource("PanelLeftClose") as Geometry;
-       
+
+        LoadSettingsIntoViewModel();
+
+    }
+
+    private void LoadSettingsIntoViewModel()
+    {
+        // Window settings
+        SplitViewOpenPaneLength = settingsService.SplitViewOpenPaneLength;
+        WindowWidth = settingsService.WindowWidth;
+        WindowHeight = settingsService.WindowHeight;
+        WindowState = settingsService.WindowState;
+        ShowEmptyCategories = settingsService.ShowEmptyCategories;
+        ShowEmptyLanguages = settingsService.ShowEmptyLanguages;
+        IsLoadSnippetEnabled = settingsService.LoadSnippetsOnStartup;
+
+        // Editor settings
+        EditorOptions.EnableEmailHyperlinks = settingsService.EnableEmailLinks;
+        EditorOptions.EnableHyperlinks = settingsService.EnableHyperinks;
+        EditorOptions.ConvertTabsToSpaces = settingsService.TabToSpaces;
+        EditorOptions.HighlightCurrentLine = settingsService.HighlightLine;
+        EditorOptions.IndentationSize = settingsService.IntendationSize;
+        ShowLineNumbers = settingsService.ShowLineNumbers;
+        EditorFontFamily = settingsService.EditorFontFamily;
+        EditorFontSize = settingsService.EditorFontSize;
+    }
+
+    public void InitializeEditor(TextEditor textEditor)
+    {
+        textEditor.Options = EditorOptions;
+        // AvaloniaEdit.FontFamily = ONLY FontFamily OBJECT, binding from string does not work like in WPF and AvalonEdit
+        textEditor.FontFamily = new FontFamily(EditorFontFamily);
     }
 
     public Geometry? OpenCloseIcon
@@ -133,7 +150,10 @@ public partial class MainWindowViewModel : ObservableObject
         else
         {
             PopulateLanguagesCollection(languageList);
-            ExpandAndSelectSnippet(1, 1, 2);// temporary this will be set from settings later
+            if (settingsService.LastSnippet != null)
+            {
+                RestoreSelectedSnippetState(settingsService.LastSnippet);
+            }
         }
     }
 
@@ -303,12 +323,60 @@ public partial class MainWindowViewModel : ObservableObject
             overlay.CloseOverlay = CloseRightOverlay;
     }
 
+    public string SaveSelectedSnippetState()
+    {
+        if (SelectedSnippet == null)
+            return string.Empty;
+
+        // Find the parents of the snippet
+        var lang = Languages.FirstOrDefault(l => l.Categories.Any(c => c.Snippets.Contains(SelectedSnippet)));
+        if (lang == null) return string.Empty;
+
+        var cat = lang.Categories.FirstOrDefault(c => c.Snippets.Contains(SelectedSnippet));
+        if (cat == null) return string.Empty;
+
+        // Format: languageId:categoryId:snippetId
+        return $"{lang.Id}:{cat.Id}:{SelectedSnippet.Id}";
+    }
+
+    public void RestoreSelectedSnippetState(string state)
+    {
+        if (string.IsNullOrEmpty(state)) return;
+
+        var parts = state.Split(':');
+        if (parts.Length != 3) return;
+
+        if (!int.TryParse(parts[0], out int languageId)) return;
+        if (!int.TryParse(parts[1], out int categoryId)) return;
+        if (!int.TryParse(parts[2], out int snippetId)) return;
+
+        ExpandAndSelectSnippet(languageId, categoryId, snippetId);
+    }
+
+    private async Task SaveSettings()
+    {
+        settingsService.SplitViewOpenPaneLength = (int)SplitViewOpenPaneLength;
+        settingsService.LastSnippet = SaveSelectedSnippetState();
+        settingsService.WindowWidth = WindowWidth;
+        settingsService.WindowHeight = WindowHeight;
+        settingsService.WindowState = WindowState;
+
+        await settingsService.SaveSettingsAsync();
+    }
+
+    public void OnWindowClosing(CancelEventArgs e)
+    {
+        if (IsEditorModified && EditingSnippet != null)
+        {
+            PerformSave();
+        }
+        _ = SaveSettings();
+    }
+
     #region FILTERING
 
     partial void OnFilterTextChanged(string? oldValue, string newValue)
     {
-        if (!IsFilteringEnabled) return;
-
         ApplySnippetFilter();
 
         // If the filter has just been cleared (transition from filled to empty string)
@@ -342,21 +410,12 @@ public partial class MainWindowViewModel : ObservableObject
 
     partial void OnFilterModeChanged(SnippetFilterMode value)
     {
-        if (!IsFilteringEnabled) return;
-
-        ApplySnippetFilter();
-    }
-
-    partial void OnIsFilteringEnabledChanged(bool value)
-    {
-        if (!IsFilteringEnabled) return;
-
         ApplySnippetFilter();
     }
 
     private void ApplySnippetFilter()
     {
-        bool isFilterActive = IsFilteringEnabled && !string.IsNullOrWhiteSpace(FilterText);
+        bool isFilterActive = !string.IsNullOrWhiteSpace(FilterText);
 
         foreach (var lang in Languages)
         {
@@ -429,7 +488,7 @@ public partial class MainWindowViewModel : ObservableObject
         return true;
     }
 
-   
+
     #endregion
 
     #region TOOLBAR ACTIONS
@@ -621,6 +680,82 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private void OpenSettings()
+    {
+        if (IsRightOverlayOpen) return;
+
+        var vm = new SettingsView.SettingsViewModel(settingsService, _databaseService, null);
+
+        vm.RequestClose += OnSettingsViewClosed;
+
+
+        RightOverlayContent = vm;
+        RightOverlayWidth = 400;
+        IsRightOverlayOpen = true;
+    }
+
+    private void OnSettingsViewClosed()
+    {
+        if (RightOverlayContent is SettingsView.SettingsViewModel vm)
+        {
+            vm.RequestClose -= OnSettingsViewClosed;
+
+            bool oldShowEmptyLanguages = ShowEmptyLanguages;
+            bool oldShowEmptyCategories = ShowEmptyCategories;
+
+            // Editor
+            settingsService.HighlightLine = vm.HighlightLine;
+            settingsService.EnableEmailLinks = vm.EmailLinks;
+            settingsService.EnableHyperinks = vm.HyperLinks;
+            settingsService.TabToSpaces = vm.TabToSpaces;
+            settingsService.IntendationSize = vm.IntendationSize;
+            settingsService.ShowLineNumbers = vm.ShowLineNumbers;
+            settingsService.EditorFontFamily = vm.EditorFontFamily;
+            settingsService.EditorFontSize = vm.EditorFontSize;
+            // Main Window
+            settingsService.ShowEmptyLanguages = vm.ShowEmptyLanguages;
+            settingsService.ShowEmptyCategories = vm.ShowEmptyCategories;
+            settingsService.SplitViewOpenPaneLength = vm.SplitViewOpenPaneLength;
+            // INSTANT APPLICATION:
+            //Editor
+            EditorOptions.HighlightCurrentLine = vm.HighlightLine;
+            EditorOptions.EnableEmailHyperlinks = vm.EmailLinks;
+            EditorOptions.ConvertTabsToSpaces = vm.TabToSpaces;
+            EditorOptions.IndentationSize = vm.IntendationSize;
+            EditorOptions.EnableHyperlinks = vm.HyperLinks;
+            ShowLineNumbers = vm.ShowLineNumbers;
+            EditorFontFamily = vm.EditorFontFamily;
+            Editor?.FontFamily = new FontFamily(EditorFontFamily);
+            EditorFontSize = vm.EditorFontSize;
+            // Main Window
+            ShowEmptyLanguages = vm.ShowEmptyLanguages;
+            ShowEmptyCategories = vm.ShowEmptyCategories;
+            SplitViewOpenPaneLength = vm.SplitViewOpenPaneLength;
+
+            if (oldShowEmptyLanguages != ShowEmptyLanguages || oldShowEmptyCategories != ShowEmptyCategories)
+            {
+                Snippet? tmpSnippet = null;
+                if (EditingSnippet != null)
+                {
+                    tmpSnippet = EditingSnippet;
+                }
+                LoadSnippets(); // Reload to apply visibility changes
+                if (tmpSnippet != null)
+                {
+                    ExpandAndSelectSnippet(
+                        tmpSnippet.Category?.Language?.Id ?? 0,
+                        tmpSnippet.CategoryId,
+                        tmpSnippet.Id);
+                }
+            }
+            CloseRightOverlay();
+            // Raise event to notify MainWindow to replace the line highlight renderer
+            // ReplaceLineHighlightRendererRequested?.Invoke();
+            //settingsService.SaveSettings(); // Moved to OnWindowClosing
+        }
+    }
+
+    [RelayCommand]
     private void ToggleTheme()
     {
         if (Application.Current is App app)
@@ -630,9 +765,12 @@ public partial class MainWindowViewModel : ObservableObject
 
             app.RequestedThemeVariant = next;
 
+            settingsService.BaseColor = next == ThemeVariant.Dark ? "Dark" : "Light";
+
             if (Editor != null)
                 HighlightingService.ApplyHighlighting(Editor, SelectedSnippet?.Category?.Language?.Code);
 
+          
         }
     }
 
@@ -762,8 +900,12 @@ public partial class MainWindowViewModel : ObservableObject
         if (RightOverlayContent is IDisposable d)
             d.Dispose();
 
-        RightOverlayContent = null;
-        IsRightOverlayOpen = false;
+        RightOverlayWidth = 0;
+        Task.Delay(250).ContinueWith(_ =>
+        {
+            RightOverlayContent = null;
+            IsRightOverlayOpen = false;
+        });
     }
 
     public async Task HandleHighlightingErrorAsync(string errorMessage)
@@ -771,7 +913,7 @@ public partial class MainWindowViewModel : ObservableObject
         // Ensure this runs on the UI thread if called from a background thread,
         // though OnUnhandledException is usually on the UI thread.
         await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(async () =>
-        {                               
+        {
             await MessageBoxManager.GetMessageBoxStandard("Syntax Highlighting Error",
                 "A critical error occurred in the syntax highlighting definition (.xshd file).\n" +
                 "Highlighting has been disabled to prevent the application from crashing.\n\n" +
@@ -783,5 +925,5 @@ public partial class MainWindowViewModel : ObservableObject
         });
     }
 
-    
+
 }

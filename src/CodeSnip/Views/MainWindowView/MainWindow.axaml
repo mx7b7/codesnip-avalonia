@@ -9,15 +9,19 @@
 		xmlns:helpers="clr-namespace:CodeSnip.Helpers"
 		xmlns:langcat="using:CodeSnip.Views.LanguageCategoryView"
 		xmlns:snippet="using:CodeSnip.Views.SnippetView"
+		xmlns:settings="using:CodeSnip.Views.SettingsView"
 		xmlns:editing="using:AvaloniaEdit.Editing"
 		xmlns:i="using:Avalonia.Xaml.Interactivity"
 		xmlns:behaviors="using:CodeSnip.Helpers"
         x:DataType="vm:MainWindowViewModel"
         Title ="{Binding WindowTitle}"
-		WindowStartupLocation="CenterScreen"
-	    Width="1200"
-	    Height="720"
-		BorderBrush="{DynamicResource AccentBrush}">
+		Width="{Binding WindowWidth,Mode=TwoWay}"
+        Height="{Binding WindowHeight,Mode=TwoWay}"
+        MinWidth="900"
+        MinHeight="600"
+        WindowStartupLocation="CenterScreen"
+        WindowState="{Binding WindowState, Mode=TwoWay}" 
+		BorderBrush="{DynamicResource AccentBrush}" Closing="Window_Closing" SaveWindowState="True">
 
 	<codesnip:Window.LogoContent>
 		<PathIcon
@@ -114,6 +118,9 @@
 		<DataTemplate DataType="langcat:LanguageCategoryViewModel">
 			<langcat:LanguageCategoryView />
 		</DataTemplate>
+		<DataTemplate DataType="settings:SettingsViewModel">
+			<settings:SettingsView />
+		</DataTemplate>
 	</codesnip:Window.DataTemplates>
 	<Grid>
 		<SplitView Name="MainSplitView" DisplayMode="CompactInline" CompactPaneLength="0"
@@ -131,7 +138,6 @@
 										 BorderBrush="Transparent"
 										 HorizontalAlignment="Stretch"
 										 VerticalContentAlignment="Stretch"
-										 IsEnabled="{Binding IsFilteringEnabled, Mode=TwoWay}"
 										 Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
 										 FontSize="14">
 									<TextBox.InnerRightContent>
@@ -326,7 +332,7 @@
 						<Button Classes="IconButton"  >
 							<PathIcon Data="{StaticResource ColorPaletteiOS}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
 						</Button>
-						<Button Classes="IconButton"  ToolTip.Tip="Settings&#xA;Ctrl+Shift+P" >
+						<Button Classes="IconButton"  Command="{Binding OpenSettingsCommand}"  ToolTip.Tip="Settings&#xA;Ctrl+Shift+P" >
 							<PathIcon Data="{StaticResource GearBold}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
 						</Button>
 					</StackPanel>
@@ -341,27 +347,16 @@
 					</Border>
 					<AvaloniaEdit:TextEditor
 								   x:Name="textEditor"
-								   ShowLineNumbers="True"
-								   FontFamily="Consolas, 'Cascadia Code', JetBrains Mono, Menlo, Monaco, monospace"
-								   FontSize="14"
-								   Background="{DynamicResource ThemeBackgroundBrush}">
+								   FontSize="{Binding EditorFontSize}"
+								   FontFamily="{Binding EditorFontFamily, Mode=TwoWay}"
+								   ShowLineNumbers="{Binding ShowLineNumbers}" 
+								   HorizontalScrollBarVisibility="Auto" 
+								   VerticalScrollBarVisibility="Auto" 
+								   WordWrap="{Binding WordWrap}">
 						<i:Interaction.Behaviors>
 							<behaviors:AvaloniaEditTextBindingBehavior
 								BoundText="{Binding EditorText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 						</i:Interaction.Behaviors>
-						<AvaloniaEdit:TextEditor.Options>
-							<AvaloniaEdit:TextEditorOptions
-								ConvertTabsToSpaces="True"
-								IndentationSize="4"
-								EnableHyperlinks="False"
-								EnableEmailHyperlinks="False"
-								ShowSpaces="False"
-								ShowTabs="False"
-								ShowEndOfLine="False"
-								HighlightCurrentLine="True"
-								AllowScrollBelowDocument="False">
-							</AvaloniaEdit:TextEditorOptions>
-						</AvaloniaEdit:TextEditor.Options>
 						<AvaloniaEdit:TextEditor.ContextFlyout>
 							<MenuFlyout>
 								<MenuItem Header="Undo"
@@ -566,7 +561,7 @@
 		<Border Background="Transparent" ZIndex="1000" IsVisible="{Binding IsLeftOverlayOpen}"
 				Width="{Binding LeftOverlayWidth}"
 				HorizontalAlignment="Left" VerticalAlignment="Stretch"
-			BorderBrush="{DynamicResource ThemeBorderLowBrush}" BorderThickness="0 1 1 0" >
+				BorderBrush="{DynamicResource ThemeBorderLowBrush}" BorderThickness="0 1 1 0" >
 			<ContentControl Content="{Binding LeftOverlayContent}"/>
 			<Border.Transitions>
 				<Transitions>
@@ -575,8 +570,16 @@
 			</Border.Transitions>
 		</Border>
 		<!-- RIGHT OVERLAY PANEL -->
-		<Border Background="#AA000000" ZIndex="1000" HorizontalAlignment="Right" IsVisible="{Binding IsRightOverlayOpen}">
+		<Border Background="Transparent" ZIndex="1000" IsVisible="{Binding IsRightOverlayOpen}"
+				Width="{Binding RightOverlayWidth}"
+				HorizontalAlignment="Right" VerticalAlignment="Stretch"
+				BorderBrush="{DynamicResource ThemeBorderLowBrush}" BorderThickness="1 1 0 0" >
 			<ContentControl Content="{Binding RightOverlayContent}" />
+			<Border.Transitions>
+				<Transitions>
+					<DoubleTransition Property="Width" Duration="0:0:0.25" Easing="CircularEaseOut"/>
+				</Transitions>
+			</Border.Transitions>
 		</Border>
 	</Grid>
 </codesnip:Window>

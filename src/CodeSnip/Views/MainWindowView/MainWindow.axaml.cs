@@ -42,6 +42,7 @@ public partial class MainWindow : ControlsEx.Window.Window
             return;
 
         vm.Editor = _textEditor;
+        vm.InitializeEditor(_textEditor!);
 
         vm.PropertyChanged += (_, args) =>
         {
@@ -91,6 +92,13 @@ public partial class MainWindow : ControlsEx.Window.Window
 
     }
 
+    private void Window_Closing(object? sender, WindowClosingEventArgs e)
+    {
+        if (DataContext is MainWindowViewModel vm)
+        {
+            vm.OnWindowClosing(e);
+        }
+    }
     private async void FormatClang_Click(object? sender, RoutedEventArgs e)
     {
         string? code = ViewModel.SelectedSnippet?.Category?.Language?.Code;
