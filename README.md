@@ -1,6 +1,6 @@
 # CodeSnip (Avalonia)
 
-**CodeSnip** — a cross-platform snippet manager and local code runner with multi-language interpreter support and Compiler Explorer integration.
+**CodeSnip** — Cross-platform snippet manager and local code runner with syntax highlighting and Godbolt integration.
 
 This project is a port of the original **[CodeSnip (WPF)](https://github.com/mx7b7/codesnip-wpf)** application to the modern, cross-platform UI framework **Avalonia**.
 
@@ -8,6 +8,12 @@ This project is a port of the original **[CodeSnip (WPF)](https://github.com/mx7
 ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green)
 ![Status](https://img.shields.io/badge/Status-In%20Development-orange)
+
+---
+
+## 🖼️ Preview
+
+![CodeSnip Avalonia Screenshot](images/codesnip-avalonia.png)
 
 ---
 
@@ -26,11 +32,11 @@ All core features from the original application are planned, including:
 - **Local storage** using an SQLite database.
 - **Snippet organization**: Hierarchy (Language → Category → Snippet), filtering, and searching.
 - **AvaloniaEdit integration**: Syntax highlighting, code folding and more.
-- **Highlighting editor** A built-in editor for creating and customizing `.xshd` syntax definitions. The native `.xshd` format is prioritized for its significantly faster rendering, with optional TextMate grammar support planned for the future.
+- **Syntax Highlighting Editor** A built-in editor for creating and customizing `.xshd` syntax definitions. The native `.xshd` format is prioritized for its significantly faster rendering, with optional TextMate grammar support planned for the future.
 - **Compiler Explorer (Godbolt) integration**: Compile and analyze snippets remotely without a local compiler installation.
 - **Local code execution**: Run scripts using locally installed interpreters.
 - **Code formatters integration**: Support for various external code formatters.
-- **Modern UI**: Utilizes **Avalonia SimpleTheme** for a fast and responsive user interface and enabling a UI design consistent with the WPF version. Supports both light and dark modes.
+- **Modern UI**: Utilizes **Avalonia SimpleTheme** for a fast and responsive user interface and enabling a UI design consistent with the WPF version. Supports both light and dark modes. Accent-driven theming with dynamic color customization planned.
 
 ---
 
@@ -72,3 +78,7 @@ This project makes use of the following open-source libraries:
 
 This project is licensed under the MIT License.  
 See the [LICENSE](LICENSE.txt) file for details.
+
+---
+**Tags**: snippet manager, code runner, Avalonia UI, cross-platform, C#, SQLite, AvaloniaEdit, syntax highlighting, Godbolt, xshd, developer tools, open source, code snippets, code execution, script runner, code playground
+
