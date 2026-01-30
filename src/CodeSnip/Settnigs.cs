@@ -16,6 +16,7 @@ public class MainWindowSettings
 
 public class EditorSettings
 {
+    public bool ScrollBelowDocument { get; set; } = true;
     public bool TabToSpaces { get; set; } = true;
     public bool EnableEmailLinks { get; set; } = false;
     public bool EnableHyperinks { get; set; } = false;

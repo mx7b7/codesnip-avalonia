@@ -95,6 +95,7 @@ public partial class MainWindowViewModel : ObservableObject
         IsLoadSnippetEnabled = settingsService.LoadSnippetsOnStartup;
 
         // Editor settings
+        EditorOptions.AllowScrollBelowDocument = settingsService.ScrollBelowDocument;
         EditorOptions.EnableEmailHyperlinks = settingsService.EnableEmailLinks;
         EditorOptions.EnableHyperlinks = settingsService.EnableHyperinks;
         EditorOptions.ConvertTabsToSpaces = settingsService.TabToSpaces;
@@ -704,6 +705,7 @@ public partial class MainWindowViewModel : ObservableObject
             bool oldShowEmptyCategories = ShowEmptyCategories;
 
             // Editor
+            settingsService.ScrollBelowDocument = vm.ScrollBelowDocument;
             settingsService.HighlightLine = vm.HighlightLine;
             settingsService.EnableEmailLinks = vm.EmailLinks;
             settingsService.EnableHyperinks = vm.HyperLinks;
@@ -718,6 +720,7 @@ public partial class MainWindowViewModel : ObservableObject
             settingsService.SplitViewOpenPaneLength = vm.SplitViewOpenPaneLength;
             // INSTANT APPLICATION:
             //Editor
+            EditorOptions.AllowScrollBelowDocument = vm.ScrollBelowDocument;
             EditorOptions.HighlightCurrentLine = vm.HighlightLine;
             EditorOptions.EnableEmailHyperlinks = vm.EmailLinks;
             EditorOptions.ConvertTabsToSpaces = vm.TabToSpaces;

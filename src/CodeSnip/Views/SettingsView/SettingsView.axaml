@@ -10,8 +10,12 @@
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
-		<Button Grid.Row="0" Content="Close" Margin="10" HorizontalAlignment="Left"
-				Command="{Binding CloseCommand}"/>
+		<StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10">
+			<Button Classes="IconButton" Margin="0,0,10,0" ToolTip.Tip="Close" Command="{Binding CloseCommand}">
+				<Path Data="{StaticResource ArrowRightBoldBox}" Width="28" Height="28" Fill="{DynamicResource AccentBrush}" Stretch="UniformToFill"/>
+			</Button>
+			<TextBlock Text="{Binding HeaderText}" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center"/>
+		</StackPanel>
 		<TabControl Grid.Row="1" TabStripPlacement="Left" Margin="10" HorizontalAlignment="">
 			<!-- Appearance -->
 			<TabItem Header="Appearance">
@@ -60,6 +64,7 @@
 						<Border CornerRadius="5" BorderBrush="{DynamicResource ThemeControlHighlightMidBrush}" BorderThickness="1" Padding="10">
 							<StackPanel Spacing="5" Margin="0 0 0 12">
 								<TextBlock Text="Editor" FontWeight="Bold" FontSize="16"/>
+								<CheckBox Content="Scroll below document" IsChecked="{Binding ScrollBelowDocument, Mode=TwoWay}" />
 								<CheckBox Content="Tabs to spaces" IsChecked="{Binding TabToSpaces, Mode=TwoWay}" />
 								<CheckBox Content="Enable email hyperlinks" IsChecked="{Binding EmailLinks, Mode=TwoWay}" />
 								<CheckBox Content="Enable hyperlinks" IsChecked="{Binding HyperLinks, Mode=TwoWay}" />

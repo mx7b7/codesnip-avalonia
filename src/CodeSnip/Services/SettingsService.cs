@@ -53,6 +53,12 @@ public class SettingsService
         set => _settings.MainWindow.WindowState = value;
     }
 
+    public bool ScrollBelowDocument
+    {
+        get => _settings.Editor.ScrollBelowDocument;
+        set => _settings.Editor.ScrollBelowDocument = value;
+    }
+
     public bool TabToSpaces
     {
         get => _settings.Editor.TabToSpaces;

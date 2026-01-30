@@ -41,15 +41,17 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
     [ObservableProperty] private bool isDarkTheme = true;
 
     // Editor
-    [ObservableProperty] public bool _tabToSpaces;
+    [ObservableProperty] private bool _scrollBelowDocument;
 
-    [ObservableProperty] public bool _emailLinks;
+    [ObservableProperty] private bool _tabToSpaces;
 
-    [ObservableProperty] public bool _hyperLinks;
+    [ObservableProperty] private bool _emailLinks;
 
-    [ObservableProperty] public bool _highlightLine;
+    [ObservableProperty] private bool _hyperLinks;
 
-    [ObservableProperty] public int _intendationSize;
+    [ObservableProperty] private bool _highlightLine;
+
+    [ObservableProperty] private int _intendationSize;
 
     // Main Window
     [ObservableProperty] private double _splitViewOpenPaneLength;
@@ -72,6 +74,8 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
 
     public event Action? RequestClose;
 
+    public string? HeaderText { get; private set; }
+
     public SettingsViewModel(SettingsService settingsService, DatabaseService databaseService, Func<Task>? onDatabaseActionCompleted = null)
     {
         _settingsService = settingsService;
@@ -79,6 +83,7 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
         _onDatabaseActionCompleted = onDatabaseActionCompleted;
         LoadSnippetsOnStartup = _settingsService.LoadSnippetsOnStartup;
         SplitViewOpenPaneLength = _settingsService.SplitViewOpenPaneLength;
+        ScrollBelowDocument = _settingsService.ScrollBelowDocument;
         TabToSpaces = _settingsService.TabToSpaces;
         EmailLinks = _settingsService.EnableEmailLinks;
         HyperLinks = _settingsService.EnableHyperinks;
@@ -91,7 +96,7 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
         ShowEmptyCategories = _settingsService.ShowEmptyCategories;
         SplitViewOpenPaneLength = _settingsService.SplitViewOpenPaneLength;
         SelectedEditorFont = SystemFonts.FirstOrDefault(f => f.Name == _settingsService.EditorFontFamily) ?? new FontFamily("Consolas");
-        IsDarkTheme = settingsService.BaseColor == "Dark";
+        IsDarkTheme = settingsService.BaseColor == "Dark"; HeaderText = "Settings";
     }
 
     public void InitializeFromCurrentTheme()
