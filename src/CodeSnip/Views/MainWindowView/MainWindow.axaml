@@ -42,6 +42,9 @@
 			  ToolTip.Tip="Switch Theme"
 			  Width="30">
 				<Button.Styles>
+					<Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+						<Setter Property="Opacity" Value="0.7"/>
+					</Style>
 					<Style Selector="Button:pressed /template/ ContentPresenter#PART_ContentPresenter">
 						<Setter Property="Background" Value="Transparent"/>
 					</Style>
