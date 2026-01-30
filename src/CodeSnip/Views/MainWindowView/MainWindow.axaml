@@ -115,7 +115,7 @@
 		<!-- Reset Zoom -->
 		<KeyBinding Gesture="Ctrl+D0"
 					Command="{Binding ResetFontSizeCommand}"/>
-
+		
 	</codesnip:Window.KeyBindings>
 
 	<codesnip:Window.DataTemplates>
@@ -333,7 +333,8 @@
 								</PathIcon.RenderTransform>
 							</PathIcon>
 						</Button>
-						<Button Classes="IconButton"  >
+						<Button Classes="IconButton" Click="FormatAll_Click"
+								ToolTip.Tip="Format code">
 							<PathIcon Data="{StaticResource FormatText}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
 						</Button>
 						<Button Classes="IconButton"  ToolTip.Tip="Disable intendation" >
@@ -486,7 +487,7 @@
 										<PathIcon Data="{StaticResource FormatText}" Width="16" Height="16"
 												  Foreground="{DynamicResource ThemeAccentBrush}"/>
 									</MenuItem.Icon>
-									<MenuItem Header="black"
+									<MenuItem Header="black" Click="FormatBlack_Click"
 											IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
 										Converter={StaticResource LanguageToBoolConverter},
 										ConverterParameter='py'}">
@@ -495,7 +496,7 @@
 													  Foreground="{DynamicResource ThemeAccentBrush}"/>
 										</MenuItem.Icon>
 									</MenuItem>
-									<MenuItem Header="autopep8"
+									<MenuItem Header="autopep8" Click="FormatAutopep8_Click"
 											IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
 										Converter={StaticResource LanguageToBoolConverter},
 										ConverterParameter='py'}">
@@ -504,26 +505,25 @@
 													  Foreground="{DynamicResource ThemeAccentBrush}"/>
 										</MenuItem.Icon>
 									</MenuItem>
-									<MenuItem Header="clang-format"
+									<MenuItem Header="clang-format"	Click="FormatClang_Click"
 											 IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
 													Converter={StaticResource LanguageToBoolConverter},
-													ConverterParameter='c,cpp,cs,java,js,d,h,mjs,ts,json,m,mm,proto,protodevel,td,txtpb,textpb,textproto,asciipb,sv,svh,v,vh'}"
-														Click="FormatClang_Click">
+													ConverterParameter='c,cpp,cs,java,js,d,h,mjs,ts,json,m,mm,proto,protodevel,td,txtpb,textpb,textproto,asciipb,sv,svh,v,vh'}">
 										<MenuItem.Icon>
 											<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"
 													  Foreground="{DynamicResource ThemeAccentBrush}"/>
 										</MenuItem.Icon>
 									</MenuItem>
-									<MenuItem Header="csharpier"
+									<MenuItem Header="csharpier" Click="FormatCSharpier_Click"
 											IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
 										Converter={StaticResource LanguageToBoolConverter},
-										ConverterParameter='cs,xml'}" Click="FormatCSharpier_Click">
+										ConverterParameter='cs,xml'}">
 										<MenuItem.Icon>
 											<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"
 													  Foreground="{DynamicResource ThemeAccentBrush}"/>
 										</MenuItem.Icon>
 									</MenuItem>
-									<MenuItem Header="dfmt"
+									<MenuItem Header="dfmt" Click="FormatDfmt_Click"
 											IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
 										Converter={StaticResource LanguageToBoolConverter},
 										ConverterParameter='d'}">
@@ -532,16 +532,16 @@
 													  Foreground="{DynamicResource ThemeAccentBrush}"/>
 										</MenuItem.Icon>
 									</MenuItem>
-									<MenuItem Header="fantomas"
+									<MenuItem Header="fantomas" Click="FormatFantomas_Click"
 											IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
 										Converter={StaticResource LanguageToBoolConverter},
-										ConverterParameter='fs,fsx'}" Click="FormatFantomas_Click">
+										ConverterParameter='fs,fsx'}">
 										<MenuItem.Icon>
 											<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"
 													  Foreground="{DynamicResource ThemeAccentBrush}"/>
 										</MenuItem.Icon>
 									</MenuItem>
-									<MenuItem Header="gofmt"
+									<MenuItem Header="gofmt" Click="FormatGofmt_Click"
 											IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
 										Converter={StaticResource LanguageToBoolConverter},
 										ConverterParameter='go'}">
@@ -550,7 +550,7 @@
 													  Foreground="{DynamicResource ThemeAccentBrush}"/>
 										</MenuItem.Icon>
 									</MenuItem>
-									<MenuItem Header="pasfmt"
+									<MenuItem Header="pasfmt" Click="FormatPasfmt_Click"
 											IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
 										Converter={StaticResource LanguageToBoolConverter},
 										ConverterParameter='pas'}">
@@ -559,16 +559,16 @@
 													  Foreground="{DynamicResource ThemeAccentBrush}"/>
 										</MenuItem.Icon>
 									</MenuItem>
-									<MenuItem Header="prettier"
+									<MenuItem Header="prettier" Click="FormatPrettier_Click"
 											IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
 										Converter={StaticResource LanguageToBoolConverter},
-										ConverterParameter='js,jsx,ts,tsx,css,scss,html,json,md,mdx,vue,yaml,yml'}" Click="FormatPrettier_Click">
+										ConverterParameter='js,jsx,ts,tsx,css,scss,html,json,md,mdx,vue,yaml,yml'}">
 										<MenuItem.Icon>
 											<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"
 													  Foreground="{DynamicResource ThemeAccentBrush}"/>
 										</MenuItem.Icon>
 									</MenuItem>
-									<MenuItem Header="ruff"
+									<MenuItem Header="ruff" Click="FormatRuff_Click"
 											IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
 										Converter={StaticResource LanguageToBoolConverter},
 										ConverterParameter='py'}">
@@ -577,7 +577,7 @@
 													  Foreground="{DynamicResource ThemeAccentBrush}"/>
 										</MenuItem.Icon>
 									</MenuItem>
-									<MenuItem Header="rustfmt"
+									<MenuItem Header="rustfmt" Click="FormatRustfmt_Click"
 											IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
 										Converter={StaticResource LanguageToBoolConverter},
 										ConverterParameter='rs'}">
@@ -586,7 +586,7 @@
 													  Foreground="{DynamicResource ThemeAccentBrush}"/>
 										</MenuItem.Icon>
 									</MenuItem>
-									<MenuItem Header="stylua"
+									<MenuItem Header="stylua" Click="FormatStylua_Click"
 											IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
 										Converter={StaticResource LanguageToBoolConverter},
 										ConverterParameter='lua'}">

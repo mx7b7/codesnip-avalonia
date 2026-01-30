@@ -100,8 +100,6 @@ public partial class MainWindow : ControlsEx.Window.Window
         }
     }
 
-
-
     private async void FormatClang_Click(object? sender, RoutedEventArgs e)
     {
         string? code = ViewModel.SelectedSnippet?.Category?.Language?.Code;
@@ -158,7 +156,7 @@ public partial class MainWindow : ControlsEx.Window.Window
         }
     }
 
-    private async void FormatPrettier_Click(object sender, RoutedEventArgs e)
+    private async void FormatPrettier_Click(object? sender, RoutedEventArgs e)
     {
         string? code = ViewModel.SelectedSnippet?.Category?.Language?.Code;
         if (code is not null)
@@ -209,6 +207,210 @@ public partial class MainWindow : ControlsEx.Window.Window
             else
             {
                 _ = await MessageBoxManager.GetMessageBoxStandard("Formatting error", $"Formatting failed:\n {error}", ButtonEnum.Ok).ShowAsync();
+            }
+        }
+    }
+
+    private async void FormatDfmt_Click(object? sender, RoutedEventArgs e)
+    {
+        string? code = ViewModel.SelectedSnippet?.Category?.Language?.Code;
+        if (code is not null and "d")
+        {
+            string originalCode = textEditor.Text;
+            var (isSuccess, formatted, error) = await FormattingService.TryFormatCodeWithDfmtAsync(originalCode);
+            if (isSuccess)
+            {
+                textEditor.Document.Text = formatted;
+            }
+            else
+            {
+                _ = await MessageBoxManager.GetMessageBoxStandard("Formatting error", error ?? "", ButtonEnum.Ok).ShowAsync();
+            }
+        }
+    }
+
+    private async void FormatBlack_Click(object? sender, RoutedEventArgs e)
+    {
+        string? code = ViewModel.SelectedSnippet?.Category?.Language?.Code;
+        if (code is not null and "py")
+        {
+            string originalCode = textEditor.Text;
+            var (isSuccess, formatted, error) = await FormattingService.TryFormatCodeWithPythonModuleAsync(originalCode, "black");
+            if (isSuccess)
+            {
+                textEditor.Document.Text = formatted;
+            }
+            else
+            {
+                _ = await MessageBoxManager.GetMessageBoxStandard("Formatting error", error ?? "", ButtonEnum.Ok).ShowAsync();
+            }
+
+        }
+    }
+
+    private async void FormatAutopep8_Click(object? sender, RoutedEventArgs e)
+    {
+        string? code = ViewModel.SelectedSnippet?.Category?.Language?.Code;
+        if (code is not null and "py")
+        {
+            string originalCode = textEditor.Text;
+            var (isSuccess, formatted, error) = await FormattingService.TryFormatCodeWithPythonModuleAsync(originalCode, "autopep8");
+            if (isSuccess)
+            {
+                textEditor.Document.Text = formatted!;
+            }
+            else
+            {
+                _ = await MessageBoxManager.GetMessageBoxStandard("Formatting error", error ?? "", ButtonEnum.Ok).ShowAsync();
+            }
+
+        }
+    }
+
+    private async void FormatRuff_Click(object? sender, RoutedEventArgs e)
+    {
+        string? code = ViewModel.SelectedSnippet?.Category?.Language?.Code;
+        if (code is not null and "py")
+        {
+            string originalCode = textEditor.Text;
+            var (isSuccess, formatted, error) = await FormattingService.TryFormatCodeWithRuffAsync(originalCode);
+            if (isSuccess)
+            {
+                textEditor.Document.Text = formatted;
+            }
+            else
+            {
+                _ = await MessageBoxManager.GetMessageBoxStandard("Formatting error", error ?? "", ButtonEnum.Ok).ShowAsync();
+            }
+
+        }
+    }
+
+    private async void FormatRustfmt_Click(object? sender, RoutedEventArgs e)
+    {
+        string? code = ViewModel.SelectedSnippet?.Category?.Language?.Code;
+        if (code is not null and "rs")
+        {
+            string originalCode = textEditor.Text;
+            var (isSuccess, formatted, error) = await FormattingService.TryFormatCodeWithRustFmtAsync(originalCode);
+            if (isSuccess)
+            {
+                textEditor.Document.Text = formatted;
+            }
+            else
+            {
+                _ = await MessageBoxManager.GetMessageBoxStandard("Formatting error", error ?? "", ButtonEnum.Ok).ShowAsync();
+            }
+        }
+    }
+
+    private async void FormatGofmt_Click(object? sender, RoutedEventArgs e)
+    {
+        string? code = ViewModel.SelectedSnippet?.Category?.Language?.Code;
+        if (code is not null and "go")
+        {
+            string originalCode = textEditor.Text;
+            var (isSuccess, formatted, error) = await FormattingService.TryFormatCodeWithGofmtAsync(originalCode);
+            if (isSuccess)
+            {
+                textEditor.Document.Text = formatted;
+            }
+            else
+            {
+                _ = await MessageBoxManager.GetMessageBoxStandard("Formatting error", error ?? "", ButtonEnum.Ok).ShowAsync();
+            }
+        }
+    }
+
+    private async void FormatStylua_Click(object? sender, RoutedEventArgs e)
+    {
+        string? code = ViewModel.SelectedSnippet?.Category?.Language?.Code;
+        if (code is not null and "lua")
+        {
+            string originalCode = textEditor.Text;
+            var (isSuccess, formatted, error) = await FormattingService.TryFormatCodeWithStyluaAsync(originalCode);
+            if (isSuccess)
+            {
+                textEditor.Document.Text = formatted;
+            }
+            else
+            {
+                _ = await MessageBoxManager.GetMessageBoxStandard("Formatting error", error ?? "", ButtonEnum.Ok).ShowAsync();
+            }
+        }
+    }
+
+    private async void FormatPasfmt_Click(object? sender, RoutedEventArgs e)
+    {
+        string? code = ViewModel.SelectedSnippet?.Category?.Language?.Code;
+        if (code is not null and "pas")
+        {
+            string originalCode = textEditor.Text;
+            var (isSuccess, formatted, error) = await FormattingService.TryFormatCodeWithPasFmtAsync(originalCode);
+            if (isSuccess)
+            {
+                textEditor.Document.Text = formatted;
+            }
+            else
+            {
+                _ = await MessageBoxManager.GetMessageBoxStandard("Formatting error", error ?? "", ButtonEnum.Ok).ShowAsync();
+            }
+        }
+    }
+
+    private async void FormatAll_Click(object? sender, RoutedEventArgs e)
+    {
+        string? code = ViewModel.SelectedSnippet?.Category?.Language?.Code;
+        if (code is not null)
+        {
+            switch (code.ToLowerInvariant())
+            {
+                case "cs":
+                    FormatCSharpier_Click(sender, e);
+                    break;
+
+                case "d":
+                    FormatDfmt_Click(sender, e);
+                    break;
+
+                case "fs":
+                    FormatFantomas_Click(sender, e);
+                    break;
+
+                case "go":
+                    FormatGofmt_Click(sender, e);
+                    break;
+
+                case "lua":
+                    FormatStylua_Click(sender, e);
+                    break;
+
+                case "pas":
+                    FormatPasfmt_Click(sender, e);
+                    break;
+
+                case "py":
+                    FormatBlack_Click(sender, e);
+                    break;
+
+                case "rs":
+                    FormatRustfmt_Click(sender, e);
+                    break;
+
+                case "xml":
+                    FormatCSharpier_Click(sender, e);
+                    break;
+
+                case "html":
+                case "css":
+                case "md":
+                    FormatPrettier_Click(sender, e);
+                    break;
+
+                default:
+                    // DEFAULT: Use clang-format for other supported languages
+                    FormatClang_Click(sender, e);
+                    break;
             }
         }
     }
