@@ -41,7 +41,7 @@ Copyright (c) 2026 mx7b7 (https://github.com/mx7b7)
 			</ControlTemplate>
 		</Setter>
 		<Style Selector="^:pointerover">
-			<Setter Property="Background" Value="{DynamicResource WindowButtonHoverBrush}" />
+			<Setter Property="Background" Value="{DynamicResource WindowButtonHoverColor}" />
 		</Style>
 		<Style Selector="^.Close">
 			<Style Selector="^:pointerover">

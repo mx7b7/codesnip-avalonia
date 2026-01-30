@@ -3,7 +3,6 @@
 
 	<!-- Accent Color Definition for toolbar buttons, borders...-->
 	<SolidColorBrush x:Key="AccentBrush" Color="#FF87794E"/>
-
 	<!-- Temporary SimpleTheme accent colors override for testing -->
 	<ResourceDictionary.ThemeDictionaries>
 		<ResourceDictionary x:Key="Default">
@@ -11,6 +10,7 @@
 			<Color x:Key="BorderColor30">#4CCECECE</Color>
 			<Color x:Key="BorderColor60">#DEDEDE</Color>
 			<Color x:Key="TitleBarBackgroundColor">#00000000</Color>
+			<Color x:Key="WindowButtonHoverColor">#0D09090B</Color>
 			<!--.....................................................-->
 			<Color x:Key="ThemeAccentColor">#CC87794E</Color>
 			<Color x:Key="ThemeAccentColor2">#9987794E</Color>
@@ -43,6 +43,7 @@
 			<Color x:Key="BorderColor30">#4C353535</Color>
 			<Color x:Key="BorderColor60">#262626</Color>
 			<Color x:Key="TitleBarBackgroundColor">#00000000</Color>
+			<Color x:Key="WindowButtonHoverColor">#0DFAFAFA</Color>
 			<!--.....................................................-->
 
 			<Color x:Key="ThemeAccentColor">#CC87794E</Color>
@@ -70,6 +71,8 @@
 			<SolidColorBrush x:Key="ThemeControlHighlightMidBrush" Color="{StaticResource ThemeControlHighlightMidColor}" />
 			<SolidColorBrush x:Key="ThemeControlHighlightHighBrush" Color="{StaticResource ThemeControlHighlightHighColor}" />
 			<SolidColorBrush x:Key="ThemeBorderHighBrush" Color="{StaticResource ThemeControlHighlightLowColor}" />
+
+
 		</ResourceDictionary>
 	</ResourceDictionary.ThemeDictionaries>
 </ResourceDictionary>
