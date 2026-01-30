@@ -3,8 +3,6 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Styling;
 using AvaloniaEdit;
-using AvaloniaEdit.Search;
-using CodeSnip.ControlsEx.Window;
 using CodeSnip.Services;
 using CodeSnip.Views.LanguageCategoryView;
 using CodeSnip.Views.SnippetView;
@@ -31,6 +29,10 @@ public partial class MainWindowViewModel : ObservableObject
     public TextEditorOptions EditorOptions = new();
     private readonly Geometry? _panelOpenIcon;
     private readonly Geometry? _panelCloseIcon;
+
+    [ObservableProperty] private string? _databaseStatusTooltip;
+    [ObservableProperty] private bool _isDatabaseAlertActive;
+    [ObservableProperty] private string? _databaseStatusPopupMessage;
 
     public ObservableCollection<Language> Languages { get; } = [];
 
@@ -140,21 +142,54 @@ public partial class MainWindowViewModel : ObservableObject
     {
         await Task.Run(() => _databaseService.InitializeDatabaseIfNeeded());
 
-        var languages = await Task.Run(() => _databaseService.GetSnippets());
+        IsLoadSnippetEnabled = !settingsService.LoadSnippetsOnStartup;
 
-        var languageList = languages.ToList();
+        if (settingsService.LoadSnippetsOnStartup)
+        {
 
-        if (languageList.Count == 0 && _databaseService.GetSnippets().Any()) // Check if loading failed
-        {
-            _ = await MessageBoxManager.GetMessageBoxStandard("CodeSnip", "Database Load Error \nCould not load snippets. The database file might be corrupted or the schema might have changed.", ButtonEnum.Ok).ShowAsync();
-        }
-        else
-        {
-            PopulateLanguagesCollection(languageList);
-            if (settingsService.LastSnippet != null)
+            var languages = await Task.Run(() => _databaseService.GetSnippets());
+
+            var languageList = languages.ToList();
+
+            if (languageList.Count == 0 && _databaseService.GetSnippets().Any()) // Check if loading failed
             {
-                RestoreSelectedSnippetState(settingsService.LastSnippet);
+                _ = await MessageBoxManager.GetMessageBoxStandard("CodeSnip", "Database Load Error \nCould not load snippets. The database file might be corrupted or the schema might have changed.", ButtonEnum.Ok).ShowAsync();
+                return;
             }
+            else
+            {
+                PopulateLanguagesCollection(languageList);
+                if (settingsService.LastSnippet != null)
+                {
+                    RestoreSelectedSnippetState(settingsService.LastSnippet);
+                }
+                await UpdateDatabaseHealthStatusAsync();
+            }
+        }
+    }
+
+    public async Task UpdateDatabaseHealthStatusAsync()
+    {
+        var (needVacuum, fragmentationPercent) = await _databaseService.IsVacuumNeeded();
+
+        IsDatabaseAlertActive = needVacuum;
+
+        if (needVacuum)
+        {
+            DatabaseStatusTooltip = $"Database is fragmented: {fragmentationPercent:P1} - click for details.";
+            DatabaseStatusPopupMessage = $"⚠️  Database fragmentation: {fragmentationPercent:P1}\n\n" +
+                                   $"**Run VACUUM** to optimize database.";
+        }
+    }
+
+    [RelayCommand]
+    private async Task VacuumDatabaseAsync()
+    {
+        var success = await _databaseService.RunVacuumAsync();
+        if (success)
+        {
+            DatabaseStatusPopupMessage = "VACUUM completed successfully!\nDatabase fragmentation has been resolved.";
+            IsDatabaseAlertActive = false;
         }
     }
 
@@ -681,11 +716,23 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private async Task LoadSnippetsDatabase()
+    {
+        LoadSnippets();
+        IsLoadSnippetEnabled = false;
+        if (settingsService.LastSnippet != null)
+        {
+            RestoreSelectedSnippetState(settingsService.LastSnippet);
+        }
+        await UpdateDatabaseHealthStatusAsync();
+    }
+
+    [RelayCommand]
     private void OpenSettings()
     {
         if (IsRightOverlayOpen) return;
 
-        var vm = new SettingsView.SettingsViewModel(settingsService, _databaseService, null);
+        var vm = new SettingsView.SettingsViewModel(settingsService, _databaseService);
 
         vm.RequestClose += OnSettingsViewClosed;
 
@@ -715,6 +762,7 @@ public partial class MainWindowViewModel : ObservableObject
             settingsService.EditorFontFamily = vm.EditorFontFamily;
             settingsService.EditorFontSize = vm.EditorFontSize;
             // Main Window
+            settingsService.LoadSnippetsOnStartup = vm.LoadSnippetsOnStartup;
             settingsService.ShowEmptyLanguages = vm.ShowEmptyLanguages;
             settingsService.ShowEmptyCategories = vm.ShowEmptyCategories;
             settingsService.SplitViewOpenPaneLength = vm.SplitViewOpenPaneLength;
@@ -773,7 +821,7 @@ public partial class MainWindowViewModel : ObservableObject
             if (Editor != null)
                 HighlightingService.ApplyHighlighting(Editor, SelectedSnippet?.Category?.Language?.Code);
 
-          
+
         }
     }
 
@@ -791,42 +839,45 @@ public partial class MainWindowViewModel : ObservableObject
         StatusMessage = $"Pane width: {SplitViewOpenPaneLength}px";
     }
 
+    [RelayCommand]
+    private void IncreaseFontSize()
+    {
+        if (EditorFontSize < 36)
+            EditorFontSize++;
+    }
+
+    [RelayCommand]
+    private void DecreaseFontSize()
+    {
+        if (EditorFontSize > 8)
+            EditorFontSize--;
+    }
+
+    [RelayCommand]
+    private void ResetFontSize() => EditorFontSize = settingsService.EditorFontSize;
+
     #endregion
 
     #region CONTEXT MENU COMMANDS
 
-    [RelayCommand]
-    private void Copy()
-    {
-        Editor?.Copy();
-    }
+    [RelayCommand(CanExecute = nameof(CanUndo))]
+    private void Undo() => Editor!.Document.UndoStack.Undo();
+    private bool CanUndo() => Editor!.Document.UndoStack.CanUndo;
+
+    [RelayCommand(CanExecute = nameof(CanRedo))]
+    private void Redo() => Editor?.Document.UndoStack.Redo();
+    private bool CanRedo() => Editor!.Document.UndoStack.CanRedo;
+
+    [RelayCommand(CanExecute = nameof(CanCut))]
+    private void Cut() => Editor!.Cut();
+    private bool CanCut() => !string.IsNullOrEmpty(Editor!.SelectedText);
+
+    [RelayCommand(CanExecute = nameof(CanCopy))]
+    private void Copy() => Editor!.Copy();
+    private bool CanCopy() => !string.IsNullOrEmpty(Editor!.SelectedText);
 
     [RelayCommand]
-    private void Cut()
-    {
-        Editor?.Cut();
-    }
-
-    [RelayCommand]
-    private void Paste()
-    {
-        Editor?.Paste();
-    }
-
-
-    [RelayCommand]
-    private void Undo()
-    {
-        if (Editor?.Document?.UndoStack.CanUndo == true)
-            Editor.Document.UndoStack.Undo();
-    }
-
-    [RelayCommand]
-    private void Redo()
-    {
-        if (Editor?.Document?.UndoStack.CanRedo == true)
-            Editor.Document.UndoStack.Redo();
-    }
+    private void Paste() => Editor!.Paste();
 
     [RelayCommand]
     private void ToggleSingleLineComment()

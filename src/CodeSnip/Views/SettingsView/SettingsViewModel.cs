@@ -24,8 +24,6 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
 
     private readonly DatabaseService _databaseService;
 
-    private readonly Func<Task>? _onDatabaseActionCompleted;
-
     // Database
     [ObservableProperty] private string _integrityCheckBadge = "";
 
@@ -76,11 +74,10 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
 
     public string? HeaderText { get; private set; }
 
-    public SettingsViewModel(SettingsService settingsService, DatabaseService databaseService, Func<Task>? onDatabaseActionCompleted = null)
+    public SettingsViewModel(SettingsService settingsService, DatabaseService databaseService)
     {
         _settingsService = settingsService;
         _databaseService = databaseService;
-        _onDatabaseActionCompleted = onDatabaseActionCompleted;
         LoadSnippetsOnStartup = _settingsService.LoadSnippetsOnStartup;
         SplitViewOpenPaneLength = _settingsService.SplitViewOpenPaneLength;
         ScrollBelowDocument = _settingsService.ScrollBelowDocument;

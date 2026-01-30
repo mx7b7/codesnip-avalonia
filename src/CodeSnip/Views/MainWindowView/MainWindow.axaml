@@ -20,7 +20,7 @@
         MinWidth="900"
         MinHeight="600"
         WindowStartupLocation="CenterScreen"
-        WindowState="{Binding WindowState, Mode=TwoWay}" 
+        WindowState="{Binding WindowState, Mode=TwoWay}"
 		BorderBrush="{DynamicResource AccentBrush}" Closing="Window_Closing" SaveWindowState="True">
 
 	<codesnip:Window.LogoContent>
@@ -91,26 +91,30 @@
 		<!-- Ctrll+Shift + L : Edit Language/Category -->
 		<KeyBinding Gesture="Ctrl+Shift+L"
 					Command="{Binding EditLanguageCategoryCommand}" />
-
 		<!-- Toggle Single Line Comment: Ctrl+K -->
 		<KeyBinding Gesture="Ctrl+K"
 					Command="{Binding ToggleSingleLineCommentCommand}" />
-
 		<!-- Toggle Multi Line Comment: Ctrl+Shift+K -->
 		<KeyBinding Gesture="Ctrl+Shift+K"
 					Command="{Binding ToggleMultiLineCommentCommand}" />
-
 		<!-- Toggle Selection Comment: Ctrl+Shift+I -->
 		<KeyBinding Gesture="Ctrl+Shift+I"
 					Command="{Binding ToggleCommentSelectionCommand}" />
-
 		<!-- Ctrl+Shift++ (numpad plus) -->
 		<KeyBinding Gesture="Ctrl+Shift+OemPlus"
 					Command="{Binding IncreasePaneWidthCommand}"/>
-
 		<!-- Ctrl+Shift+- -->
 		<KeyBinding Gesture="Ctrl+Shift+OemMinus"
 					Command="{Binding DecreasePaneWidthCommand}"/>
+		<!-- Zoom In -->
+		<KeyBinding Gesture="Ctrl+OemPlus"
+					Command="{Binding IncreaseFontSizeCommand}"/>
+		<!-- Zoom Out -->
+		<KeyBinding Gesture="Ctrl+OemMinus"
+					Command="{Binding DecreaseFontSizeCommand}"/>
+		<!-- Reset Zoom -->
+		<KeyBinding Gesture="Ctrl+D0"
+					Command="{Binding ResetFontSizeCommand}"/>
 
 	</codesnip:Window.KeyBindings>
 
@@ -301,7 +305,8 @@
 								ToolTip.Tip="Language/Category edit&#xA;Ctrl+Shift+L">
 							<PathIcon Data="{StaticResource CategoryEdit}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
 						</Button>
-						<Button Classes="IconButton" ToolTip.Tip="Load snippets" >
+						<Button Classes="IconButton" ToolTip.Tip="Load snippets" IsEnabled="{Binding IsLoadSnippetEnabled}"
+								Command="{Binding LoadSnippetsDatabaseCommand}">
 							<PathIcon Data="{StaticResource DatabaseRefresh}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
 						</Button>
 						<Border Width="1" Height="24"  VerticalAlignment="Center" Background="{DynamicResource ThemeControlHighBrush}"/>
@@ -312,13 +317,16 @@
 							<PathIcon Data="{StaticResource CompilerExplorer}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
 						</Button>
 						<Border Width="1" Height="24"  VerticalAlignment="Center" Background="{DynamicResource ThemeControlHighBrush}"/>
-						<Button Classes="IconButton" >
+						<Button Classes="IconButton" Command="{Binding IncreaseFontSizeCommand}"
+								ToolTip.Tip="Zoom In&#xA;Ctrl++">
 							<PathIcon Data="{StaticResource ZoomIn}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
 						</Button>
-						<Button Classes="IconButton"  >
+						<Button Classes="IconButton" Command="{Binding DecreaseFontSizeCommand}"
+								ToolTip.Tip="Zoom Out&#xA;Ctrl+-">
 							<PathIcon Data="{StaticResource ZoomOut}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
 						</Button>
-						<Button Classes="IconButton"  >
+						<Button Classes="IconButton" Command="{Binding ResetFontSizeCommand}"
+								ToolTip.Tip="Reset Zoom&#xA;Ctrl+0">
 							<PathIcon Data="{StaticResource ZoomOutMap}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}">
 								<PathIcon.RenderTransform>
 									<ScaleTransform ScaleY="-1"/>
@@ -344,17 +352,56 @@
 							BorderThickness="0 1 0 0"
 							Height="28"
 							Background="{DynamicResource ThemeBackgroundBrush}">
-						<StackPanel Orientation="Horizontal">
-							<TextBlock VerticalAlignment="Center" Margin="5,0" Text="{Binding StatusMessage}" />
-						</StackPanel>
+						<DockPanel LastChildFill="False">
+							<TextBlock DockPanel.Dock="Left"
+									   VerticalAlignment="Center"
+									   Margin="5,0"
+									   Text="{Binding StatusMessage}" />
+
+							<Button DockPanel.Dock="Right"
+									Classes="IconButton"
+									ToolTip.Tip="{Binding DatabaseStatusTooltip}"
+									Margin="5,0"
+									Padding="4"
+									Background="Transparent"
+									BorderThickness="0"
+									IsVisible="{Binding IsDatabaseAlertActive}">
+								<PathIcon Data="{StaticResource DatabaseAlert}"
+										  Width="16" Height="16"
+										  Foreground="{DynamicResource ErrorBrush}"/>
+								<Button.Flyout>
+									<Flyout Placement="Top">
+										<StackPanel Width="250" MaxHeight="200">
+											<!-- Detaljna poruka -->
+											<TextBlock Text="{Binding DatabaseStatusPopupMessage}"
+													   TextWrapping="Wrap"
+													   Margin="0,0,0,12"/>
+
+											<!-- VACUUM Button -->
+											<Button Command="{Binding VacuumDatabaseCommand}"
+													Background="{DynamicResource AccentBrush}"
+													Foreground="White"
+													CornerRadius="4"
+													Padding="12,6"
+													HorizontalContentAlignment="Center">
+												<StackPanel Orientation="Horizontal" Spacing="6">
+													<PathIcon Data="{StaticResource RefreshIcon}" Width="14" Height="14"/>
+													<TextBlock Text="Run VACUUM" FontWeight="Medium"/>
+												</StackPanel>
+											</Button>
+										</StackPanel>
+									</Flyout>
+								</Button.Flyout>
+							</Button>
+						</DockPanel>
 					</Border>
 					<AvaloniaEdit:TextEditor
 								   x:Name="textEditor"
 								   FontSize="{Binding EditorFontSize}"
 								   FontFamily="{Binding EditorFontFamily, Mode=TwoWay}"
-								   ShowLineNumbers="{Binding ShowLineNumbers}" 
-								   HorizontalScrollBarVisibility="Auto" 
-								   VerticalScrollBarVisibility="Auto" 
+								   ShowLineNumbers="{Binding ShowLineNumbers}"
+								   HorizontalScrollBarVisibility="Auto"
+								   VerticalScrollBarVisibility="Auto"
 								   WordWrap="{Binding WordWrap}">
 						<i:Interaction.Behaviors>
 							<behaviors:AvaloniaEditTextBindingBehavior

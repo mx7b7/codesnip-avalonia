@@ -99,6 +99,9 @@ public partial class MainWindow : ControlsEx.Window.Window
             vm.OnWindowClosing(e);
         }
     }
+
+
+
     private async void FormatClang_Click(object? sender, RoutedEventArgs e)
     {
         string? code = ViewModel.SelectedSnippet?.Category?.Language?.Code;
