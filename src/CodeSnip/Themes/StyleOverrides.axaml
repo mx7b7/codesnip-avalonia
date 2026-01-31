@@ -14,7 +14,6 @@
 	<Style Selector="TreeView ScrollBar:vertical /template/ Thumb#thumb">
 		<Setter Property="MinHeight" Value="24"/>
 		<Setter Property="Width" Value="5"/>
-		<Setter Property="Background" Value="{DynamicResource ThemeControlHighBrush}"/>
 	</Style>
 
 	<Style Selector="TreeView ScrollBar:horizontal">
@@ -23,7 +22,6 @@
 	<Style Selector="TreeView ScrollBar:horizontal /template/ Thumb#thumb">
 		<Setter Property="MinWidth" Value="24"/>
 		<Setter Property="Height" Value="4"/>
-		<Setter Property="Background" Value="{DynamicResource ThemeControlHighBrush}"/>
 	</Style>
 	<!--- ............................ListBox ScrollBar................................... -->
 	<Style Selector="ListBox ScrollBar:vertical">
@@ -32,7 +30,6 @@
 	<Style Selector="ListBox ScrollBar:vertical /template/ Thumb#thumb">
 		<Setter Property="MinHeight" Value="24"/>
 		<Setter Property="Width" Value="5"/>
-		<Setter Property="Background" Value="{DynamicResource ThemeControlHighBrush}"/>
 	</Style>
 
 	<Style Selector="ListBox ScrollBar:horizontal">
@@ -41,7 +38,6 @@
 	<Style Selector="ListBox ScrollBar:horizontal /template/ Thumb#thumb">
 		<Setter Property="MinWidth" Value="24"/>
 		<Setter Property="Height" Value="4"/>
-		<Setter Property="Background" Value="{DynamicResource ThemeControlHighBrush}"/>
 	</Style>
 	<!--- ............................ComboBox ScrollBar................................... -->
 	<Style Selector="ComboBox ScrollBar:vertical">

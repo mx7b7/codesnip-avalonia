@@ -865,7 +865,7 @@ public partial class MainWindowViewModel : ObservableObject
     private bool CanUndo() => Editor!.Document.UndoStack.CanUndo;
 
     [RelayCommand(CanExecute = nameof(CanRedo))]
-    private void Redo() => Editor?.Document.UndoStack.Redo();
+    private void Redo() => Editor!.Document.UndoStack.Redo();
     private bool CanRedo() => Editor!.Document.UndoStack.CanRedo;
 
     [RelayCommand(CanExecute = nameof(CanCut))]
