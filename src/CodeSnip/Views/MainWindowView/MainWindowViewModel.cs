@@ -4,6 +4,7 @@ using Avalonia.Media;
 using Avalonia.Styling;
 using AvaloniaEdit;
 using CodeSnip.Services;
+using CodeSnip.Views.CompilerSettingsView;
 using CodeSnip.Views.LanguageCategoryView;
 using CodeSnip.Views.SnippetView;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -725,6 +726,16 @@ public partial class MainWindowViewModel : ObservableObject
             RestoreSelectedSnippetState(settingsService.LastSnippet);
         }
         await UpdateDatabaseHealthStatusAsync();
+    }
+
+    [RelayCommand] private void OpenCompilerSettings()
+    {
+        if (IsRightOverlayOpen) return;
+
+        RightOverlayContent = new CompilerSettingsViewModel();
+
+        RightOverlayWidth = 300;
+        IsRightOverlayOpen = true;
     }
 
     [RelayCommand]

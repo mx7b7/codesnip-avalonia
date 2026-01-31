@@ -10,6 +10,7 @@
 		xmlns:langcat="using:CodeSnip.Views.LanguageCategoryView"
 		xmlns:snippet="using:CodeSnip.Views.SnippetView"
 		xmlns:settings="using:CodeSnip.Views.SettingsView"
+		xmlns:compilerSettingsView="using:CodeSnip.Views.CompilerSettingsView"
 		xmlns:editing="using:AvaloniaEdit.Editing"
 		xmlns:i="using:Avalonia.Xaml.Interactivity"
 		xmlns:behaviors="using:CodeSnip.Helpers"
@@ -127,6 +128,9 @@
 		</DataTemplate>
 		<DataTemplate DataType="settings:SettingsViewModel">
 			<settings:SettingsView />
+		</DataTemplate>
+		<DataTemplate DataType="compilerSettingsView:CompilerSettingsViewModel">
+			<compilerSettingsView:CompilerSettingsView />
 		</DataTemplate>
 	</codesnip:Window.DataTemplates>
 	<Grid>
@@ -313,7 +317,7 @@
 						<Button Classes="IconButton"  >
 							<PathIcon Data="{StaticResource DebugStart}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
 						</Button>
-						<Button Classes="IconButton"  >
+						<Button Classes="IconButton" Command="{Binding OpenCompilerSettingsCommand}">
 							<PathIcon Data="{StaticResource CompilerExplorer}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
 						</Button>
 						<Border Width="1" Height="24"  VerticalAlignment="Center" Background="{DynamicResource ThemeControlHighBrush}"/>

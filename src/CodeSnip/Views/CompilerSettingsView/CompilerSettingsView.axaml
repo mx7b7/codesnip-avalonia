@@ -1,0 +1,71 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             x:Class="CodeSnip.Views.CompilerSettingsView.CompilerSettingsView"
+			 xmlns:vm="clr-namespace:CodeSnip.Views.CompilerSettingsView"
+			 x:DataType="vm:CompilerSettingsViewModel"
+			 xmlns:helpers="clr-namespace:CodeSnip.Helpers"
+			 Background="{DynamicResource ThemeBackgroundBrush}">
+	<UserControl.Resources>
+		<helpers:BoolToAddCancelConverter x:Key="BoolToAddCancelConverter"/>
+	</UserControl.Resources>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		
+		<StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10">
+			<Button Classes="IconButton" Margin="0,0,10,0" ToolTip.Tip="Close" Command="{Binding CancelCommand}">
+				<Path Data="{StaticResource ArrowRightBoldBox}" Width="28" Height="28" Fill="{DynamicResource AccentBrush}" Stretch="UniformToFill"/>
+			</Button>
+			<TextBlock Text="{Binding HeaderText}" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center"/>
+		</StackPanel>
+		
+		<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+			<StackPanel Margin="5,0,5,0">
+				<TextBlock Text="Languages:" FontWeight="Bold"/>
+				<ComboBox ItemsSource="{Binding Languages}"
+						  SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}"
+						  DisplayMemberBinding="{Binding LanguageName}" />
+
+				<TextBlock Text="Compilers:" FontWeight="Bold" Margin="0,10,0,0"/>
+				<ListBox ItemsSource="{Binding Compilers}"
+						 SelectedItem="{Binding SelectedCompiler, Mode=TwoWay}"
+						 DisplayMemberBinding="{Binding Name}" Height="120"/>
+
+				<TextBlock Text="Compiler Id:" FontWeight="Bold" Margin="0,10,0,0"/>
+				<TextBox Text="{Binding CompilerId, Mode=TwoWay}" IsEnabled="{Binding CanSaveCompiler}">
+					<ToolTip.Tip>
+						<TextBlock Text="{Binding HelpText}"
+								   TextWrapping="Wrap"
+								   MaxWidth="250"
+								   TextTrimming="CharacterEllipsis"/>
+					</ToolTip.Tip>
+				</TextBox>
+
+				<TextBlock Text="Compiler name:" FontWeight="Bold" Margin="0,10,0,0"/>
+				<TextBox Text="{Binding CompilerName, Mode=TwoWay}" IsEnabled="{Binding CanSaveCompiler}" />
+
+				<TextBlock Text="Compiler flags:" FontWeight="Bold" Margin="0,10,0,0"/>
+				<TextBox Text="{Binding CompilerFlags, Mode=TwoWay}" IsEnabled="{Binding CanSaveCompiler}" />
+
+				<StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+					<Button Content="{Binding IsAddingLanguage, Converter={StaticResource BoolToAddCancelConverter}}"
+							Command="{Binding ToggleAddCompilerCommand}" />
+					<Button Content="Save" Margin="10,0,0,0" IsEnabled="{Binding CanSaveCompiler}"
+							Command="{Binding SaveCompilerCommand}" />
+					<Button Content="Delete" Margin="10,0,0,0" Command="{Binding DeleteCompilerCommand}" />
+					<Button Content="Set default" Margin="10,0,0,0" IsEnabled="{Binding CanSetDefaultCompiler}"
+							Command="{Binding SetDefaultCommand}" />
+				</StackPanel>
+
+				<HyperlinkButton Content="{Binding LinkText}" Margin="0,20,0,0"
+								 ToolTip.Tip="{Binding CompilersLink}"
+								 Command="{Binding OpenCompilersLinkCommand}" />
+			</StackPanel>
+
+		</ScrollViewer>
+	</Grid>
+</UserControl>
