@@ -63,7 +63,8 @@
 
 				<HyperlinkButton Content="{Binding LinkText}" Margin="0,20,0,0"
 								 ToolTip.Tip="{Binding CompilersLink}"
-								 Command="{Binding OpenCompilersLinkCommand}" />
+								 Command="{Binding OpenCompilersLinkCommand}" 
+								 FontWeight="SemiBold"/>
 			</StackPanel>
 
 		</ScrollViewer>

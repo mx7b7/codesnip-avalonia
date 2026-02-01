@@ -4,6 +4,7 @@ using Avalonia.Media;
 using Avalonia.Styling;
 using AvaloniaEdit;
 using CodeSnip.Services;
+using CodeSnip.Views.CodeRunnerView;
 using CodeSnip.Views.CompilerSettingsView;
 using CodeSnip.Views.LanguageCategoryView;
 using CodeSnip.Views.SnippetView;
@@ -92,7 +93,7 @@ public partial class MainWindowViewModel : ObservableObject
         SplitViewOpenPaneLength = settingsService.SplitViewOpenPaneLength;
         WindowWidth = settingsService.WindowWidth;
         WindowHeight = settingsService.WindowHeight;
-        WindowState = settingsService.WindowState;
+        //WindowState = settingsService.WindowState; // Disabled: width/height is in fullscreen mode when restore from maximized
         ShowEmptyCategories = settingsService.ShowEmptyCategories;
         ShowEmptyLanguages = settingsService.ShowEmptyLanguages;
         IsLoadSnippetEnabled = settingsService.LoadSnippetsOnStartup;
@@ -394,9 +395,14 @@ public partial class MainWindowViewModel : ObservableObject
     {
         settingsService.SplitViewOpenPaneLength = (int)SplitViewOpenPaneLength;
         settingsService.LastSnippet = SaveSelectedSnippetState();
+        settingsService.WindowState = WindowState;
+        if (WindowState == WindowState.Maximized)
+        {
+            WindowWidth = 1200;   // Reset: because is in fullscreen mode
+            WindowHeight = 720;
+        }
         settingsService.WindowWidth = WindowWidth;
         settingsService.WindowHeight = WindowHeight;
-        settingsService.WindowState = WindowState;
 
         await settingsService.SaveSettingsAsync();
     }
@@ -655,6 +661,25 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private async Task OpenCodeRunnerView()
+    {
+        if (IsRightOverlayOpen) return;
+        if (EditingSnippet is null)
+        {
+            _ = await MessageBoxManager.GetMessageBoxStandard("No Snippet Selected",
+                "Select a snippet from the list before attempting to run it.", ButtonEnum.Ok).ShowAsync();
+            return;
+        }
+        string langCode = EditingSnippet?.Category?.Language?.Code ?? "d";
+        if (EditorText != string.Empty)
+        {
+            RightOverlayContent = new CodeRunnerViewModel(langCode, EditorText, () => EditorText);
+            RightOverlayWidth = 600;
+            IsRightOverlayOpen = true;
+        }
+    }
+
+    [RelayCommand]
     private async Task EditLanguageCategory()
     {
         if (IsLeftOverlayOpen) return;
@@ -728,7 +753,8 @@ public partial class MainWindowViewModel : ObservableObject
         await UpdateDatabaseHealthStatusAsync();
     }
 
-    [RelayCommand] private void OpenCompilerSettings()
+    [RelayCommand]
+    private void OpenCompilerSettings()
     {
         if (IsRightOverlayOpen) return;
 

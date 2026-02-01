@@ -11,6 +11,7 @@
 		xmlns:snippet="using:CodeSnip.Views.SnippetView"
 		xmlns:settings="using:CodeSnip.Views.SettingsView"
 		xmlns:compilerSettingsView="using:CodeSnip.Views.CompilerSettingsView"
+		xmlns:codeRunner="using:CodeSnip.Views.CodeRunnerView"
 		xmlns:editing="using:AvaloniaEdit.Editing"
 		xmlns:i="using:Avalonia.Xaml.Interactivity"
 		xmlns:behaviors="using:CodeSnip.Helpers"
@@ -18,10 +19,10 @@
         Title ="{Binding WindowTitle}"
 		Width="{Binding WindowWidth,Mode=TwoWay}"
         Height="{Binding WindowHeight,Mode=TwoWay}"
+		WindowState="{Binding WindowState,Mode=TwoWay}"
         MinWidth="900"
         MinHeight="600"
         WindowStartupLocation="CenterScreen"
-        WindowState="{Binding WindowState, Mode=TwoWay}"
 		BorderBrush="{DynamicResource AccentBrush}" Closing="Window_Closing" SaveWindowState="True">
 
 	<codesnip:Window.LogoContent>
@@ -92,6 +93,12 @@
 		<!-- Ctrll+Shift + L : Edit Language/Category -->
 		<KeyBinding Gesture="Ctrl+Shift+L"
 					Command="{Binding EditLanguageCategoryCommand}" />
+		<!-- Ctrll+Shift + R : Open Code Runner window -->
+		<KeyBinding Gesture="Ctrl+Shift+R" Command="{Binding OpenCodeRunnerViewCommand}"/>
+		<!-- Ctrll+Shift + H : Open Highlighting editor -->
+		<KeyBinding Gesture="Ctrl+Shift+H" />
+		<!-- Ctrll+Shift + P : Open application settings -->
+		<KeyBinding Gesture="Ctrl+Shift+P" Command="{Binding OpenSettingsCommand}"/>
 		<!-- Toggle Single Line Comment: Ctrl+K -->
 		<KeyBinding Gesture="Ctrl+K"
 					Command="{Binding ToggleSingleLineCommentCommand}" />
@@ -107,13 +114,13 @@
 		<!-- Ctrl+Shift+- -->
 		<KeyBinding Gesture="Ctrl+Shift+OemMinus"
 					Command="{Binding DecreasePaneWidthCommand}"/>
-		<!-- Zoom In -->
+		<!-- Zoom In Ctrl++ -->
 		<KeyBinding Gesture="Ctrl+OemPlus"
 					Command="{Binding IncreaseFontSizeCommand}"/>
-		<!-- Zoom Out -->
+		<!-- Zoom Out Ctrl+- -->
 		<KeyBinding Gesture="Ctrl+OemMinus"
 					Command="{Binding DecreaseFontSizeCommand}"/>
-		<!-- Reset Zoom -->
+		<!-- Reset Zoom Ctrl+0-->
 		<KeyBinding Gesture="Ctrl+D0"
 					Command="{Binding ResetFontSizeCommand}"/>
 		
@@ -125,6 +132,9 @@
 		</DataTemplate>
 		<DataTemplate DataType="langcat:LanguageCategoryViewModel">
 			<langcat:LanguageCategoryView />
+		</DataTemplate>
+		<DataTemplate DataType="codeRunner:CodeRunnerViewModel">
+			<codeRunner:CodeRunnerView />
 		</DataTemplate>
 		<DataTemplate DataType="settings:SettingsViewModel">
 			<settings:SettingsView />
@@ -314,10 +324,12 @@
 							<PathIcon Data="{StaticResource DatabaseRefresh}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
 						</Button>
 						<Border Width="1" Height="24"  VerticalAlignment="Center" Background="{DynamicResource ThemeControlHighBrush}"/>
-						<Button Classes="IconButton"  >
+						<Button Classes="IconButton" Command="{Binding OpenCodeRunnerViewCommand}" 
+								ToolTip.Tip="Run&#xA;Ctrl+Shift+R">
 							<PathIcon Data="{StaticResource DebugStart}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
 						</Button>
-						<Button Classes="IconButton" Command="{Binding OpenCompilerSettingsCommand}">
+						<Button Classes="IconButton" Command="{Binding OpenCompilerSettingsCommand}"
+								ToolTip.Tip="Compiler Explorer settings">
 							<PathIcon Data="{StaticResource CompilerExplorer}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
 						</Button>
 						<Border Width="1" Height="24"  VerticalAlignment="Center" Background="{DynamicResource ThemeControlHighBrush}"/>
@@ -345,7 +357,7 @@
 							<PathIcon Data="{StaticResource FormatIndentDecrease}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
 						</Button>
 						<Border Width="1" Height="24"  VerticalAlignment="Center" Background="{DynamicResource ThemeControlHighBrush}"/>
-						<Button Classes="IconButton"  >
+						<Button Classes="IconButton" ToolTip.Tip="Highlighting Editor&#xA;Ctrl+Shift+H" >
 							<PathIcon Data="{StaticResource ColorPaletteiOS}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
 						</Button>
 						<Button Classes="IconButton"  Command="{Binding OpenSettingsCommand}"  ToolTip.Tip="Settings&#xA;Ctrl+Shift+P" >

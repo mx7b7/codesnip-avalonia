@@ -1,0 +1,186 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             x:Class="CodeSnip.Views.CodeRunnerView.CodeRunnerView"
+			 xmlns:vm="clr-namespace:CodeSnip.Views.CodeRunnerView"
+			 x:DataType="vm:CodeRunnerViewModel"
+			 xmlns:i="using:Avalonia.Xaml.Interactivity"
+			 xmlns:behaviors="using:CodeSnip.Helpers"
+			 xmlns:AvaloniaEdit="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit"
+			 xmlns:helpers="clr-namespace:CodeSnip.Helpers"
+			 Background="{DynamicResource ThemeBackgroundBrush}">
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		<StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10">
+			<Button Classes="IconButton" Margin="0,0,10,0" ToolTip.Tip="Close" Command="{Binding CancelCommand}">
+				<Path Data="{StaticResource ArrowRightBoldBox}" Width="28" Height="28" Fill="{DynamicResource AccentBrush}" Stretch="UniformToFill"/>
+			</Button>
+			<TextBlock Text="{Binding HeaderText}" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center"/>
+		</StackPanel>
+		<Grid Margin="10" Grid.Row="1">
+			<Grid.RowDefinitions>
+				<!-- Progress bar -->
+				<RowDefinition Height="8"/>
+				<!-- Compiler selection and flags -->
+				<RowDefinition Height="Auto"/>
+				<!-- Short link -->
+				<RowDefinition Height="Auto"/>
+				<!-- Buttons -->
+				<RowDefinition Height="Auto"/>
+				<!-- Tab control -->
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+			<!-- Progress bar row 0 -->
+			<ProgressBar IsIndeterminate="True" Grid.Row="0" IsVisible="{Binding IsRunning}"/>
+			<!-- Compiler selection and flags row 1 -->
+			<Grid Grid.Row="1" Margin="0,2,0,0">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition  Width="*"/>
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition />
+					<RowDefinition />
+				</Grid.RowDefinitions>
+				<TextBlock Text="Compiler:" FontWeight="Bold" Grid.Column="0" Grid.Row="0"/>
+				<ComboBox ItemsSource="{Binding Compilers}"
+							SelectedItem="{Binding SelectedCompiler}"
+							DisplayMemberBinding="{Binding Name}" Grid.Column="0" Grid.Row="1" Width="160" IsTabStop="False"/>
+				<TextBlock Text="Compiler flags:" FontWeight="Bold" Margin="10,0,0,0" Grid.Column="1" Grid.Row="0" />
+				<TextBox  Text="{Binding Flags}" Grid.Column="1" Grid.Row="1" Margin="10,0,0,0" />
+			</Grid>
+			<!-- Short link row 2-->
+			<Grid Grid.Row="2" Margin="0,10,0,0">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="160"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+				<Button Content="Short link" Grid.Column="0" Grid.Row="0" Command="{Binding GetLinkCommand}"/>
+				<TextBox Grid.Column="1" Grid.Row="0" Margin="10,0,0,0" IsReadOnly="True" Text="{Binding ShortLink}"/>
+			</Grid>
+			<!-- Buttons row 3-->
+			<Grid  Grid.Row="3" Margin="0,10,0,0">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="80"/>
+					<ColumnDefinition Width="80"/>
+					<ColumnDefinition Width="50"/>
+					<ColumnDefinition Width="50"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="26"/>
+				</Grid.RowDefinitions>
+				<Button Content="Run"
+						Command="{Binding RunCommand}"
+						Grid.Column="0"
+						Grid.Row="0"
+						TabIndex="0"/>
+				<Button Content="Run Local"
+						Command="{Binding RunLocalCommand}"
+						Grid.Column="1"
+						Margin="10,0,0,0"
+						Grid.Row="0"
+						TabIndex="1"/>
+				<Button Classes="IconButton" Grid.Row="0" Grid.Column="2"
+						Command="{Binding KillRunningProcessCommand}"
+						Margin="10,0,0,0"
+						ToolTip.Tip="Kill running process">
+					<Path Data="{StaticResource TerminalX}"
+						  Fill="{DynamicResource ThemeAccentBrush}"
+						  Stretch="UniformToFill"
+						  Width="25"
+						  Height="25"/>
+				</Button>
+				<Button Classes="IconButton" TabIndex="2"
+						Command="{Binding ReloadCommand}"
+						Grid.Row="0"
+						Grid.Column="3"
+						Margin="10,0,0,0"
+						ToolTip.Tip="Reload snipppet code">
+					<Path Data="{StaticResource Reload}"
+						  Fill="{DynamicResource ThemeAccentBrush}"
+						  Stretch="UniformToFill"
+						  Width="25"
+						  Height="25"/>
+				</Button>
+				<ToggleSwitch IsChecked="{Binding ShowAsm, Mode=TwoWay}"
+							  Grid.Row="0"
+							  Grid.Column="4"
+							  Margin="10,0,0,0"
+							  OnContent="ASM"
+							  OffContent="ASM"
+							  VerticalAlignment="Center"
+							  ToolTip.Tip="Request ASM disassembly from Godbolt API"/>
+			</Grid>
+			<!-- Tab control row 4 -->
+			<TabControl Grid.Row="4" Margin="0,10,0,0">
+				<TabItem Header="Output">
+					<!--<ScrollViewer VerticalScrollBarVisibility="Auto">-->
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="*" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+						<Expander Header="Stdout:" Grid.Row="0"
+								  IsExpanded="{Binding HasOut}"
+								  FontWeight="SemiBold"
+								  BorderBrush="{DynamicResource ThemeControlHighlightLowBrush}"
+								  BorderThickness="1"
+								  Background="{DynamicResource ThemeBackgroundBrush}">
+
+							<TextBox Text="{Binding StdOut}"
+									 IsReadOnly="True"
+									 TextWrapping="NoWrap"
+									 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+									 ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+						</Expander>
+						<Expander Header="Stderr:" Grid.Row="1"
+								  IsExpanded="{Binding HasError}"
+								  FontWeight="SemiBold"
+								  Margin="0,10,0,0"
+								  BorderBrush="{DynamicResource ThemeControlHighlightLowBrush}"
+								  BorderThickness="1"
+								  Background="{DynamicResource ThemeBackgroundBrush}" >
+
+							<TextBox Text="{Binding ErrorText}"
+									 IsReadOnly="True"
+									 Foreground="#FFF92672"
+									 Margin="0,0,0,2"
+									 MaxHeight="300"
+									 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+									 ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+						</Expander>
+					</Grid>
+					<!--</ScrollViewer>-->
+				</TabItem>
+				<TabItem Header="Assembler">
+					<AvaloniaEdit:TextEditor
+						x:Name="asmEditor"
+						FontFamily="Consolas"
+						IsReadOnly="True"
+						ShowLineNumbers="True"
+						VerticalScrollBarVisibility="Auto"
+						HorizontalScrollBarVisibility="Auto"
+						Margin="5" >
+						<i:Interaction.Behaviors>
+							<helpers:AvaloniaEditTextBindingBehavior BoundText="{Binding AsmCode, Mode=OneWay}" />
+							<helpers:AvalonEditHighlightingBehavior HighlightingName="{Binding AsmHighlightingName}" />
+						</i:Interaction.Behaviors>
+						<AvaloniaEdit:TextEditor.Options>
+							<AvaloniaEdit:TextEditorOptions
+								EnableHyperlinks="False"
+								EnableEmailHyperlinks="False"
+								AllowScrollBelowDocument="False">
+							</AvaloniaEdit:TextEditorOptions>
+						</AvaloniaEdit:TextEditor.Options>
+					</AvaloniaEdit:TextEditor>
+				</TabItem>
+			</TabControl>
+		</Grid>
+	</Grid>
+</UserControl>
