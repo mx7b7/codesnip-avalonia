@@ -12,6 +12,7 @@
 		xmlns:settings="using:CodeSnip.Views.SettingsView"
 		xmlns:compilerSettingsView="using:CodeSnip.Views.CompilerSettingsView"
 		xmlns:codeRunner="using:CodeSnip.Views.CodeRunnerView"
+		xmlns:highlightingEditorView="using:CodeSnip.Views.HighlightingEditorView"
 		xmlns:editing="using:AvaloniaEdit.Editing"
 		xmlns:i="using:Avalonia.Xaml.Interactivity"
 		xmlns:behaviors="using:CodeSnip.Helpers"
@@ -96,7 +97,7 @@
 		<!-- Ctrll+Shift + R : Open Code Runner window -->
 		<KeyBinding Gesture="Ctrl+Shift+R" Command="{Binding OpenCodeRunnerViewCommand}"/>
 		<!-- Ctrll+Shift + H : Open Highlighting editor -->
-		<KeyBinding Gesture="Ctrl+Shift+H" />
+		<KeyBinding Gesture="Ctrl+Shift+H" Command="{Binding OpenHighlightingEditorCommand}"/>
 		<!-- Ctrll+Shift + P : Open application settings -->
 		<KeyBinding Gesture="Ctrl+Shift+P" Command="{Binding OpenSettingsCommand}"/>
 		<!-- Toggle Single Line Comment: Ctrl+K -->
@@ -141,6 +142,9 @@
 		</DataTemplate>
 		<DataTemplate DataType="compilerSettingsView:CompilerSettingsViewModel">
 			<compilerSettingsView:CompilerSettingsView />
+		</DataTemplate>
+		<DataTemplate DataType="highlightingEditorView:HighlightingEditorViewModel">
+			<highlightingEditorView:HighlightingEditorView />
 		</DataTemplate>
 	</codesnip:Window.DataTemplates>
 	<Grid>
@@ -357,7 +361,7 @@
 							<PathIcon Data="{StaticResource FormatIndentDecrease}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
 						</Button>
 						<Border Width="1" Height="24"  VerticalAlignment="Center" Background="{DynamicResource ThemeControlHighBrush}"/>
-						<Button Classes="IconButton" ToolTip.Tip="Highlighting Editor&#xA;Ctrl+Shift+H" >
+						<Button Classes="IconButton" Command="{Binding OpenHighlightingEditorCommand}" ToolTip.Tip="Highlighting Editor&#xA;Ctrl+Shift+H" >
 							<PathIcon Data="{StaticResource ColorPaletteiOS}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
 						</Button>
 						<Button Classes="IconButton"  Command="{Binding OpenSettingsCommand}"  ToolTip.Tip="Settings&#xA;Ctrl+Shift+P" >

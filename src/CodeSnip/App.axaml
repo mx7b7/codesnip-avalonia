@@ -13,6 +13,7 @@
 		<SimpleTheme />
 		<!-- AvaloniaEdit styles (required!) -->
 		<StyleInclude Source="avares://AvaloniaEdit/Themes/Simple/AvaloniaEdit.xaml" />
+		<StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Simple/Simple.xaml" />
 		<StyleInclude Source="/Themes/StyleOverrides.axaml"/>
 		
 	</Application.Styles>

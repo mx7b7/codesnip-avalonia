@@ -1,0 +1,159 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             x:Class="CodeSnip.Views.HighlightingEditorView.HighlightingEditorView"
+			 xmlns:vm="clr-namespace:CodeSnip.Views.HighlightingEditorView"
+			 x:DataType="vm:HighlightingEditorViewModel"
+			 xmlns:i="using:Avalonia.Xaml.Interactivity"
+			 xmlns:helpers="clr-namespace:CodeSnip.Helpers"
+			 xmlns:AvaloniaEdit="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit"
+			 Background="{DynamicResource ThemeBackgroundBrush}">
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		<StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10">
+			<Button Classes="IconButton" Margin="0,0,10,0" ToolTip.Tip="Close" Command="{Binding CancelCommand}">
+				<Path Data="{StaticResource ArrowRightBoldBox}" Width="28" Height="28" Fill="{DynamicResource AccentBrush}" Stretch="UniformToFill"/>
+			</Button>
+			<TextBlock Text="{Binding Header}" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center"/>
+		</StackPanel>
+		<Grid Margin="10" Grid.Row="1">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="*"/>
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
+			<TabControl Grid.Row="1">
+				<TabItem Header="Visual Editor">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="*"/>
+							<RowDefinition Height="Auto"/>
+						</Grid.RowDefinitions>
+						<ListBox Grid.Row="0"
+								 ItemsSource="{Binding HighlightingColors}"
+								 SelectedItem="{Binding SelectedColor, Mode=TwoWay}"
+								 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+							<ListBox.ItemTemplate>
+								<DataTemplate>
+									<Border BorderBrush="{DynamicResource ThemeBorderLowBrush}" BorderThickness="0,0,0,1" Padding="2">
+										<Grid VerticalAlignment="Center">
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="2*" />
+												<!-- Name -->
+												<ColumnDefinition Width="Auto" />
+												<!-- Rectangle -->
+												<ColumnDefinition Width="Auto" />
+												<!-- Weight label and combobox -->
+												<ColumnDefinition Width="Auto" />
+												<!-- Style label and combobox -->
+											</Grid.ColumnDefinitions>
+
+											<TextBlock Text="{Binding Name}" Grid.Column="0" VerticalAlignment="Center"
+													   TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding Name}" />
+
+											<Rectangle Width="16" Height="16" Margin="5,0,0,0" VerticalAlignment="Center" Grid.Column="1">
+												<Rectangle.Fill>
+													<SolidColorBrush Color="{Binding Foreground}" />
+												</Rectangle.Fill>
+											</Rectangle>
+											<StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0,0,0" Grid.Column="2">
+												<TextBlock Text="Weight:" VerticalAlignment="Center" Margin="0,0,5,0" />
+												<ComboBox Width="80"
+														  SelectedItem="{Binding FontWeight, Mode=TwoWay}"
+														  ItemsSource="{Binding AvailableFontWeights}"
+														  IsEditable="False"
+														  VerticalAlignment="Center">
+													<ComboBox.ItemTemplate>
+														<DataTemplate>
+															<TextBlock Text="{Binding}" />
+														</DataTemplate>
+													</ComboBox.ItemTemplate>
+												</ComboBox>
+											</StackPanel>
+
+											<StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0,0,0" Grid.Column="3">
+												<TextBlock Text="Style:" VerticalAlignment="Center" Margin="0,0,5,0" />
+												<ComboBox Width="80"
+														  SelectedItem="{Binding FontStyle, Mode=TwoWay}"
+														  ItemsSource="{Binding AvailableFontStyles}"
+														  IsEditable="False"
+														  VerticalAlignment="Center">
+													<ComboBox.ItemTemplate>
+														<DataTemplate>
+															<TextBlock Text="{Binding}" />
+														</DataTemplate>
+													</ComboBox.ItemTemplate>
+												</ComboBox>
+											</StackPanel>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</ListBox.ItemTemplate>
+						</ListBox>
+						<StackPanel Grid.Row="1" Margin="0,10,0,0" Orientation="Horizontal">
+							<TextBlock Text="Foreground Color:" FontWeight="Bold" Margin="0,0,10,0"/>
+							<ColorPicker Color="{Binding SelectedColor.Foreground, Mode=TwoWay}" Width="200"   />
+						</StackPanel>
+					</Grid>
+				</TabItem>
+				<TabItem Name="tabXSHD" Header="XSHD Source">
+					<DockPanel>
+						<TextBlock DockPanel.Dock="Top"
+								   Text="Warning: Incorrectly editing the XSHD code can cause syntax highlighting errors and affect application functionality."
+								   Foreground="Tomato"
+								   TextWrapping="Wrap"
+								   Margin="0,0,0,10" />
+						<AvaloniaEdit:TextEditor
+							x:Name="XshdEditor"
+							SyntaxHighlighting="{Binding XmlHighlighting}"
+							Foreground="{Binding XshdEditorForeground}"
+							FontFamily="Consolas"
+							FontSize="12"
+							ShowLineNumbers="True"
+							VerticalScrollBarVisibility="Auto"
+							HorizontalScrollBarVisibility="Auto"
+							WordWrap="False">
+							<AvaloniaEdit:TextEditor.Options>
+								<AvaloniaEdit:TextEditorOptions
+									EnableEmailHyperlinks="False"
+									EnableHyperlinks="False"
+									HighlightCurrentLine="True"
+									ConvertTabsToSpaces="True"
+									IndentationSize="4"
+									AllowScrollBelowDocument="False"/>
+							</AvaloniaEdit:TextEditor.Options>
+							<i:Interaction.Behaviors>
+								<helpers:XshdTextBindingBehavior Text="{Binding XshdText, Mode=TwoWay}"/>
+							</i:Interaction.Behaviors>
+							<AvaloniaEdit:TextEditor.ContextFlyout>
+								<MenuFlyout>
+									<MenuItem Header="Format" Command="{Binding FormatXshdCommand}">
+										<MenuItem.Icon>
+											<PathIcon Data="{StaticResource FormatText}" Width="16" Height="16"
+													  Foreground="{DynamicResource ThemeAccentBrush}"/>
+										</MenuItem.Icon>
+									</MenuItem>
+								</MenuFlyout>
+							</AvaloniaEdit:TextEditor.ContextFlyout>
+						</AvaloniaEdit:TextEditor>
+					</DockPanel>
+				</TabItem>
+			</TabControl>
+
+			<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,20,0,0">
+				<Button Content="Apply Preview" Margin="0,0,10,0" Command="{Binding ApplyLivePreviewCommand}" />
+				<Button Content="Sync xshd -&gt; visual"
+						Command="{Binding SyncFromRawCommand}"
+						ToolTip.Tip="Sync Color elements from xshd source"
+						Margin="0,0,10,0"/>
+				<Button Content="Reset to Default" Margin="0,0,10,0" Command="{Binding ResetDefinitionCommand}"
+						ToolTip.Tip="Deletes custom XSHD syntax definition for current theme from disk" />
+				<Button Content="Save" Width="80" Margin="0,0,10,0" Command="{Binding SaveCommand}" />
+			</StackPanel>
+		</Grid>
+	</Grid>
+</UserControl>

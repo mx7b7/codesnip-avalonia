@@ -6,6 +6,7 @@ using AvaloniaEdit;
 using CodeSnip.Services;
 using CodeSnip.Views.CodeRunnerView;
 using CodeSnip.Views.CompilerSettingsView;
+using CodeSnip.Views.HighlightingEditorView;
 using CodeSnip.Views.LanguageCategoryView;
 using CodeSnip.Views.SnippetView;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -761,6 +762,19 @@ public partial class MainWindowViewModel : ObservableObject
         RightOverlayContent = new CompilerSettingsViewModel();
 
         RightOverlayWidth = 300;
+        IsRightOverlayOpen = true;
+    }
+
+    [RelayCommand]
+    private void OpenHighlightingEditor()
+    {
+        if (IsRightOverlayOpen) return;
+
+        if (Editor == null) return;
+
+        string? langCode = SelectedSnippet?.Category?.Language?.Code ?? "d";
+        RightOverlayContent = new HighlightingEditorViewModel(Editor.SyntaxHighlighting, Editor, langCode);
+        RightOverlayWidth = 600;
         IsRightOverlayOpen = true;
     }
 

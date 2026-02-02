@@ -45,9 +45,9 @@ namespace CodeSnip.Helpers
             {
                 HighlightingService.ApplyHighlighting(AssociatedObject, HighlightingName);
             }
-            else if (AssociatedObject != null)
+            else
             {
-                AssociatedObject.SyntaxHighlighting = null;
+                AssociatedObject?.SyntaxHighlighting = null;
             }
         }
     }

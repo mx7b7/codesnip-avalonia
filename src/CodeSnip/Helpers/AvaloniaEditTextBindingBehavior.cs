@@ -11,8 +11,7 @@ public class AvaloniaEditTextBindingBehavior : Behavior<TextEditor>
         AvaloniaProperty.Register<AvaloniaEditTextBindingBehavior, string?>(
             nameof(BoundText),
             default(string?),
-            false, // This argument is 'inherits', must be a bool
-            Avalonia.Data.BindingMode.TwoWay);
+            defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
 
     public string? BoundText
     {
@@ -25,11 +24,13 @@ public class AvaloniaEditTextBindingBehavior : Behavior<TextEditor>
     protected override void OnAttached()
     {
         base.OnAttached();
+
         if (AssociatedObject != null)
         {
-            AssociatedObject.TextChanged += AssociatedObject_TextChanged;
+            AssociatedObject.Document.TextChanged += Document_TextChanged;
+
             if (BoundText != null)
-                AssociatedObject.Text = BoundText;
+                AssociatedObject.Document.Text = BoundText;
         }
     }
 
@@ -37,18 +38,19 @@ public class AvaloniaEditTextBindingBehavior : Behavior<TextEditor>
     {
         if (AssociatedObject != null)
         {
-            AssociatedObject.TextChanged -= AssociatedObject_TextChanged;
+            AssociatedObject.Document.TextChanged -= Document_TextChanged;
         }
+
         base.OnDetaching();
     }
 
-    private void AssociatedObject_TextChanged(object? sender, EventArgs e)
+    private void Document_TextChanged(object? sender, EventArgs e)
     {
         if (_isUpdating || AssociatedObject == null)
             return;
 
         _isUpdating = true;
-        BoundText = AssociatedObject.Text;
+        BoundText = AssociatedObject.Document.Text;
         _isUpdating = false;
     }
 
@@ -63,7 +65,7 @@ public class AvaloniaEditTextBindingBehavior : Behavior<TextEditor>
             return;
 
         _isUpdating = true;
-        AssociatedObject.Text = e.NewValue as string ?? string.Empty;
+        AssociatedObject.Document.Text = e.NewValue as string ?? string.Empty;
         _isUpdating = false;
     }
 }
