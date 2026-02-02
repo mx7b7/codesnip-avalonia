@@ -25,7 +25,7 @@
 		<Grid Margin="10" Grid.Row="1">
 			<Grid.RowDefinitions>
 				<!-- Progress bar -->
-				<RowDefinition Height="8"/>
+				<RowDefinition Height="4"/>
 				<!-- Compiler selection and flags -->
 				<RowDefinition Height="Auto"/>
 				<!-- Short link -->
@@ -36,7 +36,7 @@
 				<RowDefinition Height="*"/>
 			</Grid.RowDefinitions>
 			<!-- Progress bar row 0 -->
-			<ProgressBar IsIndeterminate="True" Grid.Row="0" IsVisible="{Binding IsRunning}"/>
+			<ProgressBar Classes="horizontal thin" IsIndeterminate="True" Grid.Row="0" IsVisible="{Binding IsRunning}"/>
 			<!-- Compiler selection and flags row 1 -->
 			<Grid Grid.Row="1" Margin="0,2,0,0">
 				<Grid.ColumnDefinitions>
@@ -81,7 +81,7 @@
 						Grid.Row="0"
 						TabIndex="0"/>
 				<Button Content="Run Local"
-						Command="{Binding RunLocalCommand}"
+						Command="{Binding RunLocalCommand}"						
 						Grid.Column="1"
 						Margin="10,0,0,0"
 						Grid.Row="0"

@@ -2,10 +2,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
 
+	<!-- ......................ProgressBar Thin Style for Code Runner..................... -->
+	<Style Selector="ProgressBar:horizontal.thin">
+		<Setter Property="MinHeight" Value="4" />
+	</Style>
 	<!-- ..............RepeatButton temporary for treeview scrollbar....................... -->
 	<Style Selector="RepeatButton.repeat">
 		<Setter Property="Padding" Value="0" />
-		<Setter Property="BorderThickness" Value="0" />
 	</Style>
 	<!-- ........................TreeView ScrollBar......................................-->
 	<Style Selector="TreeView ScrollBar:vertical">
