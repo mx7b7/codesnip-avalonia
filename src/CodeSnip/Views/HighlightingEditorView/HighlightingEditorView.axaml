@@ -8,6 +8,7 @@
 			 xmlns:i="using:Avalonia.Xaml.Interactivity"
 			 xmlns:helpers="clr-namespace:CodeSnip.Helpers"
 			 xmlns:AvaloniaEdit="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit"
+			 xmlns:controls="using:Avalonia.Controls"
 			 Background="{DynamicResource ThemeBackgroundBrush}">
 	<Grid>
 		<Grid.RowDefinitions>
@@ -95,8 +96,13 @@
 							</ListBox.ItemTemplate>
 						</ListBox>
 						<StackPanel Grid.Row="1" Margin="0,10,0,0" Orientation="Horizontal">
-							<TextBlock Text="Foreground Color:" FontWeight="Bold" Margin="0,0,10,0"/>
-							<ColorPicker Color="{Binding SelectedColor.Foreground, Mode=TwoWay}" Width="200"   />
+							<TextBlock Text="Foreground Color:" FontWeight="Bold" Margin="0,0,10,0" VerticalAlignment="Center"/>
+							<ColorPicker Color="{Binding SelectedColor.Foreground, Mode=TwoWay}" Width="200">
+								<ColorPicker.Palette>
+									<!-- FluentColorPalette, FlatColorPalette, FlatHalfColorPalette, MaterialColorPalette, MaterialHalfColorPalette, SixteenColorPalette -->
+									<controls:MaterialColorPalette/>
+								</ColorPicker.Palette>
+							</ColorPicker>
 						</StackPanel>
 					</Grid>
 				</TabItem>
