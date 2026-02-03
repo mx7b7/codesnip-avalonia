@@ -44,6 +44,8 @@ public partial class SnippetViewModel : ObservableObject,  IOverlayViewModel
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     private string? _title = string.Empty;
 
+    public string? HeaderText { get; private set; }
+
     public SnippetViewModel(
         bool isEditMode,
         Snippet? snippet,
@@ -65,6 +67,7 @@ public partial class SnippetViewModel : ObservableObject,  IOverlayViewModel
         }
 
         InitializeSelections();
+        HeaderText = IsEditMode ? $"Edit {Snippet?.Title ?? ""}" : "Create New Snippet";
     }
 
      public bool CanSave() => !string.IsNullOrWhiteSpace(Title) && SelectedCategory != null;

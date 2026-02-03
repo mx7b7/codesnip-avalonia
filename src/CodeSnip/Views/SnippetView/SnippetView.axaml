@@ -7,62 +7,92 @@
     xmlns:vm="clr-namespace:CodeSnip.Views.SnippetView"
     x:DataType="vm:SnippetViewModel"
 	Background="{DynamicResource ThemeBackgroundBrush}">
-	
-	<ScrollViewer VerticalScrollBarVisibility="Auto">
-		<Grid Margin="10" VerticalAlignment="Top">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto"/>
-				<!-- Blok 1 -->
-				<RowDefinition Height="*"/>
-				<!-- Blok 2 -->
-				<RowDefinition Height="Auto"/>
-				<!-- Blok 3 -->
-			</Grid.RowDefinitions>
-			<!-- BLOK 1: Language + Category -->
-			<StackPanel Grid.Row="0">
-				<TextBlock Text="Language:" FontWeight="Bold" Margin="0 10 0 2"/>
-				<!-- ComboBox za Add mode -->
-				<ComboBox ItemsSource="{Binding Languages}"
-						  SelectedItem="{Binding SelectedLanguage}"
-						  DisplayMemberBinding="{Binding Name}"
-						  IsVisible="{Binding !IsEditMode}"
-						  HorizontalAlignment="Stretch"/>
-				<!-- TextBox Edit mode -->
-				<TextBox Text="{Binding SelectedLanguageName}" IsReadOnly="True" IsVisible="{Binding IsEditMode}" IsHitTestVisible="False"/>
-				<TextBlock Text="Category:" FontWeight="Bold" Margin="0,10,0,2"/>
-				<ComboBox ItemsSource="{Binding AvailableCategories}"
-						  SelectedItem="{Binding SelectedCategory}"
-						  DisplayMemberBinding="{Binding Name}"
-						  HorizontalAlignment="Stretch"/>
-			</StackPanel>
-			<!-- BLOK 2: Title, Description, Tags -->
-			<Grid Grid.Row="1" VerticalAlignment="Top">
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		<Grid Grid.Row="0" Margin="10">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="Auto"/>
+			</Grid.ColumnDefinitions>
+			<TextBlock Grid.Column="0"
+					   Text="{Binding HeaderText}"
+					   FontSize="16"
+					   FontWeight="SemiBold"
+					   VerticalAlignment="Center"
+					   HorizontalAlignment="Center"/>
+			<Button Grid.Column="1"
+					Classes="IconButton"
+					Margin="10,0,0,0"
+					ToolTip.Tip="Close"
+					Command="{Binding CancelCommand}"
+					HorizontalAlignment="Right">
+				<Path Data="{StaticResource ArrowLeftBoldBox}"
+					  Width="28"
+					  Height="28"
+					  Fill="{DynamicResource AccentBrush}"
+					  Stretch="UniformToFill"/>
+			</Button>
+		</Grid>
+		<ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
+			<Grid Margin="10" VerticalAlignment="Top">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto"/>
-					<!-- Title label -->
+					<!-- Blok 1 -->
+					<RowDefinition Height="*"/>
+					<!-- Blok 2 -->
 					<RowDefinition Height="Auto"/>
-					<!-- Title textbox -->
-					<RowDefinition Height="Auto"/>
-					<!-- Description label -->
-					<RowDefinition Height="Auto"/>
-					<!-- Description textbox -->
-					<RowDefinition Height="Auto"/>
-					<!-- Tags label -->
-					<RowDefinition Height="Auto"/>
-					<!-- Tags textbox -->
+					<!-- Blok 3 -->
 				</Grid.RowDefinitions>
-				<TextBlock Text="Title:" FontWeight="Bold" Grid.Row="0" Margin="0,10,0,2"/>
-				<TextBox Grid.Row="1" Watermark="Enter title" Text="{Binding Title}" />
-				<TextBlock Text="Description:" FontWeight="Bold" Grid.Row="2" Margin="0,10,0,2"/>
-				<TextBox Grid.Row="3" AcceptsReturn="True" TextWrapping="Wrap" Text="{Binding Snippet.Description}" Height="200"/>
-				<TextBlock Text="Tags:" FontWeight="Bold" Grid.Row="4" Margin="0,10,0,2"/>
-				<TextBox Grid.Row="5" ToolTip.Tip="Tags can be separated by space, period, comma, colon, semicolon, hyphen" Text="{Binding Snippet.Tag}" />
+				<!-- BLOK 1: Language + Category -->
+				<StackPanel Grid.Row="0">
+					<TextBlock Text="Language:" FontWeight="Bold" Margin="0 10 0 2"/>
+					<!-- ComboBox za Add mode -->
+					<ComboBox ItemsSource="{Binding Languages}"
+							  SelectedItem="{Binding SelectedLanguage}"
+							  DisplayMemberBinding="{Binding Name}"
+							  IsVisible="{Binding !IsEditMode}"
+							  HorizontalAlignment="Stretch"/>
+					<!-- TextBox Edit mode -->
+					<TextBox Text="{Binding SelectedLanguageName}" IsReadOnly="True" IsVisible="{Binding IsEditMode}" IsHitTestVisible="False"/>
+					<TextBlock Text="Category:" FontWeight="Bold" Margin="0,10,0,2"/>
+					<ComboBox ItemsSource="{Binding AvailableCategories}"
+							  SelectedItem="{Binding SelectedCategory}"
+							  DisplayMemberBinding="{Binding Name}"
+							  HorizontalAlignment="Stretch"/>
+				</StackPanel>
+				<!-- BLOK 2: Title, Description, Tags -->
+				<Grid Grid.Row="1" VerticalAlignment="Top">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<!-- Title label -->
+						<RowDefinition Height="Auto"/>
+						<!-- Title textbox -->
+						<RowDefinition Height="Auto"/>
+						<!-- Description label -->
+						<RowDefinition Height="Auto"/>
+						<!-- Description textbox -->
+						<RowDefinition Height="Auto"/>
+						<!-- Tags label -->
+						<RowDefinition Height="Auto"/>
+						<!-- Tags textbox -->
+					</Grid.RowDefinitions>
+					<TextBlock Text="Title:" FontWeight="Bold" Grid.Row="0" Margin="0,10,0,2"/>
+					<TextBox Grid.Row="1" Watermark="Enter title" Text="{Binding Title}" />
+					<TextBlock Text="Description:" FontWeight="Bold" Grid.Row="2" Margin="0,10,0,2"/>
+					<TextBox Grid.Row="3" AcceptsReturn="True" TextWrapping="Wrap" Text="{Binding Snippet.Description}" Height="200"/>
+					<TextBlock Text="Tags:" FontWeight="Bold" Grid.Row="4" Margin="0,10,0,2"/>
+					<TextBox Grid.Row="5" ToolTip.Tip="Tags can be separated by space, period, comma, colon, semicolon, hyphen" Text="{Binding Snippet.Tag}" />
+				</Grid>
+				<!-- BLOK 3: Buttons -->
+				<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="20" Margin="0,20,0,0" VerticalAlignment="Top">
+					<Button  IsDefault="True" Content="Save" Width="70" Command="{Binding SaveCommand}" HorizontalContentAlignment="Center"/>
+					<Button  Content="Close" Width="70" Command="{Binding CancelCommand}" HorizontalContentAlignment="Center"/>
+				</StackPanel>
 			</Grid>
-			<!-- BLOK 3: Buttons -->
-			<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="20" Margin="0,20,0,0" VerticalAlignment="Top">
-				<Button  IsDefault="True" Content="Save" Width="70" Command="{Binding SaveCommand}" HorizontalContentAlignment="Center"/>
-				<Button  Content="Close" Width="70" Command="{Binding CancelCommand}" HorizontalContentAlignment="Center"/>
-			</StackPanel>
-		</Grid>
-	</ScrollViewer>
+		</ScrollViewer>
+	</Grid>
 </UserControl>

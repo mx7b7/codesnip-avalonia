@@ -12,69 +12,97 @@
 	<UserControl.Resources>
 		<helpers:BoolToAddCancelConverter x:Key="BoolToAddCancelConverter"/>
 	</UserControl.Resources>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		<Grid Grid.Row="0" Margin="10">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="Auto"/>
+			</Grid.ColumnDefinitions>
+			<TextBlock Grid.Column="0"
+					   Text="Edit Languages/Categories"
+					   FontSize="16"
+					   FontWeight="SemiBold"
+					   VerticalAlignment="Center"
+					   HorizontalAlignment="Center"/>
+			<Button Grid.Column="1"
+					Classes="IconButton"
+					Margin="10,0,0,0"
+					ToolTip.Tip="Close"
+					Command="{Binding CloseCommand}"
+					HorizontalAlignment="Right">
+				<Path Data="{StaticResource ArrowLeftBoldBox}"
+					  Width="28"
+					  Height="28"
+					  Fill="{DynamicResource AccentBrush}"
+					  Stretch="UniformToFill"/>
+			</Button>
+		</Grid>
+		<ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
+			<StackPanel Margin="10">
 
-	<ScrollViewer VerticalScrollBarVisibility="Auto">
-		<StackPanel Margin="10">
+				<!-- LANGUAGES SECTION -->
+				<TextBlock Text="Languages:" FontWeight="Bold" Margin="0,0,0,3"/>
+				<ListBox ItemsSource="{Binding Languages}"
+						 SelectedItem="{Binding SelectedLanguage}"
+						 DisplayMemberBinding="{Binding Name}"
+						 Height="100"
+						 SelectionMode="Single"/>
 
-			<!-- LANGUAGES SECTION -->
-			<TextBlock Text="Languages:" FontWeight="Bold" Margin="0,10,0,3"/>
-			<ListBox ItemsSource="{Binding Languages}"
-                     SelectedItem="{Binding SelectedLanguage}"
-					 DisplayMemberBinding="{Binding Name}"
-                     Height="100"
-					 SelectionMode="Single"/>
+				<TextBlock Text="Language Extension:" FontWeight="Bold" Margin="0,10,0,3"/>
+				<TextBox Text="{Binding NewLanguageCode}" />
 
-			<TextBlock Text="Language Extension:" FontWeight="Bold" Margin="0,10,0,3"/>
-			<TextBox Text="{Binding NewLanguageCode}" />
+				<TextBlock Text="Language Name:" FontWeight="Bold" Margin="0,5,0,3"/>
+				<TextBox Text="{Binding NewLanguageName}" />
+				<StackPanel Margin="0,10,0,0" Orientation="Horizontal" HorizontalAlignment="Left" Spacing="10" Height="25">
+					<Button  Content="{Binding IsAddingLanguage, Converter={StaticResource BoolToAddCancelConverter}}"
+							Command="{Binding ToggleAddLanguageCommand}" Width="80"/>
+					<Button Content="Save" Command="{Binding SaveLanguageCommand}" Width="80"/>
+					<Button Content="Delete" Command="{Binding DeleteLanguageCommand}" Width="80"/>
+					<Button Classes="IconButton" Command="{Binding ForceDeleteLanguageCommand}"
+							ToolTip.Tip="Deletes the language and ALL its categories and snippets">
+						<Path Data="{StaticResource DeleteAlert}" Fill="Red" Width="25" Height="25" Stretch="UniformToFill"/>
+					</Button>
+				</StackPanel>
 
-			<TextBlock Text="Language Name:" FontWeight="Bold" Margin="0,5,0,3"/>
-			<TextBox Text="{Binding NewLanguageName}" />
-			<StackPanel Margin="0,10,0,0" Orientation="Horizontal" HorizontalAlignment="Left" Spacing="10" Height="25">
-				<Button  Content="{Binding IsAddingLanguage, Converter={StaticResource BoolToAddCancelConverter}}"
-						Command="{Binding ToggleAddLanguageCommand}" Width="80"/>
-				<Button Content="Save" Command="{Binding SaveLanguageCommand}" Width="80"/>
-				<Button Content="Delete" Command="{Binding DeleteLanguageCommand}" Width="80"/>
-				<Button Classes="IconButton" Command="{Binding ForceDeleteLanguageCommand}"
-						ToolTip.Tip="Deletes the language and ALL its categories and snippets">
-					<Path Data="{StaticResource DeleteAlert}" Fill="Red" Width="25" Height="25" Stretch="UniformToFill"/>
-				</Button>
+				<Separator Margin="0,30,0,30"/>
+
+				<!-- CATEGORIES SECTION -->
+				<TextBlock Text="Categories for selected language:" FontWeight="Bold" Margin="0,0,0,3"/>
+				<ComboBox ItemsSource="{Binding Languages}"
+						  SelectedItem="{Binding SelectedLanguageForCategory}"
+						  DisplayMemberBinding="{Binding Name}"
+						  HorizontalAlignment="Stretch"/>
+
+				<ListBox ItemsSource="{Binding FilteredCategories}"
+						 SelectedItem="{Binding SelectedCategory}"
+						 DisplayMemberBinding="{Binding Name}"
+						 Height="100"
+						 Margin="0,10,0,0"
+						 SelectionMode="Single"/>
+
+				<TextBlock Text="Category Name:" FontWeight="Bold" Margin="0,10,0,3"/>
+				<TextBox Text="{Binding NewCategoryName}" />
+
+				<StackPanel  Margin="0,10,0,0" Orientation="Horizontal" HorizontalAlignment="Left" Spacing="10" Height="25">
+					<Button Content="{Binding IsAddingCategory, Converter={StaticResource BoolToAddCancelConverter}}"
+							Command="{Binding ToggleAddCategoryCommand}" Width="80"/>
+					<Button Content="Save" Command="{Binding SaveCategoryCommand}" Width="80"/>
+					<Button Content="Delete" Command="{Binding DeleteCategoryCommand}" Width="80"/>
+					<Button Classes="IconButton" Command="{Binding ForceDeleteCategoryCommand}"
+							ToolTip.Tip="Deletes the category and ALL its snippets">
+						<Path Data="{StaticResource DeleteAlert}" Fill="Red" Width="25" Height="25"  Stretch="UniformToFill"/>
+					</Button>
+				</StackPanel>
+
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,30,0,0" Height="25">
+					<Button Content="Close" Width="80" Margin="0,0,10,0" Command="{Binding CloseCommand}"
+							HorizontalContentAlignment="Center"/>
+				</StackPanel>
 			</StackPanel>
-
-			<Separator Margin="0,30,0,30"/>
-
-			<!-- CATEGORIES SECTION -->
-			<TextBlock Text="Categories for selected language:" FontWeight="Bold" Margin="0,0,0,3"/>
-			<ComboBox ItemsSource="{Binding Languages}"
-                      SelectedItem="{Binding SelectedLanguageForCategory}"
-				      DisplayMemberBinding="{Binding Name}"
-					  HorizontalAlignment="Stretch"/>
-
-			<ListBox ItemsSource="{Binding FilteredCategories}"
-                     SelectedItem="{Binding SelectedCategory}"
-				     DisplayMemberBinding="{Binding Name}"
-                     Height="100"
-                     Margin="0,10,0,0"
-					 SelectionMode="Single"/>
-
-			<TextBlock Text="Category Name:" FontWeight="Bold" Margin="0,10,0,3"/>
-			<TextBox Text="{Binding NewCategoryName}" />
-
-			<StackPanel  Margin="0,10,0,0" Orientation="Horizontal" HorizontalAlignment="Left" Spacing="10" Height="25">
-				<Button Content="{Binding IsAddingCategory, Converter={StaticResource BoolToAddCancelConverter}}"
-						Command="{Binding ToggleAddCategoryCommand}" Width="80"/>
-				<Button Content="Save" Command="{Binding SaveCategoryCommand}" Width="80"/>
-				<Button Content="Delete" Command="{Binding DeleteCategoryCommand}" Width="80"/>
-				<Button Classes="IconButton" Command="{Binding ForceDeleteCategoryCommand}"
-						ToolTip.Tip="Deletes the category and ALL its snippets">
-					<Path Data="{StaticResource DeleteAlert}" Fill="Red" Width="25" Height="25"  Stretch="UniformToFill"/>
-				</Button>
-			</StackPanel>
-
-			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,30,0,0" Height="25">
-				<Button Content="Close" Width="80" Margin="0,0,10,0" Command="{Binding CloseCommand}"
-						HorizontalContentAlignment="Center"/>
-			</StackPanel>
-		</StackPanel>
-	</ScrollViewer>
-  
+		</ScrollViewer>
+	</Grid>
 </UserControl>
