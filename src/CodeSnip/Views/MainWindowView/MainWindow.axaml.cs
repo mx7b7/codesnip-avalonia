@@ -34,6 +34,7 @@ public partial class MainWindow : ControlsEx.Window.Window
             return;
 
         DataContextChanged += OnDataContextChanged;
+        NotificationService.Instance.Initialize(this);
     }
 
     private void OnDataContextChanged(object? sender, EventArgs e)

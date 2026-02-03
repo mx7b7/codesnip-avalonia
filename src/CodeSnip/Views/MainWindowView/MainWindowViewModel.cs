@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Notifications;
 using Avalonia.Media;
 using Avalonia.Styling;
 using AvaloniaEdit;
@@ -171,7 +172,7 @@ public partial class MainWindowViewModel : ObservableObject
 
             if (languageList.Count == 0 && _databaseService.GetSnippets().Any()) // Check if loading failed
             {
-                _ = await MessageBoxManager.GetMessageBoxStandard("CodeSnip", "Database Load Error \nCould not load snippets. The database file might be corrupted or the schema might have changed.", ButtonEnum.Ok).ShowAsync();
+                _ = await MessageBoxManager.GetMessageBoxStandard("CodeSnip", "Database Load Error \nCould not load snippets.\nThe database file might be corrupted.", ButtonEnum.Ok).ShowAsync();
                 return;
             }
             else
@@ -287,6 +288,7 @@ public partial class MainWindowViewModel : ObservableObject
         if (Editor?.TextArea == null) return;
         Editor.TextArea.IndentationStrategy = value ? null : GetIndentationStrategy();
     }
+
     private IIndentationStrategy? GetIndentationStrategy()
     {
         var langCode = SelectedSnippet?.Category?.Language?.Code ?? "cs";
@@ -299,6 +301,7 @@ public partial class MainWindowViewModel : ObservableObject
     {
         OnDisableIndentationChanged(DisableIndentation);
     }
+
     public async Task ChangeSelectedSnippetAsync(Snippet? newSnippet)
     {
         if (newSnippet == null) return;
@@ -595,8 +598,12 @@ public partial class MainWindowViewModel : ObservableObject
     {
         if (EditingSnippet is null)
         {
-            _ = await MessageBoxManager.GetMessageBoxStandard("Cannot Save",
-                "There is no active snippet to save. Please select a snippet first.", ButtonEnum.Ok).ShowAsync();
+            NotificationService.Instance.Manager.Show(new Notification()
+            {
+                Type = NotificationType.Information,
+                Title = "Cannot Save",
+                Message = "There is no active snippet to save.\nPlease select a snippet first."
+            });
             return;
         }
 
@@ -614,8 +621,12 @@ public partial class MainWindowViewModel : ObservableObject
 
         if (SelectedSnippet is null)
         {
-            _ = await MessageBoxManager.GetMessageBoxStandard("No Snippet Selected",
-                "Select a snippet from the list before attempting to delete it.", ButtonEnum.Ok).ShowAsync();
+            NotificationService.Instance.Manager.Show(new Notification()
+            {
+                Type = NotificationType.Information,
+                Title = "No Snippet Selected",
+                Message = "Select a snippet from the list before attempting to delete it."
+            });
             return;
         }
 
@@ -646,7 +657,12 @@ public partial class MainWindowViewModel : ObservableObject
             IsEditorModified = false;
             EditingSnippet = null;
 
-            StatusMessage = $"Snippet '{snippetTitle}' deleted successfully.";
+            NotificationService.Instance.Manager.Show(new Notification()
+            {
+                Type = NotificationType.Success,
+                Title = "CodeSnip",
+                Message = $"Snippet '{snippetTitle}' deleted successfully."
+            });
         }
         catch (Exception ex)
         {
@@ -654,7 +670,6 @@ public partial class MainWindowViewModel : ObservableObject
             _ = await MessageBoxManager.GetMessageBoxStandard("Delete Error", $"Failed to delete snippet '{SelectedSnippet?.Title}'.\n\nDetails: {ex.Message}", ButtonEnum.Ok).ShowAsync();
         }
     }
-
 
     [RelayCommand]
     private async Task AddSnippet()
@@ -891,21 +906,29 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void ToggleTheme()
+    private async Task ToggleTheme()
     {
-        if (Application.Current is App app)
+        try
         {
-            var current = app.RequestedThemeVariant ?? ThemeVariant.Light; // fallback
-            var next = current == ThemeVariant.Light ? ThemeVariant.Dark : ThemeVariant.Light;
+            if (Application.Current is App app)
+            {
+                var current = app.RequestedThemeVariant ?? ThemeVariant.Light; // fallback
+                var next = current == ThemeVariant.Light ? ThemeVariant.Dark : ThemeVariant.Light;
 
-            app.RequestedThemeVariant = next;
+                app.RequestedThemeVariant = next;
 
-            settingsService.BaseColor = next == ThemeVariant.Dark ? "Dark" : "Light";
+                settingsService.BaseColor = next == ThemeVariant.Dark ? "Dark" : "Light";
 
-            if (Editor != null)
-                HighlightingService.ApplyHighlighting(Editor, SelectedSnippet?.Category?.Language?.Code);
+                if (Editor != null)
+                    HighlightingService.ApplyHighlighting(Editor, SelectedSnippet?.Category?.Language?.Code);
 
-
+            }
+        }
+        catch (Exception ex)
+        {
+            _ = await MessageBoxManager.GetMessageBoxStandard("Theme Error",
+                $"An error occurred while changing the theme.\n\nDetails: {ex.Message}",
+                ButtonEnum.Ok).ShowAsync();
         }
     }
 
