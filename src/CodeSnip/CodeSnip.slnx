@@ -1,3 +1,9 @@
 <Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="Release" />
+    <BuildType Name="Release-Linux" />
+    <BuildType Name="Release-Mac-ARM" />
+  </Configurations>
   <Project Path="CodeSnip.csproj" />
 </Solution>

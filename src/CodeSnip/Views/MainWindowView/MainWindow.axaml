@@ -353,12 +353,23 @@
 								</PathIcon.RenderTransform>
 							</PathIcon>
 						</Button>
+						<ToggleButton ToolTip.Tip="Word wrap" IsChecked="{Binding #textEditor.WordWrap}"
+									  Background="Transparent" BorderThickness="0">
+							<ToggleButton.Content>
+								<Path Fill="{DynamicResource AccentBrush}" Data="{StaticResource WrapText}" Width="24" Height="24" Stretch="UniformToFill">
+									<Path.RenderTransform>
+										<ScaleTransform ScaleY="-1"/>
+									</Path.RenderTransform>
+								</Path>
+							</ToggleButton.Content>
+						</ToggleButton>
+						<ToggleButton Classes="IconButton"  ToolTip.Tip="Disable intendation" IsChecked="{Binding DisableIndentation, Mode=TwoWay}"
+									  Background="Transparent" BorderThickness="0">
+							<PathIcon Data="{StaticResource FormatIndentDecrease}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
+						</ToggleButton>
 						<Button Classes="IconButton" Click="FormatAll_Click"
 								ToolTip.Tip="Format code">
 							<PathIcon Data="{StaticResource FormatText}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
-						</Button>
-						<Button Classes="IconButton"  ToolTip.Tip="Disable intendation" >
-							<PathIcon Data="{StaticResource FormatIndentDecrease}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
 						</Button>
 						<Border Width="1" Height="24"  VerticalAlignment="Center" Background="{DynamicResource ThemeControlHighBrush}"/>
 						<Button Classes="IconButton" Command="{Binding OpenHighlightingEditorCommand}" ToolTip.Tip="Highlighting Editor&#xA;Ctrl+Shift+H" >
@@ -417,13 +428,12 @@
 						</DockPanel>
 					</Border>
 					<AvaloniaEdit:TextEditor
-								   x:Name="textEditor"
+								   Name="textEditor"
 								   FontSize="{Binding EditorFontSize}"
 								   FontFamily="{Binding EditorFontFamily, Mode=TwoWay}"
 								   ShowLineNumbers="{Binding ShowLineNumbers}"
 								   HorizontalScrollBarVisibility="Auto"
-								   VerticalScrollBarVisibility="Auto"
-								   WordWrap="{Binding WordWrap}">
+								   VerticalScrollBarVisibility="Auto">
 						<i:Interaction.Behaviors>
 							<behaviors:AvaloniaEditTextBindingBehavior
 								BoundText="{Binding EditorText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />

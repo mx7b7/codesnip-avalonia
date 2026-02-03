@@ -3,6 +3,8 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Styling;
 using AvaloniaEdit;
+using AvaloniaEdit.Indentation;
+using AvaloniaEdit.Indentation.CSharp;
 using CodeSnip.Services;
 using CodeSnip.Views.CodeRunnerView;
 using CodeSnip.Views.CompilerSettingsView;
@@ -27,6 +29,9 @@ public partial class MainWindowViewModel : ObservableObject
 {
     private readonly DatabaseService _databaseService = new();
     private readonly SettingsService settingsService = new();
+
+    private readonly DefaultIndentationStrategy defaultIndentationStrategy = new();
+    private readonly CSharpIndentationStrategy csharpIndentationStrategy = new();
 
     public TextEditor? Editor { get; set; }
     public TextEditorOptions EditorOptions = new();
@@ -55,7 +60,7 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] private object? rightOverlayContent;
     [ObservableProperty] private double leftOverlayWidth = 0;
     [ObservableProperty] private double rightOverlayWidth = 0;
-    [ObservableProperty] private bool _wordWrap = false;
+    [ObservableProperty] private bool _disableIndentation = false;
     private bool _isInternalTextUpdate = true;
 
     #region SETTINGS PROPERTIES
@@ -78,6 +83,16 @@ public partial class MainWindowViewModel : ObservableObject
         Name,
         Tag
     }
+
+    // Languages with C-style braces {} that use CSharpIndentationStrategy and BraceFoldingStrategy
+    private static readonly HashSet<string> braceStyleLanguages =
+    new(StringComparer.OrdinalIgnoreCase)
+    {
+            // Original
+            "as", "cpp", "cs", "d", "fx", "java", "js", "json", "nut", "php", "rs", "swift",
+            "kt", "kts", "groovy", "dart", "v", "sv", "zig", "mm", "h", "c", "go",
+            "css", "hcl"
+    };
 
     public MainWindowViewModel()
     {
@@ -267,6 +282,23 @@ public partial class MainWindowViewModel : ObservableObject
         }
     }
 
+    partial void OnDisableIndentationChanged(bool value)
+    {
+        if (Editor?.TextArea == null) return;
+        Editor.TextArea.IndentationStrategy = value ? null : GetIndentationStrategy();
+    }
+    private IIndentationStrategy? GetIndentationStrategy()
+    {
+        var langCode = SelectedSnippet?.Category?.Language?.Code ?? "cs";
+        return braceStyleLanguages.Contains(langCode)
+            ? csharpIndentationStrategy
+            : defaultIndentationStrategy;
+    }
+
+    private void UpdateIndentationStrategy()
+    {
+        OnDisableIndentationChanged(DisableIndentation);
+    }
     public async Task ChangeSelectedSnippetAsync(Snippet? newSnippet)
     {
         if (newSnippet == null) return;
@@ -337,6 +369,7 @@ public partial class MainWindowViewModel : ObservableObject
         _isInternalTextUpdate = false;
 
         UpdateWindowTitle();
+        UpdateIndentationStrategy();
     }
 
     private void UpdateWindowTitle()
