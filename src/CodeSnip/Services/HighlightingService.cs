@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using Avalonia.Controls.Notifications;
 using Avalonia.Media;
 using Avalonia.Platform;
 using Avalonia.Styling;
@@ -156,6 +157,25 @@ namespace CodeSnip.Services
 
                 if (xshdXml == null)
                     return null;
+
+                var validator = new XshdValidationService();
+                var validation = validator.Validate(xshdXml);
+
+                if (!validation.IsValid)
+                {
+                    Trace.WriteLine($"[HighlightingService] XSHD validation failed for '{relativeXshdPath}':");
+                    foreach (var err in validation.Errors)
+                    {
+                        Trace.WriteLine("  - " + err);
+                        NotificationService.Instance.Show(
+                            "XSHD Error",
+                            err,
+                            NotificationType.Error,
+                            10
+                            );
+                    }
+                    return null;
+                }
 
                 using StringReader stringReader = new(xshdXml);
                 using XmlReader xmlReader = XmlReader.Create(stringReader);

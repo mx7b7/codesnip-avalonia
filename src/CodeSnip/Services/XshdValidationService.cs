@@ -70,12 +70,15 @@ public class XshdValidationService
                 var begin = (string?)span.Attribute("begin") ?? span.Element(ns + "Begin")?.Value ?? "";
                 var end = (string?)span.Attribute("end") ?? span.Element(ns + "End")?.Value ?? "";
 
-
                 if (IsFatalPattern(begin))
                     result.Errors.Add($"Fatal span begin pattern: '{begin}'");
 
                 if (end != "$" && IsFatalPattern(end))
                     result.Errors.Add($"Fatal span end pattern: '{end}'");
+
+                if (begin == end && IsFatalPattern(begin))
+                    result.Errors.Add($"Span begin and end are identical zero-width patterns: '{begin}'");
+
             }
         }
     }

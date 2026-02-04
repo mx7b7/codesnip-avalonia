@@ -1,5 +1,4 @@
-﻿using Avalonia;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
 using System;
 
@@ -27,6 +26,20 @@ public class NotificationService
                 MaxItems = 5
             };
         }
+    }
+
+    public void Show(string title = "", string message = "", NotificationType type = NotificationType.Information, long expirationSeconds = 5)
+    {
+        if (_notificationManager == null)
+            return;
+
+        Manager.Show(new Notification
+        {
+            Title = title,
+            Message = message,
+            Type = type,
+            Expiration= TimeSpan.FromSeconds(expirationSeconds)
+        });
     }
 
     public INotificationManager Manager => _notificationManager

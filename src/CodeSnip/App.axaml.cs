@@ -4,6 +4,7 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using CodeSnip.Views.MainWindowView;
+using CodeSnip.Views.SplashScreenView;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using System;
@@ -14,6 +15,8 @@ namespace CodeSnip
 {
     public partial class App : Application
     {
+        private static int _errorCount = 0; // Keep track of errors to prevent multiple popups
+
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
@@ -26,23 +29,48 @@ namespace CodeSnip
                 // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
                 // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
                 DisableAvaloniaDataAnnotationValidation();
-                desktop.MainWindow = new MainWindow
-                {
-                    DataContext = new MainWindowViewModel(),
-                };
-                // Call InitializeAsync on the ViewModel after the MainWindow is set up
-                // Dispatcher.UIThread.InvokeAsync ensures it runs on the UI thread
-                // and Task.Run(() => ...) ensures the actual work is offloaded.
-                Dispatcher.UIThread.InvokeAsync(async () => await ((MainWindowViewModel)desktop.MainWindow.DataContext).InitializeAsync());
 
-                // Hook up the unhandled exception handler
+                // Register global UI thread exception handler BEFORE anything else
                 Dispatcher.UIThread.UnhandledException += OnUnhandledException;
+
+                // Show splash screen and load main window inside it
+                desktop.MainWindow = new SplashScreen(async () =>
+                {
+
+                    var mainWindow = new MainWindow()
+                    {
+                        DataContext = new MainWindowViewModel()
+                    };
+
+                    desktop.MainWindow = mainWindow;
+
+                    // Initialize ViewModel safely (catch async exceptions)
+                    try
+                    {
+                        await ((MainWindowViewModel)mainWindow.DataContext!).InitializeAsync();
+                        mainWindow.Show();
+                        mainWindow.Focus();
+                    }
+                    catch (Exception ex)
+                    {
+                        // Forward async exceptions to global handler
+                        var args = CreateArgs(ex);
+                        OnUnhandledException(this, args);
+                    }
+                });
             }
 
             base.OnFrameworkInitializationCompleted();
         }
 
-        private static int _errorCount = 0; // Keep track of errors to prevent multiple popups
+        private DispatcherUnhandledExceptionEventArgs CreateArgs(Exception ex)
+        {
+            var ctor = typeof(DispatcherUnhandledExceptionEventArgs)
+                .GetConstructors(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                .First();
+
+            return (DispatcherUnhandledExceptionEventArgs)ctor.Invoke([ex, false]);
+        }
 
         private async void OnUnhandledException(object? sender, DispatcherUnhandledExceptionEventArgs e)
         {
