@@ -6,7 +6,7 @@
 	<Style Selector="ProgressBar:horizontal.thin">
 		<Setter Property="MinHeight" Value="4" />
 	</Style>
-	<!-- ..............RepeatButton temporary for treeview scrollbar....................... -->
+	<!-- ..............RepeatButton temporary for thin scrollbar....................... -->
 	<Style Selector="RepeatButton.repeat">
 		<Setter Property="Padding" Value="0" />
 	</Style>
@@ -71,6 +71,38 @@
 	<Style Selector="Button.IconButton:disabled">
 		<Setter Property="Opacity" Value="0.3"/>
 	</Style>
-	<!-- .................................................................................. -->
+	<!-- .........................Titlebar buttons style........................................-->
+	<Style Selector="Button.TitleBarButton">
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="BorderThickness" Value="0"/>
+		<Setter Property="Height" Value="30"/>
+		<Setter Property="Width" Value="30"/>
+		<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		<Setter Property="VerticalContentAlignment" Value="Center"/>
+	</Style>
 
+	<Style Selector="Button.TitleBarButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+		<Setter Property="Opacity" Value="0.7"/>
+	</Style>
+
+	<Style Selector="Button.TitleBarButton:pressed /template/ ContentPresenter#PART_ContentPresenter">
+		<Setter Property="Background" Value="Transparent"/>
+	</Style>
+	<!--.............................................................................................-->
+	<Style Selector="ScrollViewer.ScrollViewerThin ScrollBar:vertical">
+		<Setter Property="Width" Value="6"/>
+	</Style>
+	<Style Selector="ScrollViewer.ScrollViewerThin ScrollBar:vertical /template/ Thumb#thumb">
+		<Setter Property="MinHeight" Value="24"/>
+		<Setter Property="Width" Value="5"/>
+	</Style>
+	<Style Selector="ScrollViewer.ScrollViewerThin ScrollBar:horizontal">
+		<Setter Property="Width" Value="6"/>
+	</Style>
+	<Style Selector="ScrollViewer.ScrollViewerThin ScrollBar:horizontal /template/ Thumb#thumb">
+		<Setter Property="MinWidth" Value="24"/>
+		<Setter Property="Height" Value="5"/>
+	</Style>
+   <!--................................................................................................-->
+	
 </Styles>

@@ -306,7 +306,8 @@ public partial class CodeRunnerViewModel : ObservableObject, IOverlayViewModel
                      RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? info.mac :
                      info.win; // fallback
 
-        string toolsDir = Path.Combine(AppContext.BaseDirectory, "Tools", "Interpreters");
+        string appDir = Path.GetDirectoryName(Environment.ProcessPath)!;
+        string toolsDir = Path.Combine(appDir, "Tools", "Interpreters");
         string interpreterPath = Path.Combine(toolsDir, exe);
 
         return File.Exists(interpreterPath)

@@ -416,6 +416,11 @@ public partial class MainWindow : ControlsEx.Window.Window
         }
     }
 
-    
+    private void About_Click(object sender, RoutedEventArgs e)
+    {
+        var aboutWindow = new AboutView.AboutWindow();
+        aboutWindow.ShowDialog(this);
+    }
+
 
 }

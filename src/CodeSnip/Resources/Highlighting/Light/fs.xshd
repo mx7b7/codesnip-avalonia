@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <SyntaxDefinition name="F#" extensions=".fs" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
-  <!-- Shades of Red-Brown: #a31515, #cf4315, #ffb96e, #ffdc95 -->
   <Color name="Digits"        foreground="DarkBlue" exampleText="3.1415f"/>
   <Color name="Comment"       foreground="Green"    exampleText="// comment" />
   <Color name="Punctuation"   foreground="Blue"     exampleText="a(b.c);" />

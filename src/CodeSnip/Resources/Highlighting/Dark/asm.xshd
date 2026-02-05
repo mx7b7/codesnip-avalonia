@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SyntaxDefinition name="Asm" extensions=".asm" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
-	
+	<!-- syntax definition for Assembler by mx7b7 -->
     <Color name="Comment" foreground="#FF57A64A" />
     <Color name="String" foreground="#FFD69D85" />
     <Color name="Instruction" foreground="#FF569CD6" fontWeight="bold" />

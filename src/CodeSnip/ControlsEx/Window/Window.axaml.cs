@@ -15,6 +15,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Threading;
 using System;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace CodeSnip.ControlsEx.Window;
@@ -314,19 +315,19 @@ public class Window : Avalonia.Controls.Window
             OnWindowStateChanged(newState);
         }
 
-        //if (change.Property == SaveWindowStateProperty)
-        //{
-        //    var saveState = change.GetNewValue<bool>();
-        //    if (saveState)
-        //    {
-        //        var assembly = Assembly.GetEntryAssembly();
-        //        this.ManageWindowState(assembly?.GetName().Name ?? "main");
-        //    }
-        //    else
-        //    {
-        //        this.UnmanageWindowState();
-        //    }
-        //}
+        if (change.Property == SaveWindowStateProperty)
+        {
+            var saveState = change.GetNewValue<bool>();
+            if (saveState)
+            {
+                var assembly = Assembly.GetEntryAssembly();
+                this.ManageWindowState(assembly?.GetName().Name ?? "main");
+            }
+            else
+            {
+                this.UnmanageWindowState();
+            }
+        }
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && _trafficLightPositionInitialized)
         {
@@ -389,7 +390,7 @@ public class Window : Avalonia.Controls.Window
         {
             if (e.NameScope.Get<Panel>("PART_Root") is { } rootPanel)
             {
-                //this.AddResizeGrip(rootPanel);
+                this.AddResizeGrip(rootPanel);
             }
 
             if (RootCornerRadius == default)

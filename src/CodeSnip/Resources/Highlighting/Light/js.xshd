@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SyntaxDefinition name="JavaScript" extensions=".js" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
-	<!-- syntax definition for D by mx7b7 -->
+	<!-- syntax definition for JavaScript by mx7b7 -->
 	<!-- vscode Light Modern-->
 	<Color name="Digits" foreground="#FF098658" exampleText="3.14" />
 	<Color name="Comment" foreground="#FF008000" exampleText="// comment" />

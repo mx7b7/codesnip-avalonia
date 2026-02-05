@@ -1,0 +1,170 @@
+<codesnip:Window xmlns="https://github.com/avaloniaui"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                xmlns:codesnip="clr-namespace:CodeSnip.ControlsEx.Window"
+                x:Class="CodeSnip.Views.AboutView.AboutWindow"
+		        xmlns:vm="using:CodeSnip.Views.AboutView"
+		        x:DataType="vm:AboutWindowModel"
+                Title="About CodeSnip"
+		        Width="600"
+                Height="400"
+                CanResize="False"
+				CanMinimize="False"
+                ShowInTaskbar="False"
+                WindowStartupLocation="CenterOwner"
+				BorderBrush="{DynamicResource AccentBrush}">
+
+	<Grid>
+		<TabControl TabStripPlacement="Left">
+			<TabItem Header="About">
+				<StackPanel Margin="20" HorizontalAlignment="Center">
+					<TextBlock Text="{Binding Title}"
+                               FontWeight="Bold"
+                               FontSize="22"
+                               Foreground="{DynamicResource ThemeAccentBrush}"
+                               HorizontalAlignment="Center" />
+
+					<TextBlock Text="Version:" FontWeight="SemiBold" Margin="0,20,0,0" />
+					<TextBlock Text="{Binding Version}" FontSize="14" />
+
+					<TextBlock Text="Description:" FontWeight="SemiBold" Margin="0,15,0,0" />
+					<TextBlock Text="{Binding Description}"
+                               TextWrapping="Wrap"
+                               FontSize="13"
+                               Foreground="{DynamicResource ThemeForegroundLowBrush}" />
+
+					<TextBlock Text="Author:" FontWeight="SemiBold" Margin="0,15,0,0" />
+					<TextBlock Text="{Binding Company}" FontSize="14" />
+					<TextBlock Text="{Binding Copyright}" FontSize="14" Margin="0,15,0,0" />
+
+					<HyperlinkButton Margin="15,30,0,0" HorizontalAlignment="Center" FontSize="14"
+									 Content="GitHub"
+									 NavigateUri="https://github.com/mx7b7/codesnip-avalonia"
+									 ToolTip.Tip="https://github.com/mx7b7/codesnip-avalonia"
+									 Foreground="{DynamicResource ThemeForegroundBrush}"/>
+				</StackPanel>
+			</TabItem>
+
+			<TabItem Header="Dependencies &amp; Tools">
+				<ScrollViewer Classes="ScrollViewerThin"
+							  Margin="10"
+							  VerticalScrollBarVisibility="Auto"
+							  HorizontalScrollBarVisibility="Auto">
+					<StackPanel>
+						<TextBlock Text="Libraries"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Foreground="{DynamicResource ThemeAccentBrush}"
+                                   Margin="0,0,0,10"/>
+
+						<ItemsControl ItemsSource="{Binding Libraries}">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<Grid Margin="0,5" VerticalAlignment="Center">
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="10"/>
+											<ColumnDefinition Width="*"/>
+											<ColumnDefinition Width="200"/>
+										</Grid.ColumnDefinitions>
+										<TextBlock Grid.Column="0" Text="•" FontSize="16" VerticalAlignment="Center" />
+										<HyperlinkButton Grid.Column="1"
+														 Content="{Binding Name}"
+														 NavigateUri="{Binding Url}"
+														 ToolTip.Tip="{Binding Url}"
+														 Foreground="{DynamicResource ThemeForegroundBrush}"/>
+
+										<HyperlinkButton Grid.Column="2"
+											             Content="{Binding LicenseName}"
+														 NavigateUri="{Binding LicenseUrl}"
+														 ToolTip.Tip="{Binding LicenseUrl}"
+														 Foreground="{DynamicResource ThemeForegroundBrush}"/>
+									</Grid>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+
+						<TextBlock Text="External Services"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Foreground="{DynamicResource ThemeAccentBrush}"
+                                   Margin="0,20,0,10"/>
+
+						<ItemsControl ItemsSource="{Binding Services}">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<Grid Margin="0,5" VerticalAlignment="Center">
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="10"/>
+											<ColumnDefinition Width="*"/>
+										</Grid.ColumnDefinitions>
+										<TextBlock Grid.Column="0" Text="•" FontSize="16" VerticalAlignment="Center" />
+										<HyperlinkButton Grid.Column="1"
+														 Content="{Binding Name}"
+														 NavigateUri="{Binding Url}"
+														 ToolTip.Tip="{Binding Url}"
+														 Foreground="{DynamicResource ThemeForegroundBrush}"/>
+									</Grid>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+
+						<TextBlock Text="External Tools"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Foreground="{DynamicResource ThemeAccentBrush}"
+                                   Margin="0,20,0,10"/>
+
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
+
+							<ItemsControl Grid.Column="0" ItemsSource="{Binding Tools}">
+								<ItemsControl.ItemTemplate>
+									<DataTemplate>
+										<Grid Margin="0,5" VerticalAlignment="Center">
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="10"/>
+												<ColumnDefinition Width="*"/>
+											</Grid.ColumnDefinitions>
+											<TextBlock Grid.Column="0" Text="•" FontSize="16" VerticalAlignment="Center" />
+											<HyperlinkButton Grid.Column="1" Margin="0,5,10,5" VerticalAlignment="Center"
+															 Content="{Binding Name}"
+															 NavigateUri="{Binding Url}"
+															 ToolTip.Tip="{Binding Url}"
+															 Foreground="{DynamicResource ThemeForegroundBrush}"/>
+										</Grid>
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+							</ItemsControl>
+							<ItemsControl Grid.Column="1" ItemsSource="{Binding Tools2}">
+								<ItemsControl.ItemTemplate>
+									<DataTemplate>
+										<Grid Margin="0,5" VerticalAlignment="Center">
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="10"/>
+												<ColumnDefinition Width="*"/>
+											</Grid.ColumnDefinitions>
+											<TextBlock Grid.Column="0" Text="•" FontSize="16" VerticalAlignment="Center" />
+											<HyperlinkButton Grid.Column="1" Margin="0,5,10,5" VerticalAlignment="Center"
+															 Content="{Binding Name}"
+															 NavigateUri="{Binding Url}"
+															 ToolTip.Tip="{Binding Url}"
+															 Foreground="{DynamicResource ThemeForegroundBrush}"/>
+										</Grid>
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+							</ItemsControl>
+						</Grid>
+					</StackPanel>
+				</ScrollViewer>
+			</TabItem>
+
+			<TabItem Header="Notes" IsVisible="False">
+				<!-- Usage tips -->
+			</TabItem>
+		</TabControl>
+	</Grid>
+</codesnip:Window>

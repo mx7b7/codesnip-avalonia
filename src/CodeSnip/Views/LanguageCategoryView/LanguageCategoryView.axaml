@@ -41,7 +41,7 @@
 					  Stretch="UniformToFill"/>
 			</Button>
 		</Grid>
-		<ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
+		<ScrollViewer Classes="ScrollViewerThin" VerticalScrollBarVisibility="Auto" Grid.Row="1">
 			<StackPanel Margin="10">
 
 				<!-- LANGUAGES SECTION -->

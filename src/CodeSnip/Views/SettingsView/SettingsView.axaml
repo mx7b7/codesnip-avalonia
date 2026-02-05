@@ -19,7 +19,7 @@
 		<TabControl Grid.Row="1" TabStripPlacement="Left" Margin="10" HorizontalAlignment="">
 			<!-- Appearance -->
 			<TabItem Header="Appearance">
-				<ScrollViewer Margin="10, 0" VerticalScrollBarVisibility="Auto">
+				<ScrollViewer Classes="ScrollViewerThin" Margin="10, 0" VerticalScrollBarVisibility="Auto">
 					<StackPanel>
 						<!-- Theme -->
 						<Border CornerRadius="5" BorderBrush="{DynamicResource ThemeControlHighlightMidBrush}"
@@ -39,7 +39,7 @@
 			</TabItem>
 			<!-- MAIN WINDOW -->
 			<TabItem Header="Window">
-				<ScrollViewer Margin="10">
+				<ScrollViewer Classes="ScrollViewerThin" Margin="10">
 					<StackPanel>
 						<Border CornerRadius="5" BorderBrush="{DynamicResource ThemeControlHighlightMidBrush}" BorderThickness="1" Padding="10">
 							<StackPanel Spacing="5" Margin="0 0 0 12">
@@ -61,7 +61,7 @@
 			</TabItem>
 			<!-- Editor -->
 			<TabItem Header="Editor">
-				<ScrollViewer Margin="10">
+				<ScrollViewer Classes="ScrollViewerThin" Margin="10">
 					<StackPanel>
 						<Border CornerRadius="5" BorderBrush="{DynamicResource ThemeControlHighlightMidBrush}" BorderThickness="1" Padding="10">
 							<StackPanel Spacing="5" Margin="0 0 0 12">
