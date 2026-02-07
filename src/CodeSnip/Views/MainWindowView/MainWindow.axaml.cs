@@ -236,7 +236,7 @@ public partial class MainWindow : ControlsEx.Window.Window
         if (code is not null and "py")
         {
             string originalCode = textEditor.Text;
-            var (isSuccess, formatted, error) = await FormattingService.TryFormatCodeWithPythonModuleAsync(originalCode, "black");
+            var (isSuccess, formatted, error) = await FormattingService.TryFormatCodeWithPythonFormatterAsync(originalCode, "black");
             if (isSuccess)
             {
                 textEditor.Document.Text = formatted;
@@ -255,7 +255,7 @@ public partial class MainWindow : ControlsEx.Window.Window
         if (code is not null and "py")
         {
             string originalCode = textEditor.Text;
-            var (isSuccess, formatted, error) = await FormattingService.TryFormatCodeWithPythonModuleAsync(originalCode, "autopep8");
+            var (isSuccess, formatted, error) = await FormattingService.TryFormatCodeWithPythonFormatterAsync(originalCode, "autopep8");
             if (isSuccess)
             {
                 textEditor.Document.Text = formatted!;

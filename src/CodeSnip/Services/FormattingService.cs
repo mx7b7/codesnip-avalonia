@@ -1,7 +1,6 @@
 ﻿using CSharpier.Core.CSharp;
 using CSharpier.Core.Xml;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -15,9 +14,6 @@ namespace CodeSnip.Services
     /// </summary>
     public static class FormattingService
     {
-        private static bool? _isPythonInstalled;
-        private static readonly Dictionary<string, bool?> s_installedPythonModules = [];
-
         /// <summary>
 		/// Formats C# code using the built-in CSharpier library.
 		/// </summary>
@@ -206,6 +202,18 @@ namespace CodeSnip.Services
         }
 
         /// <summary>
+        /// Formats Python code using black/autopep8 via python(3) -m.
+        /// </summary>
+        public static async Task<(bool Success, string? FormattedCode, string? ErrorMessage)>
+            TryFormatCodeWithPythonFormatterAsync(string code, string formatterName, int timeoutMs = 10000)
+        {
+            string pythonExe = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "python" : "python3";
+            string arguments = $"-m {formatterName} -";
+
+            return await TryFormatWithExternalProcessAsync(pythonExe, arguments, code, timeoutMs);
+        }
+
+        /// <summary>
         /// A generic helper method to run an external formatting tool from the 'Tools' directory.
         /// </summary>
         /// <param name="executableName">The name of the executable file (e.g., 'dfmt.exe').</param>
@@ -300,228 +308,6 @@ namespace CodeSnip.Services
             }
         }
 
-        /// <summary>
-        /// Formats Python code using a specified formatter module (e.g., 'black', 'autopep8').
-        /// </summary>
-        /// <param name="code">The Python code to format.</param>
-        /// <param name="timeoutMs">The timeout in milliseconds for the process.</param>
-        /// <returns>A tuple indicating success, the formatted code, and any error message.</returns>
-        public static async Task<(bool Success, string? FormattedCode, string? ErrorMessage)> TryFormatCodeWithPythonModuleAsync(string code, string formatterName, int timeoutMs = 5000)
-        {
-            if (!await IsPythonInstalledAsync())
-            {
-                return (false, null, "Python is not installed.");
-            }
-
-            if (!await IsPythonModuleInstalledAsync(formatterName))
-            {
-                return (false, null, $"Python formatter '{formatterName}' is not installed.");
-            }
-
-            string arguments = formatterName switch
-            {
-                "black" => "-m black -",
-                "autopep8" => "-m autopep8 -", // autopep8 reads from stdin by default
-                _ => throw new ArgumentException($"Unsupported Python formatter: {formatterName}", nameof(formatterName))
-            };
-
-            ProcessStartInfo startInfo = new()
-            {
-                FileName = "python",
-                Arguments = arguments,
-                RedirectStandardInput = true,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-
-            try
-            {
-                using var process = new Process { StartInfo = startInfo };
-                if (!process.Start())
-                {
-                    return (false, null, "Can't start the Python process.");
-                }
-
-                await process.StandardInput.WriteAsync(code);
-                process.StandardInput.Close();
-
-                var outputTask = process.StandardOutput.ReadToEndAsync();
-                var errorTask = process.StandardError.ReadToEndAsync();
-
-                using var cts = new CancellationTokenSource(timeoutMs);
-                try
-                {
-                    await process.WaitForExitAsync(cts.Token);
-                }
-                catch (OperationCanceledException)
-                {
-                    try { process.Kill(entireProcessTree: true); } catch { /* Ignore errors */ }
-                    return (false, null, "Timeout when formatting code.");
-                }
-
-                string stdOutput = await outputTask;
-                string stdError = await errorTask;
-
-                if (process.ExitCode != 0)
-                {
-                    return (false, null, $"Formatting error with '{formatterName}': {stdError.Trim()}");
-                }
-
-                return (true, stdOutput.Trim(), null);
-            }
-            catch (Exception ex)
-            {
-                return (false, null, $"An exception occurred while running '{formatterName}': {ex.Message}");
-            }
-        }
-
-        /// <summary>
-		/// Formats a Python file in-place using the 'black' formatter.
-		/// </summary>
-		/// <param name="code">The Python code to write to a temporary file and format.</param>
-		/// <param name="timeoutMs">The timeout in milliseconds for the process.</param>
-		/// <returns>A tuple indicating success, the formatted code, and any error message.</returns>
-        public static async Task<(bool Success, string? FormattedCode, string? ErrorMessage)> TryFormatCodeWithBlackFileAsync(string code, int timeoutMs = 5000)
-        {
-            if (!await IsPythonInstalledAsync())
-            {
-                return (false, null, "Python is not installed.");
-            }
-
-            if (!await IsPythonModuleInstalledAsync("black"))
-            {
-                return (false, null, "'black' is not installed for the current Python environment.");
-            }
-
-            string tempFilePath = Path.GetTempFileName() + ".py";
-
-            try
-            {
-                await File.WriteAllTextAsync(tempFilePath, code);
-
-                ProcessStartInfo startInfo = new()
-                {
-                    FileName = "python",
-                    Arguments = $"-m black \"{tempFilePath}\" --fast",
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-
-                using (var process = new Process { StartInfo = startInfo })
-                {
-                    process.Start();
-
-                    var errorTask = process.StandardError.ReadToEndAsync();
-
-                    using var cts = new CancellationTokenSource(timeoutMs);
-                    try
-                    {
-                        await process.WaitForExitAsync(cts.Token);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        try { process.Kill(entireProcessTree: true); } catch { /* Ignore errors */ }
-                        return (false, null, "Timeout when formatting code.");
-                    }
-
-                    string stdError = await errorTask;
-
-                    if (process.ExitCode != 0)
-                    {
-                        return (false, null, $"Formatting error: {stdError.Trim()}");
-                    }
-                }
-
-                var formattedCode = await File.ReadAllTextAsync(tempFilePath);
-                return (true, formattedCode, null);
-            }
-            catch (Exception ex)
-            {
-                return (false, null, $"Error: {ex.Message}");
-            }
-            finally
-            {
-                if (File.Exists(tempFilePath))
-                {
-                    try { File.Delete(tempFilePath); } catch { /* Ignore errors */ }
-                }
-            }
-        }
-
-        static async Task<bool> IsPythonInstalledAsync()
-        {
-            if (_isPythonInstalled.HasValue)
-                return _isPythonInstalled.Value;
-            try
-            {
-                ProcessStartInfo startInfo = new()
-                {
-                    FileName = "python",
-                    Arguments = "--version",
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-
-                using (var process = new Process { StartInfo = startInfo })
-                {
-                    process.Start();
-                    string output = await process.StandardOutput.ReadToEndAsync();
-                    string error = await process.StandardError.ReadToEndAsync();
-                    await process.WaitForExitAsync();
-                    var result = process.ExitCode == 0 && (output.StartsWith("Python") || error.StartsWith("Python"));
-                    _isPythonInstalled = result;
-                    return result;
-                }
-            }
-            catch
-            {
-                _isPythonInstalled = false;
-                return false;
-            }
-        }
-
-
-        static async Task<bool> IsPythonModuleInstalledAsync(string moduleName)
-        {
-            if (s_installedPythonModules.TryGetValue(moduleName, out bool? cachedResult) && cachedResult.HasValue)
-                return cachedResult.Value;
-
-            try
-            {
-                ProcessStartInfo startInfo = new()
-                {
-                    FileName = "python",
-                    Arguments = $"-m {moduleName} --version",
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-
-                using (var process = new Process { StartInfo = startInfo })
-                {
-                    process.Start();
-                    string output = await process.StandardOutput.ReadToEndAsync();
-                    string error = await process.StandardError.ReadToEndAsync();
-                    await process.WaitForExitAsync();
-                    var result = process.ExitCode == 0 && (output.Contains(moduleName, StringComparison.OrdinalIgnoreCase) || error.Contains(moduleName, StringComparison.OrdinalIgnoreCase));
-                    s_installedPythonModules[moduleName] = result;
-                    return result;
-                }
-            }
-            catch
-            {
-                s_installedPythonModules[moduleName] = false;
-                return false;
-            }
-        }
-
-
+        
     }
 }
