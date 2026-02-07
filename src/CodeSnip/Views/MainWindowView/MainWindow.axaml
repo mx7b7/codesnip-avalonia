@@ -499,6 +499,16 @@
 												  Foreground="{DynamicResource ThemeAccentBrush}"/>
 									</MenuItem.Icon>
 								</MenuItem>
+								<Separator/>
+								<MenuItem Header="Select All"
+										  InputGesture="Ctrl+A"
+										  Command="{Binding SelectAllCommand}"
+										  CommandParameter="{Binding #textEditor}">
+									<MenuItem.Icon>
+										<PathIcon Data="{StaticResource SelectAll}" Width="16" Height="16"
+												  Foreground="{DynamicResource ThemeAccentBrush}"/>
+									</MenuItem.Icon>
+								</MenuItem>
 								<Separator />
 								<MenuItem Header="Comment">
 									<MenuItem.Icon>
