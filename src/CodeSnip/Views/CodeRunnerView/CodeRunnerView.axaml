@@ -81,7 +81,7 @@
 						Grid.Row="0"
 						TabIndex="0"/>
 				<Button Content="Run Local"
-						Command="{Binding RunLocalCommand}"						
+						Command="{Binding RunLocalCommand}"
 						Grid.Column="1"
 						Margin="10,0,0,0"
 						Grid.Row="0"
@@ -126,27 +126,29 @@
 							<RowDefinition Height="*" />
 							<RowDefinition Height="Auto" />
 						</Grid.RowDefinitions>
-						<Expander Header="Stdout:" Grid.Row="0"
+						<Expander Grid.Row="0"
 								  IsExpanded="{Binding HasOut}"
-								  FontWeight="SemiBold"
 								  BorderBrush="{DynamicResource ThemeControlHighlightLowBrush}"
 								  BorderThickness="1"
 								  Background="{DynamicResource ThemeBackgroundBrush}">
-
+							<Expander.Header>
+								<TextBlock Text=" Stdout:" FontWeight="SemiBold"/>
+							</Expander.Header>
 							<TextBox Text="{Binding StdOut}"
 									 IsReadOnly="True"
 									 TextWrapping="NoWrap"
 									 ScrollViewer.HorizontalScrollBarVisibility="Auto"
 									 ScrollViewer.VerticalScrollBarVisibility="Auto"/>
 						</Expander>
-						<Expander Header="Stderr:" Grid.Row="1"
+						<Expander Grid.Row="1"
 								  IsExpanded="{Binding HasError}"
-								  FontWeight="SemiBold"
 								  Margin="0,10,0,0"
 								  BorderBrush="{DynamicResource ThemeControlHighlightLowBrush}"
 								  BorderThickness="1"
 								  Background="{DynamicResource ThemeBackgroundBrush}" >
-
+							<Expander.Header>
+								<TextBlock Text=" Stderr:" FontWeight="SemiBold"/>
+							</Expander.Header>
 							<TextBox Text="{Binding ErrorText}"
 									 IsReadOnly="True"
 									 Foreground="#FFF92672"
@@ -168,7 +170,7 @@
 						HorizontalScrollBarVisibility="Auto"
 						Margin="5" >
 						<i:Interaction.Behaviors>
-							<helpers:AvaloniaEditTextBindingBehavior BoundText="{Binding AsmCode, Mode=OneWay}" />
+							<helpers:XshdTextBindingBehavior Text="{Binding AsmCode, Mode=OneWay}" />
 							<helpers:AvalonEditHighlightingBehavior HighlightingName="{Binding AsmHighlightingName}" />
 						</i:Interaction.Behaviors>
 						<AvaloniaEdit:TextEditor.Options>
