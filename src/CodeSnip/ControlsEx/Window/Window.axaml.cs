@@ -395,7 +395,7 @@ public class Window : Avalonia.Controls.Window
 
             if (RootCornerRadius == default)
             {
-                RootCornerRadius = new CornerRadius(10);
+                RootCornerRadius = new CornerRadius(0); // temporarily disable corner radius on non-Windows
             }
         }
 
