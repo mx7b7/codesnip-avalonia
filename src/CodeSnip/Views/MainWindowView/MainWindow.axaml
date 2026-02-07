@@ -509,6 +509,56 @@
 												  Foreground="{DynamicResource ThemeAccentBrush}"/>
 									</MenuItem.Icon>
 								</MenuItem>
+								<Separator/>
+								<MenuItem Header="Copy As">
+									<MenuItem.Icon>
+										<PathIcon Data="{StaticResource ContentCopy}" Foreground="{DynamicResource ThemeAccentBrush}"
+                                          Width="16" Height="16" />
+									</MenuItem.Icon>
+									<MenuItem Header="Markdown" Click="CopyAsMarkdown_Click">
+										<MenuItem.Icon>
+											<PathIcon Data="{StaticResource MarkdownFill}" Foreground="{DynamicResource ThemeAccentBrush}"
+                                              Width="16" Height="16"/>
+										</MenuItem.Icon>
+									</MenuItem>
+									<MenuItem Header="HTML code" Click="CopyAsHtml_Click">
+										<MenuItem.Icon>
+											<PathIcon Data="{StaticResource FileHtml}" Foreground="{DynamicResource ThemeAccentBrush}"
+                                              Width="16" Height="16"/>
+										</MenuItem.Icon>
+									</MenuItem>
+									<MenuItem Header="BBCode" Click="CopyAsBBCode_Click">
+										<MenuItem.Icon>
+											<PathIcon Data="{StaticResource CodeBrackets}"  Foreground="{DynamicResource ThemeAccentBrush}"
+                                              Width="16" Height="16" />
+										</MenuItem.Icon>
+									</MenuItem>
+									<MenuItem Header="JSON String" Click="CopyAsJsonString_Click">
+										<MenuItem.Icon>
+											<PathIcon Data="{StaticResource Json}"  Foreground="{DynamicResource ThemeAccentBrush}"
+                                              Width="16" Height="16" />
+										</MenuItem.Icon>
+									</MenuItem>
+									<MenuItem Header="Base64 String" Click="CopyAsBase64String_Click">
+										<MenuItem.Icon>
+											<PathIcon Data="{StaticResource Base64_TMP}"  Foreground="{DynamicResource ThemeAccentBrush}"
+                                              Width="16" Height="16" />
+										</MenuItem.Icon>
+									</MenuItem>
+								</MenuItem>
+								<Separator />
+								<MenuItem Header="Export to">
+									<MenuItem.Icon>
+										<PathIcon Data="{StaticResource Export}" Foreground="{DynamicResource ThemeAccentBrush}"
+										  Width="16" Height="16" />
+									</MenuItem.Icon>
+									<MenuItem Header="File" Click="ExportToFile_Click">
+										<MenuItem.Icon>
+											<PathIcon Data="{StaticResource FileExport}" Foreground="{DynamicResource ThemeAccentBrush}"
+											  Width="16" Height="16" />
+										</MenuItem.Icon>
+									</MenuItem>
+								</MenuItem>
 								<Separator />
 								<MenuItem Header="Comment">
 									<MenuItem.Icon>

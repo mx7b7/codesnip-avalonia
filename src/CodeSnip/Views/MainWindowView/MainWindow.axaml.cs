@@ -2,11 +2,14 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using AvaloniaEdit;
+using CodeSnip.Helpers;
 using CodeSnip.Services;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using System;
 using System.Linq;
+using System.Net;
+using System.Text.Json;
 
 namespace CodeSnip.Views.MainWindowView;
 
@@ -416,10 +419,182 @@ public partial class MainWindow : ControlsEx.Window.Window
         }
     }
 
+    private async void CopyAsMarkdown_Click(object sender, RoutedEventArgs e)
+    {
+        if (string.IsNullOrEmpty(textEditor.SelectedText))
+            return;
+
+        string langCode = ViewModel.SelectedSnippet?.Category?.Language?.Code ?? "";
+        langCode = MapLangCodeToMarkdown(langCode);
+        string markdownCode = $"```{langCode}\n{textEditor.SelectedText}\n```";
+
+
+        try
+        {
+            if (GetTopLevel(this)?.Clipboard is { } clipboard)
+                await clipboard.SetTextAsync(markdownCode ?? string.Empty);
+        }
+        catch
+        {
+            NotificationService.Instance.Show("Clipboard Error", "Failed to copy to clipboard");
+        }
+    }
+
+    private async void CopyAsHtml_Click(object sender, RoutedEventArgs e)
+    {
+        if (string.IsNullOrEmpty(textEditor.SelectedText))
+            return;
+
+        string encodedCode = WebUtility.HtmlEncode(textEditor.SelectedText);
+        string htmlCode = $"<pre><code>{encodedCode}</code></pre>";
+
+        try
+        {
+            if (GetTopLevel(this)?.Clipboard is { } clipboard)
+                await clipboard.SetTextAsync(htmlCode ?? string.Empty);
+        }
+        catch
+        {
+            NotificationService.Instance.Show("Clipboard Error", "Failed to copy to clipboard");
+        }
+    }
+
+    private async void CopyAsBBCode_Click(object sender, RoutedEventArgs e)
+    {
+        if (string.IsNullOrEmpty(textEditor.SelectedText))
+            return;
+        string langCode = ViewModel.SelectedSnippet?.Category?.Language?.Code ?? "";
+        string bbCode = $"[code={langCode}]{textEditor.SelectedText}[/code]";
+        try
+        {
+            if (GetTopLevel(this)?.Clipboard is { } clipboard)
+                await clipboard.SetTextAsync(bbCode ?? string.Empty);
+        }
+        catch
+        {
+            NotificationService.Instance.Show("Clipboard Error", "Failed to copy to clipboard");
+        }
+    }
+
+    private async void CopyAsJsonString_Click(object sender, RoutedEventArgs e)
+    {
+        if (string.IsNullOrEmpty(textEditor.SelectedText))
+            return;
+
+        string jsonString = JsonSerializer.Serialize(textEditor.SelectedText);
+
+        try
+        {
+            if (GetTopLevel(this)?.Clipboard is { } clipboard)
+                await clipboard.SetTextAsync(jsonString ?? string.Empty);
+        }
+        catch
+        {
+            NotificationService.Instance.Show("Clipboard Error", "Failed to copy to clipboard");
+        }
+    }
+
+    private async void CopyAsBase64String_Click(object sender, RoutedEventArgs e)
+    {
+        string selectedText = textEditor.SelectedText;
+        if (string.IsNullOrEmpty(selectedText))
+            return;
+
+        try
+        {
+            byte[] textBytes = System.Text.Encoding.UTF8.GetBytes(selectedText);
+            string base64String = Convert.ToBase64String(textBytes);
+
+            if (GetTopLevel(this)?.Clipboard is { } clipboard)
+                await clipboard.SetTextAsync(base64String ?? string.Empty);
+        }
+        catch
+        {
+            NotificationService.Instance.Show("Clipboard Error", "Failed to copy to clipboard");
+        }
+    }
+
+    private async void ExportToFile_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            if (ViewModel != null && ViewModel.SelectedSnippet != null)
+            {
+
+                var success = await FileExporter.ExportToFile(StorageProvider, ViewModel.EditorText, ViewModel.SelectedSnippet.Title, ViewModel.SelectedSnippet?.Category?.Language?.Code);
+                if (success)
+                {
+                    NotificationService.Instance.Show("Export Success", $"File '{ViewModel.SelectedSnippet?.Title}' exported successfully!");
+                }
+                else
+                {
+                    NotificationService.Instance.Show("Export Cancelled", "Export was cancelled or failed.");
+                }
+            }
+        }
+        catch
+        {
+            NotificationService.Instance.Show("Export Error", $"Failed to export file");
+        }
+    }
+
     private void About_Click(object sender, RoutedEventArgs e)
     {
         var aboutWindow = new AboutView.AboutWindow();
         aboutWindow.ShowDialog(this);
+    }
+
+    private static string MapLangCodeToMarkdown(string code)
+    {
+        return code.ToLower() switch
+        {
+            "cs" => "csharp",
+            "cpp" => "cpp",
+            "js" => "javascript",
+            "ts" => "typescript",
+            "py" => "python",
+            "java" => "java",
+            "html" => "html",
+            "xml" => "xml",
+            "json" => "json",
+            "rb" => "ruby",
+            "php" => "php",
+            "go" => "go",
+            "rs" => "rust",
+            "swift" => "swift",
+            "kt" or "kts" => "kotlin",
+            "sh" or "bash" => "bash",
+            "ps1" => "powershell",
+            "sql" => "sql",
+            "d" => "d",
+            "vb" => "vbnet",
+            "lua" => "lua",
+            "md" => "markdown",
+            "yml" or "yaml" => "yaml",
+            "jsonc" => "jsonc",
+            "dockerfile" => "dockerfile",
+            "makefile" => "makefile",
+            "ini" => "ini",
+            "toml" => "toml",
+            "h" => "c", // Header files as C
+            "m" => "objective-c",
+            "mm" => "objective-c++",
+            "hs" => "haskell",
+            "erl" => "erlang",
+            "ex" or "exs" => "elixir",
+            "r" => "r",
+            "jl" => "julia",
+            "scala" => "scala",
+            "f" or "for" or "f90" => "fortran",
+            "ada" or "adb" => "ada",
+            "asm" or "s" => "assembly",
+            "v" or "vh" or "sv" or "svh" => "systemverilog",
+            "vhdl" => "vhdl",
+            "ml" => "ocaml",
+            "nim" => "nim",
+            "zig" => "zig",
+            _ => "", // Default to no language if not recognized
+        };
     }
 
 

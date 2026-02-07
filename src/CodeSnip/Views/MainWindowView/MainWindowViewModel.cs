@@ -983,7 +983,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     [RelayCommand(CanExecute = nameof(CanSelectAll))]
     private void SelectAll() => Editor!.SelectAll();
-    private bool CanSelectAll() => !string.IsNullOrEmpty(Editor?.Text);
+    private bool CanSelectAll() => !string.IsNullOrEmpty(Editor!.Text);
 
     [RelayCommand]
     private void Paste() => Editor!.Paste();
