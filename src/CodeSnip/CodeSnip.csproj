@@ -65,8 +65,8 @@
 		<PackageReference Include="SourceGear.sqlite3" Version="3.50.4.5" />
 		<PackageReference Include="Dapper" Version="2.1.66" />
 		<PackageReference Include="CSharpier.Core" Version="1.2.4" />
-		<PackageReference Include="Avalonia.AvaloniaEdit" Version="11.3.0" PrivateAssets="all" />
-		<PackageReference Include="AvaloniaEdit.TextMate" Version="11.3.0" PrivateAssets="all" />
+		<PackageReference Include="Avalonia.AvaloniaEdit" Version="11.4.1" />
+		<PackageReference Include="AvaloniaEdit.TextMate" Version="11.4.1" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
 		<PackageReference Include="Avalonia.Themes.Simple" Version="11.3.11" />
 
