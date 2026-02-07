@@ -598,12 +598,7 @@ public partial class MainWindowViewModel : ObservableObject
     {
         if (EditingSnippet is null)
         {
-            NotificationService.Instance.Manager.Show(new Notification()
-            {
-                Type = NotificationType.Information,
-                Title = "Cannot Save",
-                Message = "There is no active snippet to save.\nPlease select a snippet first."
-            });
+            NotificationService.Instance.Show("Cannot Save", "There is no active snippet to save.\nPlease select a snippet first.");
             return;
         }
 
@@ -621,12 +616,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         if (SelectedSnippet is null)
         {
-            NotificationService.Instance.Manager.Show(new Notification()
-            {
-                Type = NotificationType.Information,
-                Title = "No Snippet Selected",
-                Message = "Select a snippet from the list before attempting to delete it."
-            });
+            NotificationService.Instance.Show("No Snippet Selected", "Select a snippet from the list before attempting to delete it.");
             return;
         }
 
@@ -677,8 +667,11 @@ public partial class MainWindowViewModel : ObservableObject
         if (IsLeftOverlayOpen) return;
 
         if (!Languages.Any())
+        {
+            NotificationService.Instance.Show("No Languages Available", "Please add a language and category before adding a snippet.");
             return;
-
+        }
+            
         LeftOverlayContent = new SnippetViewModel(
             isEditMode: false,
             snippet: new Snippet(),
@@ -696,7 +689,10 @@ public partial class MainWindowViewModel : ObservableObject
         if (IsLeftOverlayOpen) return;
 
         if (SelectedSnippet is null)
+        {
+            NotificationService.Instance.Show("No Snippet Selected", "Select a snippet from the list before attempting to edit it.");
             return;
+        }
 
         LeftOverlayContent = new SnippetViewModel(
            isEditMode: true,
@@ -732,6 +728,8 @@ public partial class MainWindowViewModel : ObservableObject
     private async Task EditLanguageCategory()
     {
         if (IsLeftOverlayOpen) return;
+
+        if(IsLoadSnippetEnabled) return;
 
         var vm = new LanguageCategoryViewModel(
             dbService: _databaseService);
