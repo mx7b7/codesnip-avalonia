@@ -1,5 +1,4 @@
 ﻿using Avalonia.Platform;
-using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using System;
 using System.Collections.Generic;
@@ -65,13 +64,13 @@ public class CompilerSettingsService
             }
             catch (JsonException ex)
             {
-                _ = await MessageBoxManager.GetMessageBoxStandard("Compiler Settings Error", $"Error parsing 'compilers.json': {ex.Message}\nLoading default compiler settings.", ButtonEnum.Ok).ShowAsync();
+                await MessageBoxService.Instance.OkAsync("Compiler Settings Error", $"Error parsing 'compilers.json': {ex.Message}\nLoading default compiler settings.", Icon.Error);
                 LoadSettingsFromResource(); // Load from embedded resource
                 SaveSettings();
             }
             catch (Exception ex)
             {
-                _ = await MessageBoxManager.GetMessageBoxStandard("Compiler Settings Error", $"An unexpected error occurred while loading 'compilers.json': {ex.Message}\nLoading default compiler settings.", ButtonEnum.Ok).ShowAsync();
+                await MessageBoxService.Instance.OkAsync("Compiler Settings Error", $"An unexpected error occurred while loading 'compilers.json': {ex.Message}\nLoading default compiler settings.", Icon.Error);
                 LoadSettingsFromResource();
                 SaveSettings();
             }

@@ -1,7 +1,6 @@
 ﻿using CodeSnip.Views.LanguageCategoryView;
 using CodeSnip.Views.SnippetView;
 using Dapper;
-using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using System;
 using System.Collections.Generic;
@@ -521,7 +520,7 @@ ORDER BY L.Name, C.Name, S.Title";
             }
             catch (Exception ex)
             {
-                _ = await MessageBoxManager.GetMessageBoxStandard("Integrity Check Failed", ex.Message, ButtonEnum.Ok).ShowAsync();
+                await MessageBoxService.Instance.OkAsync("Integrity Check Failed", ex.Message, Icon.Error);
                 return false;
             }
         }
@@ -540,7 +539,7 @@ ORDER BY L.Name, C.Name, S.Title";
             }
             catch (Exception ex)
             {
-                _ = await MessageBoxManager.GetMessageBoxStandard("Vacuum Failed", ex.Message, ButtonEnum.Ok).ShowAsync();
+                await MessageBoxService.Instance.OkAsync("Vacuum Failed", ex.Message, Icon.Error);
                 return false;
             }
         }
@@ -559,7 +558,7 @@ ORDER BY L.Name, C.Name, S.Title";
             }
             catch (Exception ex)
             {
-                _ = await MessageBoxManager.GetMessageBoxStandard("Reindex Failed", ex.Message, ButtonEnum.Ok).ShowAsync();
+                await MessageBoxService.Instance.OkAsync("Reindex Failed", ex.Message, Icon.Error);
                 return false;
             }
         }
@@ -588,7 +587,7 @@ ORDER BY L.Name, C.Name, S.Title";
             }
             catch (Exception ex)
             {
-                _ = await MessageBoxManager.GetMessageBoxStandard("Vacuum Check Failed", ex.Message, ButtonEnum.Ok).ShowAsync();
+                await MessageBoxService.Instance.OkAsync("Vacuum Check Failed", ex.Message, Icon.Error);
                 return (false, 0);
             }
         }

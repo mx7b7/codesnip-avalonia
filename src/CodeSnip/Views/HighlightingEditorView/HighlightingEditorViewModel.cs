@@ -14,6 +14,7 @@ using MsBox.Avalonia.Enums;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -96,8 +97,8 @@ namespace CodeSnip.Views.HighlightingEditorView
         [RelayCommand(CanExecute = nameof(CanResetDefinition))]
         private async Task ResetDefinition()
         {
-            var confirm = await MessageBoxManager.GetMessageBoxStandard("Reset Definition", "Are you sure you want to delete your custom highlighting\nand revert to the default?", ButtonEnum.YesNo).ShowAsync();
-            if (confirm == ButtonResult.No) return;
+            var confirm = await MessageBoxService.Instance.AskYesNoAsync("Reset Definition", "Are you sure you want to delete your custom highlighting\nand revert to the default?");
+            if (!confirm) return;
 
             try
             {
@@ -114,17 +115,11 @@ namespace CodeSnip.Views.HighlightingEditorView
                 UpdateCustomDefinitionExists();
                 await SyncFromRawCommand.ExecuteAsync(null); // sync colors to UI
 
-                NotificationService.Instance.Manager.Show(new Notification()
-                {
-                    Type = NotificationType.Information,
-                    Title = "Highlighting Editor",
-                    Message = "Highlighting definition has been reset to default."
-                });
+                NotificationService.Instance.Show("Highlighting Editor", "Highlighting definition has been reset to default.");
             }
             catch (Exception ex)
             {
-                _ = await MessageBoxManager.GetMessageBoxStandard("Error", $"Failed to reset definition:\n{ex.Message}", ButtonEnum.Ok).ShowAsync();
-
+                await MessageBoxService.Instance.OkAsync("Error", $"Failed to reset definition:\n{ex.Message}", Icon.Error);
             }
         }
 
@@ -143,12 +138,7 @@ namespace CodeSnip.Views.HighlightingEditorView
         {
             if (string.IsNullOrEmpty(_customXshdPath) || string.IsNullOrWhiteSpace(XshdText))
             {
-                NotificationService.Instance.Manager.Show(new Notification()
-                {
-                    Type = NotificationType.Error,
-                    Title = "Error",
-                    Message = "Cannot save - invalid path or empty content."
-                });
+                NotificationService.Instance.Show("Error", "Cannot save - invalid path or empty content.", NotificationType.Error);
                 return;
             }
 
@@ -177,16 +167,11 @@ namespace CodeSnip.Views.HighlightingEditorView
                 UpdateCustomDefinitionExists();
                 HighlightingService.ApplyHighlighting(_mainEditor, _languageCode);
 
-                NotificationService.Instance.Manager.Show(new Notification()
-                {
-                    Type = NotificationType.Information,
-                    Title = "Highlighting Editor",
-                    Message = $"{Path.GetFileName(_customXshdPath)} saved to {Path.GetFileName(Path.GetDirectoryName(_customXshdPath))} folder"
-                });
+                NotificationService.Instance.Show("Highlighting Editor", $"{Path.GetFileName(_customXshdPath)} saved to {Path.GetFileName(Path.GetDirectoryName(_customXshdPath))} folder");
             }
             catch (Exception ex)
             {
-                _ = await MessageBoxManager.GetMessageBoxStandard("Error", $"Failed to save:\n{ex.Message}", ButtonEnum.Ok).ShowAsync();
+                await MessageBoxService.Instance.OkAsync("Error", $"Failed to save:\n{ex.Message}", Icon.Error);
             }
         }
 
@@ -203,7 +188,7 @@ namespace CodeSnip.Views.HighlightingEditorView
             }
             catch (Exception ex)
             {
-                _ = await MessageBoxManager.GetMessageBoxStandard("Error", $"An unexpected error occurred while synchronizing the highlighting definition.\n\n{ex.Message}", ButtonEnum.Ok).ShowAsync();
+                await MessageBoxService.Instance.OkAsync("Sync Error", $"An unexpected error occurred while synchronizing the highlighting definition.\n\n{ex.Message}", Icon.Error);
             }
         }
 
@@ -219,12 +204,12 @@ namespace CodeSnip.Views.HighlightingEditorView
                 if (formatted == XshdText)
                     return;
 
-                XshdText = formatted; // Behavior će ovo poslati u editor
+                XshdText = formatted;
             }
             catch (XmlException ex)
             {
-                await MessageBoxManager
-                    .GetMessageBoxStandard("Format Error", $"Invalid XML:\n{ex.Message}", ButtonEnum.Ok).ShowAsync();
+                await MessageBoxService.Instance.OkAsync("Format Error", $"Invalid XML:\n{ex.Message}", Icon.Error);
+
             }
         }
 
@@ -323,20 +308,15 @@ namespace CodeSnip.Views.HighlightingEditorView
         {
             if (string.IsNullOrWhiteSpace(xshdText))
             {
-                NotificationService.Instance.Manager.Show(new Notification()
-                {
-                    Type = NotificationType.Error,
-                    Title = "Error",
-                    Message = "XSHD source is empty."
-                });
+                NotificationService.Instance.Show("Error", "XSHD source is empty.", NotificationType.Error);
                 return (false, null);
             }
 
             var validationResult = validationService.Validate(xshdText);
             if (!validationResult.IsValid)
             {
-                _ = await MessageBoxManager.GetMessageBoxStandard("Validation Errors",
-                    $"XSHD definition issues:\n\n{string.Join("\n", validationResult.Errors)}", ButtonEnum.Ok).ShowAsync();
+                await MessageBoxService.Instance.OkAsync("Validation Errors", $"XSHD definition issues:\n\n{string.Join("\n", validationResult.Errors)}", Icon.Error);
+
                 return (false, null);
             }
 

@@ -172,7 +172,7 @@ public partial class MainWindowViewModel : ObservableObject
 
             if (languageList.Count == 0 && _databaseService.GetSnippets().Any()) // Check if loading failed
             {
-                _ = await MessageBoxManager.GetMessageBoxStandard("CodeSnip", "Database Load Error \nCould not load snippets.\nThe database file might be corrupted.", ButtonEnum.Ok).ShowAsync();
+                await MessageBoxService.Instance.OkAsync("Error", "Database Load Error \nCould not load snippets.\nThe database file might be corrupted.", Icon.Error);
                 return;
             }
             else
@@ -313,8 +313,8 @@ public partial class MainWindowViewModel : ObservableObject
 
         if (IsEditorModified && EditingSnippet != null)
         {
-            var result = await MessageBoxManager.GetMessageBoxStandard($"Unsaved Changes for {EditingSnippet?.Title}",
-                $"You have unsaved changes. Do you want to save them?", ButtonEnum.YesNoCancel).ShowAsync();
+            var result = await MessageBoxService.Instance.AskYesNoCancelAsync($"Unsaved Changes for {EditingSnippet?.Title}",
+                $"You have unsaved changes. Do you want to save them?");
 
             if (result == ButtonResult.Yes)
             {
@@ -329,7 +329,7 @@ public partial class MainWindowViewModel : ObservableObject
                 catch (Exception ex)
                 {
                     StatusMessage = $"Error saving snippet '{EditingSnippet?.Title}': {ex.Message}";
-                    _ = await MessageBoxManager.GetMessageBoxStandard("Save Error", $"Failed to save snippet '{EditingSnippet?.Title}'.\n\nDetails: {ex.Message}", ButtonEnum.Ok).ShowAsync();
+                    await MessageBoxService.Instance.OkAsync("Save Error", $"Failed to save snippet '{EditingSnippet?.Title}'.\n\nDetails: {ex.Message}", Icon.Error);
                     // If save failed, keep IsEditorModified as true and don't proceed with changing the selected snippet
                     return;
                 }
@@ -356,7 +356,7 @@ public partial class MainWindowViewModel : ObservableObject
             catch (Exception ex)
             {
                 StatusMessage = $"Error loading snippet '{newSnippet.Title}'";
-                _ = await MessageBoxManager.GetMessageBoxStandard("Load Error", $"Failed to load content for snippet '{newSnippet.Title}'.\n\nDetails: {ex.Message}", ButtonEnum.Ok).ShowAsync();
+                await MessageBoxService.Instance.OkAsync("Load Error", $"Failed to load content for snippet '{newSnippet.Title}'.\n\nDetails: {ex.Message}", Icon.Error);
                 // Revert the TreeView selection and stop the switch.
                 SelectedSnippet = EditingSnippet;
                 return;
@@ -620,10 +620,9 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
-        ButtonResult confirm = await MessageBoxManager.GetMessageBoxStandard("Delete Confirmation",
-            $"Are you sure you want to delete the snippet '{SelectedSnippet.Title}'?", ButtonEnum.YesNo).ShowAsync();
+        var confirm = await MessageBoxService.Instance.AskYesNoAsync("Delete Confirmation", $"Are you sure you want to delete the snippet '{SelectedSnippet.Title}'?");
 
-        if (confirm == ButtonResult.No)
+        if (!confirm)
             return;
 
         try
@@ -647,17 +646,12 @@ public partial class MainWindowViewModel : ObservableObject
             IsEditorModified = false;
             EditingSnippet = null;
 
-            NotificationService.Instance.Manager.Show(new Notification()
-            {
-                Type = NotificationType.Success,
-                Title = "CodeSnip",
-                Message = $"Snippet '{snippetTitle}' deleted successfully."
-            });
+            NotificationService.Instance.Show("CodeSnip", $"Snippet '{snippetTitle}' deleted successfully.", NotificationType.Success);
         }
         catch (Exception ex)
         {
             StatusMessage = $"Error deleting snippet '{SelectedSnippet?.Title}'";
-            _ = await MessageBoxManager.GetMessageBoxStandard("Delete Error", $"Failed to delete snippet '{SelectedSnippet?.Title}'.\n\nDetails: {ex.Message}", ButtonEnum.Ok).ShowAsync();
+            await MessageBoxService.Instance.OkAsync("Delete Error", $"Failed to delete snippet '{SelectedSnippet?.Title}'.\n\nDetails: {ex.Message}", Icon.Error);
         }
     }
 
@@ -671,7 +665,7 @@ public partial class MainWindowViewModel : ObservableObject
             NotificationService.Instance.Show("No Languages Available", "Please add a language and category before adding a snippet.");
             return;
         }
-            
+
         LeftOverlayContent = new SnippetViewModel(
             isEditMode: false,
             snippet: new Snippet(),
@@ -711,8 +705,7 @@ public partial class MainWindowViewModel : ObservableObject
         if (IsRightOverlayOpen) return;
         if (EditingSnippet is null)
         {
-            _ = await MessageBoxManager.GetMessageBoxStandard("No Snippet Selected",
-                "Select a snippet from the list before attempting to run it.", ButtonEnum.Ok).ShowAsync();
+            NotificationService.Instance.Show("No Snippet Selected", "Select a snippet from the list before attempting to run it.");
             return;
         }
         string langCode = EditingSnippet?.Category?.Language?.Code ?? "d";
@@ -729,7 +722,7 @@ public partial class MainWindowViewModel : ObservableObject
     {
         if (IsLeftOverlayOpen) return;
 
-        if(IsLoadSnippetEnabled) return;
+        if (IsLoadSnippetEnabled) return;
 
         var vm = new LanguageCategoryViewModel(
             dbService: _databaseService);
@@ -926,9 +919,7 @@ public partial class MainWindowViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            _ = await MessageBoxManager.GetMessageBoxStandard("Theme Error",
-                $"An error occurred while changing the theme.\n\nDetails: {ex.Message}",
-                ButtonEnum.Ok).ShowAsync();
+            await MessageBoxService.Instance.OkAsync("Theme Error", $"An error occurred while changing the theme.\n\nDetails: {ex.Message}", Icon.Error);
         }
     }
 
@@ -1085,8 +1076,6 @@ public partial class MainWindowViewModel : ObservableObject
                 "Please check the .xshd file for rules that might match zero-length text (e.g., regex like '^' or '$' inside a <Span> tag).\n\n" +
                 $"Original error: {errorMessage}",
                 ButtonEnum.Ok, Icon.Error).ShowAsync();
-
-            StatusMessage = "Syntax highlighting error.";
         });
     }
 

@@ -38,6 +38,7 @@ public partial class MainWindow : ControlsEx.Window.Window
 
         DataContextChanged += OnDataContextChanged;
         NotificationService.Instance.Initialize(this);
+        MessageBoxService.Instance.Register(this);
     }
 
     private void OnDataContextChanged(object? sender, EventArgs e)

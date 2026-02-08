@@ -1,7 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Styling;
-using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using System;
 using System.IO;
@@ -154,12 +153,12 @@ public class SettingsService
             }
             catch (JsonException ex)
             {
-                _ = await MessageBoxManager.GetMessageBoxStandard("Settings service", $"Error deserializing settings: {ex.Message}. Loading default settings.", ButtonEnum.Ok).ShowAsync();
+                await MessageBoxService.Instance.OkAsync("Settings service", $"Error deserializing settings: {ex.Message}. Loading default settings.", Icon.Error);
                 _settings = new AppSettings();
             }
             catch (Exception ex)
             {
-                _ = await MessageBoxManager.GetMessageBoxStandard("Settings service", $"Error reading settings file: {ex.Message}. Loading default settings.", ButtonEnum.Ok).ShowAsync();
+                await MessageBoxService.Instance.OkAsync("Settings service", $"Error reading settings file: {ex.Message}. Loading default settings.", Icon.Error);
                 _settings = new AppSettings();
             }
         }
@@ -182,7 +181,7 @@ public class SettingsService
         }
         catch (Exception ex)
         {
-            _ = await MessageBoxManager.GetMessageBoxStandard("Settings service", $"Error saving settings: {ex.Message}", ButtonEnum.Ok).ShowAsync();
+            await MessageBoxService.Instance.OkAsync("Settings service", $"Error saving settings: {ex.Message}", Icon.Error);
         }
     }
 

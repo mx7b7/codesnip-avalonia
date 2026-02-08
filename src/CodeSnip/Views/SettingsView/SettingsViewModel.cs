@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Controls.Notifications;
 using Avalonia.Media;
 using Avalonia.Styling;
 using AvaloniaEdit;
@@ -8,7 +9,6 @@ using CodeSnip.Services;
 using CodeSnip.Views.MainWindowView;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using System;
 using System.Collections.ObjectModel;
@@ -222,7 +222,7 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
             string dbFilePath = Path.Combine(appFolder, "snippets.sqlite");
             if (!File.Exists(dbFilePath))
             {
-                _ = MessageBoxManager.GetMessageBoxStandard("Backup Failed", "Database file not found.", ButtonEnum.Ok).ShowAsync();
+                await MessageBoxService.Instance.OkAsync("Backup Failed", "Database file not found.", Icon.Error);
                 BackupBadge = "✗";
                 BadgeColor = Brushes.Red;
                 return;
@@ -239,7 +239,7 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
 
             BackupBadge = "✓";
             BadgeColor = Brushes.LightGreen;
-            _ = MessageBoxManager.GetMessageBoxStandard("Backup Success", $"Backup created:\n{backupFileName}", ButtonEnum.Ok).ShowAsync();
+            NotificationService.Instance.Show("Backup Success", $"Backup created:\n{backupFileName}", NotificationType.Success);
             await Task.Delay(1000);
             BackupBadge = "";
             BadgeColor = Brushes.Transparent;
@@ -249,7 +249,7 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
         {
             BackupBadge = "✗";
             BadgeColor = Brushes.Red;
-            _ = MessageBoxManager.GetMessageBoxStandard("Backup Failed", ex.Message, ButtonEnum.Ok).ShowAsync();
+            await MessageBoxService.Instance.OkAsync("Backup Failed", ex.Message, Icon.Error);
         }
     }
 

@@ -2,7 +2,6 @@
 using CodeSnip.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using System;
 using System.Collections.ObjectModel;
@@ -231,7 +230,7 @@ public partial class LanguageCategoryViewModel : ObservableObject, IDisposable
         }
         catch (Exception ex)
         {
-            _ = await MessageBoxManager.GetMessageBoxStandard("Error", ex.Message, ButtonEnum.Ok).ShowAsync();
+            await MessageBoxService.Instance.OkAsync("Error", ex.Message, Icon.Error);
         }
     }
 
@@ -268,12 +267,7 @@ public partial class LanguageCategoryViewModel : ObservableObject, IDisposable
             // Enter Add Mode
             if (SelectedLanguageForCategory == null)
             {
-                NotificationService.Instance.Manager.Show(new Notification()
-                {
-                    Type = NotificationType.Information,
-                    Title = "No Language Selected",
-                    Message = "Select a language first before adding a category."
-                });
+                NotificationService.Instance.Show("No Language Selected", "Select a language first before adding a category.");
                 return;
             }
             IsAddingCategory = true;
@@ -315,7 +309,7 @@ public partial class LanguageCategoryViewModel : ObservableObject, IDisposable
         }
         catch (Exception ex)
         {
-            _ = await MessageBoxManager.GetMessageBoxStandard("Error", ex.Message, ButtonEnum.Ok).ShowAsync();
+            await MessageBoxService.Instance.OkAsync("Error", ex.Message, Icon.Error);
         }
     }
 
@@ -326,27 +320,17 @@ public partial class LanguageCategoryViewModel : ObservableObject, IDisposable
         {
             if (SelectedLanguage == null)
             {
-                NotificationService.Instance.Manager.Show(new Notification()
-                {
-                    Type = NotificationType.Information,
-                    Title = "Action required",
-                    Message = "Select a language to delete."
-                });
+                NotificationService.Instance.Show("Action required", "Select a language to delete.");
                 return;
             }
             if (SelectedLanguage.Categories.Any())
             {
-                NotificationService.Instance.Manager.Show(new Notification()
-                {
-                    Type = NotificationType.Error,
-                    Title = "Error",
-                    Message = "Cannot delete language that has categories.\nDelete them first."
-                });
+                NotificationService.Instance.Show("Error", "Cannot delete language that has categories.\nDelete them first.", NotificationType.Error);
                 return;
             }
 
-            var confirm = await MessageBoxManager.GetMessageBoxStandard("Confirm", $"Delete language '{SelectedLanguage.Name}'?", ButtonEnum.YesNo).ShowAsync();
-            if (confirm == ButtonResult.No)
+            var confirm = await MessageBoxService.Instance.AskYesNoAsync("Confirm", $"Delete language '{SelectedLanguage.Name}'?");
+            if (!confirm)
                 return;
 
             _databaseService.DeleteLanguage(SelectedLanguage.Id);
@@ -354,7 +338,7 @@ public partial class LanguageCategoryViewModel : ObservableObject, IDisposable
         }
         catch (Exception ex)
         {
-            _ = await MessageBoxManager.GetMessageBoxStandard("Error", $"Failed to delete language '{SelectedLanguage?.Name}'.\n\nDetails: {ex.Message}", ButtonEnum.Ok).ShowAsync();
+            await MessageBoxService.Instance.OkAsync("Error", $"Failed to delete language '{SelectedLanguage?.Name}'.\n\nDetails: {ex.Message}", Icon.Error);
         }
     }
 
@@ -365,16 +349,11 @@ public partial class LanguageCategoryViewModel : ObservableObject, IDisposable
         {
             if (SelectedCategory == null || SelectedLanguageForCategory == null)
             {
-                NotificationService.Instance.Manager.Show(new Notification()
-                {
-                    Type = NotificationType.Information,
-                    Title = "Action required",
-                    Message = "Select a category to delete."
-                });
+                NotificationService.Instance.Show("Action required", "Select a category to delete.");
                 return;
             }
-            var confirm = await MessageBoxManager.GetMessageBoxStandard("Confirm", $"Delete category '{SelectedCategory.Name}'?", ButtonEnum.YesNo).ShowAsync();
-            if (confirm == ButtonResult.No)
+            var confirm = await MessageBoxService.Instance.AskYesNoAsync("Confirm", $"Delete category '{SelectedCategory.Name}'?");
+            if (!confirm)
                 return;
 
             _databaseService.DeleteCategory(SelectedCategory.Id);
@@ -385,16 +364,11 @@ public partial class LanguageCategoryViewModel : ObservableObject, IDisposable
         {
             if (ex.Message.Contains("FOREIGN KEY constraint failed"))
             {
-                NotificationService.Instance.Manager.Show(new Notification()
-                {
-                    Type = NotificationType.Error,
-                    Title = "Error",
-                    Message = "Cannot delete category that has snippets\nDelete them first.",
-                });
+                NotificationService.Instance.Show("Error", "Cannot delete category that has snippets\nDelete them first.", NotificationType.Error);
             }
             else
             {
-                _ = await MessageBoxManager.GetMessageBoxStandard("Error", $"Failed to delete category '{SelectedCategory?.Name}'.\n\nDetails: {ex.Message}", ButtonEnum.Ok).ShowAsync();
+                await MessageBoxService.Instance.OkAsync("Error", $"Failed to delete category '{SelectedCategory?.Name}'.\n\nDetails: {ex.Message}", Icon.Error);
             }
         }
     }
@@ -404,12 +378,7 @@ public partial class LanguageCategoryViewModel : ObservableObject, IDisposable
     {
         if (SelectedLanguage == null)
         {
-            NotificationService.Instance.Manager.Show(new Notification()
-            {
-                Type = NotificationType.Information,
-                Title = "Action Skipped",
-                Message = "Select a language to delete."
-            });
+            NotificationService.Instance.Show("Action Skipped", "Select a language to delete.");
             return;
         }
 
@@ -425,9 +394,9 @@ public partial class LanguageCategoryViewModel : ObservableObject, IDisposable
             message += "\n\nThis will also delete all of its (empty) categories. This action cannot be undone.";
         }
 
-        var confirm = await MessageBoxManager.GetMessageBoxStandard("Force Delete Confirmation", message, ButtonEnum.YesNo).ShowAsync();
+        var confirm = await MessageBoxService.Instance.AskYesNoAsync("Force Delete Confirmation", message);
 
-        if (confirm == ButtonResult.No)
+        if (!confirm)
             return;
 
         try
@@ -437,7 +406,7 @@ public partial class LanguageCategoryViewModel : ObservableObject, IDisposable
         }
         catch (Exception ex)
         {
-            _ = await MessageBoxManager.GetMessageBoxStandard("Error", $"Failed to delete language '{SelectedLanguage?.Name}'.\n\nDetails: {ex.Message}", ButtonEnum.Ok).ShowAsync();
+            await MessageBoxService.Instance.OkAsync("Error", $"Failed to delete language '{SelectedLanguage?.Name}'.\n\nDetails: {ex.Message}", Icon.Error);
         }
     }
 
@@ -446,13 +415,7 @@ public partial class LanguageCategoryViewModel : ObservableObject, IDisposable
     {
         if (SelectedCategory == null || SelectedLanguageForCategory == null)
         {
-            NotificationService.Instance.Manager.Show(new Notification()
-            {
-                Type = NotificationType.Information,
-                Title = "Action Skipped",
-                Message = "Select a category to delete."
-            });
-
+            NotificationService.Instance.Show("Action Skipped", "Select a category to delete.");
             return;
         }
 
@@ -468,9 +431,9 @@ public partial class LanguageCategoryViewModel : ObservableObject, IDisposable
             message += "\n\nThis action cannot be undone.";
         }
 
-        var confirm = await MessageBoxManager.GetMessageBoxStandard("Force Delete Confirmation", message, ButtonEnum.YesNo).ShowAsync();
+        var confirm = await MessageBoxService.Instance.AskYesNoAsync("Force Delete Confirmation", message);
 
-        if (confirm == ButtonResult.No)
+        if (!confirm)
             return;
 
         try
@@ -480,7 +443,7 @@ public partial class LanguageCategoryViewModel : ObservableObject, IDisposable
         }
         catch (Exception ex)
         {
-            _ = await MessageBoxManager.GetMessageBoxStandard("Error", $"Failed to delete category '{SelectedCategory?.Name}'.\n\nDetails: {ex.Message}", ButtonEnum.Ok).ShowAsync();
+            await MessageBoxService.Instance.OkAsync("Error", $"Failed to delete category '{SelectedCategory?.Name}'.\n\nDetails: {ex.Message}", Icon.Error);
         }
     }
 
@@ -516,24 +479,15 @@ public partial class LanguageCategoryViewModel : ObservableObject, IDisposable
             bool success = HighlightingService.GenerateBasicXshdFile(langCode, langName);
             if (!success)
             {
-                NotificationService.Instance.Manager.Show(new Notification()
-                {
-                    Type = NotificationType.Error,
-                    Title = "XSHD Creation Failed",
-                    Message = $"Failed to create syntax highlighting definition for '{langCode}'."
-                });
+                NotificationService.Instance.Show("XSHD Creation Failed", $"Failed to create syntax highlighting definition for '{langCode}'.", NotificationType.Error);
                 return;
             }
-            NotificationService.Instance.Manager.Show(new Notification()
-            {
-                Type = NotificationType.Success,
-                Title = "XSHD Created",
-                Message = $"A basic syntax highlighting definition for '{langName}' ({langCode}.xshd) has been created.\nYou can customize it later."
-            });
+
+            NotificationService.Instance.Show("XSHD Created", $"A basic syntax highlighting definition for '{langName}' ({langCode}.xshd) has been created.\nYou can customize it later.", NotificationType.Success);
         }
         catch (Exception ex)
         {
-            _ = await MessageBoxManager.GetMessageBoxStandard("Error Creating XSHD", $"Failed to create syntax highlighting definition for '{langName}'.\n\nDetails: {ex.Message}", ButtonEnum.Ok).ShowAsync();
+            await MessageBoxService.Instance.OkAsync("Error Creating XSHD", $"Failed to create syntax highlighting definition for '{langName}'.\n\nDetails: {ex.Message}", Icon.Error);
         }
     }
 
@@ -548,8 +502,7 @@ public partial class LanguageCategoryViewModel : ObservableObject, IDisposable
                $"Do you want to **generate XSHD template** for language '{NewLanguageName}'?\n\n" +
                "(Choose 'No' to add language without highlighting)";
 
-        var confirm = await MessageBoxManager.GetMessageBoxStandard("Missing Syntax Highlighting",
-            message, ButtonEnum.YesNoCancel).ShowAsync();
+        var confirm = await MessageBoxService.Instance.AskYesNoCancelAsync("Missing Syntax Highlighting", message);
 
         if (confirm == ButtonResult.Cancel)
         {
