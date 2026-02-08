@@ -908,6 +908,8 @@ public partial class MainWindowViewModel : ObservableObject
     {
         try
         {
+            if (IsRightOverlayOpen) return;// prevent theme toggle when right overlay is open, because some views there (like HighlightingEditor) do not support dynamic theme change for avalonedit xshd loading
+
             if (Application.Current is App app)
             {
                 var current = app.RequestedThemeVariant ?? ThemeVariant.Light; // fallback
