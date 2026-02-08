@@ -16,7 +16,7 @@
 			</Button>
 			<TextBlock Text="{Binding HeaderText}" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center"/>
 		</StackPanel>
-		<TabControl Grid.Row="1" TabStripPlacement="Left" Margin="10" HorizontalAlignment="">
+		<TabControl Grid.Row="1" TabStripPlacement="Left" Margin="10,0" HorizontalAlignment="">
 			<!-- Appearance -->
 			<TabItem Header="Appearance">
 				<ScrollViewer Classes="ScrollViewerThin" Margin="10, 0" VerticalScrollBarVisibility="Auto">
