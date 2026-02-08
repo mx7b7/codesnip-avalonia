@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SyntaxDefinition name="Bash" extensions=".sh" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+  <!-- syntax definition for Bash by mx7b7 -->
+  <!-- atom-one-dark theme -->
+  <Color name="Shebang" foreground="#FF61AEEE" />
+  <Color name="Keyword" foreground="#FFC678DD" />
+  <Color name="BuiltIn" foreground="#FFE6C07B" />
+  <Color name="String" foreground="#FF98C379" />
+  <Color name="Comment" foreground="#FF5C6370" />
+  <Color name="Variable" foreground="#FFD19A66" />
+  <Color name="Substitute" foreground="#FFE06C75" />
+  <Color name="Number" foreground="#FFABB2BF" />
+  <Color name="Literal" foreground="#FF56B6C2" />
+  <Color name="PathMode" foreground="#FFABB2BF" />
+  <Property name="Extension" value="sh" />
+  <RuleSet ignoreCase="false">
+    <!-- Shebang -->
+    <Span color="Shebang" begin="#!" end="$"></Span>
+    <!-- Comments -->
+    <Span color="Comment" begin="#" end="$"></Span>
+    <!-- Double quoted strings -->
+    <Span color="String" begin="&quot;" end="&quot;">
+      <RuleSet>
+        <Rule color="Variable">\$\w+</Rule>
+        <Span color="Substitute" begin="\$\(" end="\)"></Span>
+      </RuleSet>
+    </Span>
+    <!-- Single quoted strings -->
+    <Span color="String" begin="'" end="'"></Span>
+    <!-- Variables -->
+    <Rule color="Variable">\$\w+</Rule>
+    <!-- === PATHS === -->
+    <!-- Relativne putanje -->
+    <Span color="PathMode">
+      <Begin>\./</Begin>
+      <End>(?=[^a-zA-Z0-9._\/\-])|[\s;{}\[\]()=|$]</End>
+    </Span>
+    <!-- Apsolutne putanje -->
+    <Span color="PathMode">
+      <Begin>/</Begin>
+      <End>(?=[^a-zA-Z0-9._\/\-])|[\s;{}\[\]()=|$]</End>
+    </Span>
+    <!-- Keywords -->
+    <Keywords color="Keyword">
+      <Word>if</Word>
+      <Word>then</Word>
+      <Word>else</Word>
+      <Word>elif</Word>
+      <Word>fi</Word>
+      <Word>time</Word>
+      <Word>for</Word>
+      <Word>while</Word>
+      <Word>until</Word>
+      <Word>in</Word>
+      <Word>do</Word>
+      <Word>done</Word>
+      <Word>case</Word>
+      <Word>esac</Word>
+      <Word>coproc</Word>
+      <Word>function</Word>
+      <Word>select</Word>
+    </Keywords>
+    <!-- Literals -->
+    <Keywords color="Literal">
+      <Word>true</Word>
+      <Word>false</Word>
+    </Keywords>
+    <!-- Shell builtins -->
+    <Keywords color="BuiltIn">
+      <Word>break</Word>
+      <Word>cd</Word>
+      <Word>clear</Word>
+      <Word>continue</Word>
+      <Word>eval</Word>
+      <Word>exec</Word>
+      <Word>exit</Word>
+      <Word>export</Word>
+      <Word>getopts</Word>
+      <Word>hash</Word>
+      <Word>pwd</Word>
+      <Word>readonly</Word>
+      <Word>return</Word>
+      <Word>shift</Word>
+      <Word>test</Word>
+      <Word>times</Word>
+      <Word>trap</Word>
+      <Word>umask</Word>
+      <Word>unset</Word>
+      <Word>set</Word>
+      <Word>shopt</Word>
+    </Keywords>
+    <!-- Bash builtins -->
+    <Keywords color="BuiltIn">
+      <Word>alias</Word>
+      <Word>bind</Word>
+      <Word>builtin</Word>
+      <Word>caller</Word>
+      <Word>command</Word>
+      <Word>declare</Word>
+      <Word>echo</Word>
+      <Word>enable</Word>
+      <Word>help</Word>
+      <Word>let</Word>
+      <Word>local</Word>
+      <Word>logout</Word>
+      <Word>mapfile</Word>
+      <Word>printf</Word>
+      <Word>read</Word>
+      <Word>readarray</Word>
+      <Word>source</Word>
+      <Word>type</Word>
+      <Word>typeset</Word>
+      <Word>ulimit</Word>
+      <Word>unalias</Word>
+    </Keywords>
+    <!-- Numbers -->
+    <Rule color="Number">0[xX][0-9a-fA-F]+|0[0-7]*|\d+(\.\d+)?([eE][+-]?\d+)?</Rule>
+  </RuleSet>
+</SyntaxDefinition>
