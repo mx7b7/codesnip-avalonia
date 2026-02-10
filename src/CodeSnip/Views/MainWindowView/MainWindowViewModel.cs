@@ -373,6 +373,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         UpdateWindowTitle();
         UpdateIndentationStrategy();
+        StatusMessage = "Ready";
     }
 
     private void UpdateWindowTitle()

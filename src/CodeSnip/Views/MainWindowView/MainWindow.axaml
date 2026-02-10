@@ -316,82 +316,78 @@
 						Spacing="5" Background="{DynamicResource ThemeBackgroundBrush}">
 						<Button Classes="IconButton" Command="{Binding TogglePanelCommand}"
 								ToolTip.Tip="Open/Close">
-							<PathIcon Data="{Binding OpenCloseIcon}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
+							<Path Data="{Binding OpenCloseIcon}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform"/>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding SaveCodeCommand}"
 								ToolTip.Tip="Save snippet&#xA;Ctrl+S">
-							<PathIcon Data="{StaticResource Save}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
+							<Path Data="{StaticResource Save}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform"/>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding AddSnippetCommand}"
 								ToolTip.Tip="Add snippet&#xA;Ctrl+Shift+A">
-							<PathIcon Data="{StaticResource FileAdd}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
+							<Path Data="{StaticResource FileAdd}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform"/>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding EditSnippetCommand}"
 								ToolTip.Tip="Edit snippet&#xA;Ctrl+Shift+E">
-							<PathIcon Data="{StaticResource FileEdit}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
+							<Path Data="{StaticResource FileEdit}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform"/>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding DeleteSnippetCommand}"
 								ToolTip.Tip="Delete snippet&#xA;Ctrl+Shift+D">
-							<PathIcon Data="{StaticResource Trash}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
+							<Path Data="{StaticResource Trash}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform"/>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding EditLanguageCategoryCommand}"
 								ToolTip.Tip="Language/Category edit&#xA;Ctrl+Shift+L">
-							<PathIcon Data="{StaticResource CategoryEdit}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
+							<Path Data="{StaticResource CategoryEdit}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform"/>
 						</Button>
 						<Button Classes="IconButton" ToolTip.Tip="Load snippets" IsEnabled="{Binding IsLoadSnippetEnabled}"
 								Command="{Binding LoadSnippetsDatabaseCommand}">
-							<PathIcon Data="{StaticResource DatabaseRefresh}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
+							<Path Data="{StaticResource DatabaseRefresh}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform"/>
 						</Button>
 						<Border Width="1" Height="24"  VerticalAlignment="Center" Background="{DynamicResource ThemeControlHighBrush}"/>
 						<Button Classes="IconButton" Command="{Binding OpenCodeRunnerViewCommand}"
 								ToolTip.Tip="Run&#xA;Ctrl+Shift+R">
-							<PathIcon Data="{StaticResource DebugStart}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
+							<Path Data="{StaticResource DebugStart}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform"/>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding OpenCompilerSettingsCommand}"
 								ToolTip.Tip="Compiler Explorer settings">
-							<PathIcon Data="{StaticResource CompilerExplorer}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
+							<Path Data="{StaticResource CompilerExplorer}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform"/>
 						</Button>
 						<Border Width="1" Height="24"  VerticalAlignment="Center" Background="{DynamicResource ThemeControlHighBrush}"/>
 						<Button Classes="IconButton" Command="{Binding IncreaseFontSizeCommand}"
 								ToolTip.Tip="Zoom In&#xA;Ctrl++">
-							<PathIcon Data="{StaticResource ZoomIn}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
+							<Path Data="{StaticResource ZoomIn}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform"/>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding DecreaseFontSizeCommand}"
 								ToolTip.Tip="Zoom Out&#xA;Ctrl+-">
-							<PathIcon Data="{StaticResource ZoomOut}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
+							<Path Data="{StaticResource ZoomOut}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform"/>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding ResetFontSizeCommand}"
 								ToolTip.Tip="Reset Zoom&#xA;Ctrl+0">
-							<PathIcon Data="{StaticResource ZoomOutMap}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}">
-								<PathIcon.RenderTransform>
+							<Path Data="{StaticResource ZoomOutMap}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform">
+								<Path.RenderTransform>
 									<ScaleTransform ScaleY="-1"/>
-								</PathIcon.RenderTransform>
-							</PathIcon>
+								</Path.RenderTransform>
+							</Path>
 						</Button>
+						<ToggleButton Classes="IconButton"  ToolTip.Tip="Disable intendation" IsChecked="{Binding DisableIndentation, Mode=TwoWay}"
+									  Background="Transparent" BorderThickness="0">
+							<Path Data="{StaticResource FormatIndentDecrease}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform"/>
+						</ToggleButton>
 						<ToggleButton ToolTip.Tip="Word wrap" IsChecked="{Binding #textEditor.WordWrap}"
 									  Background="Transparent" BorderThickness="0">
 							<ToggleButton.Content>
-								<Path Fill="{DynamicResource AccentBrush}" Data="{StaticResource WrapText}" Width="24" Height="24" Stretch="UniformToFill">
-									<Path.RenderTransform>
-										<ScaleTransform ScaleY="-1"/>
-									</Path.RenderTransform>
-								</Path>
+								<Path Fill="{DynamicResource AccentBrush}" Data="{StaticResource WrapText}" Width="24" Height="24" Stretch="UniformToFill"/>
 							</ToggleButton.Content>
-						</ToggleButton>
-						<ToggleButton Classes="IconButton"  ToolTip.Tip="Disable intendation" IsChecked="{Binding DisableIndentation, Mode=TwoWay}"
-									  Background="Transparent" BorderThickness="0">
-							<PathIcon Data="{StaticResource FormatIndentDecrease}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
 						</ToggleButton>
 						<Button Classes="IconButton" Click="FormatAll_Click"
 								ToolTip.Tip="Format code">
-							<PathIcon Data="{StaticResource FormatText}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
+							<Path Data="{StaticResource FormatText}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform"/>
 						</Button>
 						<Border Width="1" Height="24"  VerticalAlignment="Center" Background="{DynamicResource ThemeControlHighBrush}"/>
 						<Button Classes="IconButton" Command="{Binding OpenHighlightingEditorCommand}" ToolTip.Tip="Highlighting Editor&#xA;Ctrl+Shift+H" >
-							<PathIcon Data="{StaticResource ColorPaletteiOS}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
+							<Path Data="{StaticResource ColorPaletteiOS}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform"/>
 						</Button>
 						<Button Classes="IconButton"  Command="{Binding OpenSettingsCommand}"  ToolTip.Tip="Settings&#xA;Ctrl+Shift+P" >
-							<PathIcon Data="{StaticResource GearBold}" Width="24" Height="24" Foreground="{DynamicResource AccentBrush}"/>
+							<Path Data="{StaticResource GearBold}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform"/>
 						</Button>
 					</StackPanel>
 					<Border DockPanel.Dock="Bottom"
