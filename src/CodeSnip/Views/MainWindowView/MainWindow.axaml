@@ -218,7 +218,7 @@
 											<PathIcon Data="{StaticResource CategoryIcon}" Width="20" Height="20"
 													  VerticalAlignment="Center" Foreground="{DynamicResource AccentBrush}"/>
 											<TextBlock Text="{Binding Name}"
-													   FontWeight="Medium" FontSize="14"/>
+													   FontWeight="SemiBold" FontSize="14"/>
 										</StackPanel>
 									</TreeDataTemplate>
 
@@ -227,7 +227,7 @@
 											<PathIcon Data="{StaticResource SnippetIcon}" Width="16" Height="16"
 													  VerticalAlignment="Center" Foreground="{DynamicResource AccentBrush}"/>
 											<TextBlock Text="{Binding Title}"
-													   FontWeight="Normal"
+													   FontWeight="Regular"
 													   FontSize="14"/>
 										</StackPanel>
 									</DataTemplate>

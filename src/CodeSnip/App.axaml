@@ -25,6 +25,8 @@
 				<ResourceInclude Source="/ControlsEx/Window/Window.axaml"/>
 				<ResourceInclude Source="/Themes/ExpanderStyles.axaml"/>
 				<ResourceInclude Source="/Themes/ColorOverrides.axaml"/>
+				<ResourceInclude Source="/Themes/TreeView.axaml"/>
+				<ResourceInclude Source="/Themes/TreeViewItem.axaml"/>
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Application.Resources>
