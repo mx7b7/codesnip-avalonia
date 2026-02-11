@@ -1,9 +1,8 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-	<!-- Accent Color Definition for toolbar buttons, borders...-->
-	<SolidColorBrush x:Key="AccentBrush" Color="#FF87794E"/>
-	<!-- Temporary SimpleTheme accent colors override for testing -->
+	<!--<SolidColorBrush x:Key="AccentBrush" Color="#FF87794E"/>-->
+	<!-- SimpleTheme accent colors  -->
 	<ResourceDictionary.ThemeDictionaries>
 		<ResourceDictionary x:Key="Default">
 			<!-- ...........TitleBar colors.........................-->
@@ -13,16 +12,25 @@
 			<Color x:Key="WindowButtonHoverColor">#0D09090B</Color>
 			<!--.....................................................-->
 			<Color x:Key="ThemeAccentColor">#CC87794E</Color>
+			<!-- Accent 80% -->
 			<Color x:Key="ThemeAccentColor2">#9987794E</Color>
+			<!-- Accent 60% -->
 			<Color x:Key="ThemeAccentColor3">#6687794E</Color>
+			<!-- Accent 40% -->
 			<Color x:Key="ThemeAccentColor4">#3387794E</Color>
+			<!-- Accent 20% -->
 
 			<Color x:Key="HighlightColor">#FF87794E</Color>
+			<!-- Accent 100% -->
 			<Color x:Key="HighlightColor2">#CC87794E</Color>
+			<!-- Accent 80% -->
 
 			<Color x:Key="ThemeControlHighlightHighColor"> #FF87794E</Color>
+			<!-- Accent 100% -->
 			<Color x:Key="ThemeControlHighlightMidColor"> #CC87794E</Color>
+			<!-- Accent 80% -->
 			<Color x:Key="ThemeControlHighlightLowColor"> #6687794E</Color>
+			<!-- Accent 40% -->
 
 
 			<SolidColorBrush x:Key="HighlightBrush" Color="{StaticResource HighlightColor}" />

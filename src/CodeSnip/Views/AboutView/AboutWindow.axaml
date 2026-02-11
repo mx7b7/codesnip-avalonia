@@ -13,7 +13,7 @@
 				CanMinimize="False"
                 ShowInTaskbar="False"
                 WindowStartupLocation="CenterOwner"
-				BorderBrush="{DynamicResource AccentBrush}">
+				BorderBrush="{DynamicResource ThemeAccentBrush}">
 
 	<Grid>
 		<TabControl TabStripPlacement="Left">

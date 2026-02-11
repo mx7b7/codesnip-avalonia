@@ -829,7 +829,7 @@ public partial class MainWindowViewModel : ObservableObject
 
 
         RightOverlayContent = vm;
-        RightOverlayWidth = 400;
+        RightOverlayWidth = 350;
         IsRightOverlayOpen = true;
     }
 

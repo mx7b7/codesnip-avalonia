@@ -18,7 +18,7 @@
 		
 		<StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10">
 			<Button Classes="IconButton" Margin="0,0,10,0" ToolTip.Tip="Close" Command="{Binding CancelCommand}">
-				<Path Data="{StaticResource ArrowRightBoldBox}" Width="28" Height="28" Fill="{DynamicResource AccentBrush}" Stretch="UniformToFill"/>
+				<Path Data="{StaticResource ArrowRightBoldBox}" Width="28" Height="28" Fill="{DynamicResource ThemeAccentBrush}" Stretch="UniformToFill"/>
 			</Button>
 			<TextBlock Text="{Binding HeaderText}" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center"/>
 		</StackPanel>

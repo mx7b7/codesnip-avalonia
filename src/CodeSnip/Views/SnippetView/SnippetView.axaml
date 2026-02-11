@@ -33,7 +33,7 @@
 				<Path Data="{StaticResource ArrowLeftBoldBox}"
 					  Width="28"
 					  Height="28"
-					  Fill="{DynamicResource AccentBrush}"
+					  Fill="{DynamicResource ThemeAccentBrush}"
 					  Stretch="UniformToFill"/>
 			</Button>
 		</Grid>

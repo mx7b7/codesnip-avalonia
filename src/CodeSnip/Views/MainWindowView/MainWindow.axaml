@@ -24,7 +24,7 @@
         MinWidth="900"
         MinHeight="600"
         WindowStartupLocation="CenterScreen"
-		BorderBrush="{DynamicResource AccentBrush}"
+		BorderBrush="{DynamicResource HighlightBrush}"
 		Closing="Window_Closing" >
 	<codesnip:Window.LogoContent>
 		<PathIcon
@@ -32,7 +32,7 @@
             Height="24"
             Margin="5 0 0 0"
             Width="24"
-			Foreground="{DynamicResource AccentBrush}" />
+			Foreground="{DynamicResource HighlightBrush}" />
 	</codesnip:Window.LogoContent>
 	<codesnip:Window.RightWindowTitleBarContent>
 		<StackPanel Orientation="Horizontal" Spacing="8">
@@ -50,7 +50,7 @@
 				</Button.Styles>
 				<PathIcon Data="{StaticResource ThemeLightDark}"
 						  Width="20" Height="20"
-						  Foreground="{DynamicResource AccentBrush}"/>
+						  Foreground="{DynamicResource HighlightBrush}"/>
 			</Button>
 			<Button
 				Classes="TitleBarButton"
@@ -66,7 +66,7 @@
 				</Button.Styles>
 				<PathIcon Data="{StaticResource InfoCircle}"
 						  Width="20" Height="20"
-						  Foreground="{DynamicResource AccentBrush}"/>
+						  Foreground="{DynamicResource HighlightBrush}"/>
 			</Button>
 		</StackPanel>
 	</codesnip:Window.RightWindowTitleBarContent>
@@ -170,9 +170,9 @@
 				<Grid>
 					<Expander IsExpanded="True" HorizontalAlignment="Stretch" Padding="0" VerticalAlignment="Stretch"
 							   Background="{DynamicResource ThemeBackgroundBrush}" ExpandDirection="Down"
-							   BorderBrush="{DynamicResource AccentBrush}" BorderThickness="0 0 1 0" >
+							   BorderBrush="{DynamicResource HighlightBrush}" BorderThickness="0 0 1 0" >
 						<Expander.Header>
-							<Border BorderBrush="{DynamicResource AccentBrush}" BorderThickness="0 1 0 1" Height="30">
+							<Border BorderBrush="{DynamicResource HighlightBrush}" BorderThickness="0 1 0 1" Height="30">
 								<TextBox x:Name="txtFilter"
 										 Watermark="Search snippets..."
 										 BorderBrush="Transparent"
@@ -207,7 +207,7 @@
 									<TreeDataTemplate DataType="langcat:Language" ItemsSource="{Binding Categories}">
 										<StackPanel Orientation="Horizontal" Spacing="5">
 											<PathIcon Data="{StaticResource LanguageIcon}" Width="20" Height="20"
-													  VerticalAlignment="Center" Foreground="{DynamicResource AccentBrush}" />
+													  VerticalAlignment="Center" Foreground="{DynamicResource HighlightBrush}" />
 											<TextBlock Text="{Binding Name}"
 													   FontWeight="SemiBold" FontSize="14"/>
 										</StackPanel>
@@ -216,7 +216,7 @@
 									<TreeDataTemplate DataType="langcat:Category" ItemsSource="{Binding Snippets}">
 										<StackPanel Orientation="Horizontal" Spacing="5">
 											<PathIcon Data="{StaticResource CategoryIcon}" Width="20" Height="20"
-													  VerticalAlignment="Center" Foreground="{DynamicResource AccentBrush}"/>
+													  VerticalAlignment="Center" Foreground="{DynamicResource HighlightBrush}"/>
 											<TextBlock Text="{Binding Name}"
 													   FontWeight="SemiBold" FontSize="14"/>
 										</StackPanel>
@@ -225,7 +225,7 @@
 									<DataTemplate DataType="snippet:Snippet">
 										<StackPanel Orientation="Horizontal" Spacing="5">
 											<PathIcon Data="{StaticResource SnippetIcon}" Width="16" Height="16"
-													  VerticalAlignment="Center" Foreground="{DynamicResource AccentBrush}"/>
+													  VerticalAlignment="Center" Foreground="{DynamicResource HighlightBrush}"/>
 											<TextBlock Text="{Binding Title}"
 													   FontWeight="Regular"
 													   FontSize="14"/>
@@ -267,7 +267,7 @@
 									  Background="{DynamicResource ThemeBackgroundBrush}" ExpandDirection="Up"
 										BorderBrush="{DynamicResource ThemeBorderLowBrush}" BorderThickness="0 1 0 0">
 								<Expander.Header>
-									<Border BorderBrush="{DynamicResource AccentBrush}" BorderThickness="0">
+									<Border BorderBrush="{DynamicResource HighlightBrush}" BorderThickness="0">
 										<StackPanel Orientation="Horizontal" Height="25">
 											<TextBlock Text="SNIPPET METADATA"
 													   FontSize="14"
@@ -316,53 +316,53 @@
 						Spacing="5" Background="{DynamicResource ThemeBackgroundBrush}">
 						<Button Classes="IconButton" Command="{Binding TogglePanelCommand}"
 								ToolTip.Tip="Open/Close">
-							<Path Data="{Binding OpenCloseIcon}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform"/>
+							<Path Data="{Binding OpenCloseIcon}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding SaveCodeCommand}"
 								ToolTip.Tip="Save snippet&#xA;Ctrl+S">
-							<Path Data="{StaticResource Save}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform"/>
+							<Path Data="{StaticResource Save}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding AddSnippetCommand}"
 								ToolTip.Tip="Add snippet&#xA;Ctrl+Shift+A">
-							<Path Data="{StaticResource FileAdd}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform"/>
+							<Path Data="{StaticResource FileAdd}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding EditSnippetCommand}"
 								ToolTip.Tip="Edit snippet&#xA;Ctrl+Shift+E">
-							<Path Data="{StaticResource FileEdit}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform"/>
+							<Path Data="{StaticResource FileEdit}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding DeleteSnippetCommand}"
 								ToolTip.Tip="Delete snippet&#xA;Ctrl+Shift+D">
-							<Path Data="{StaticResource Trash}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform"/>
+							<Path Data="{StaticResource Trash}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding EditLanguageCategoryCommand}"
 								ToolTip.Tip="Language/Category edit&#xA;Ctrl+Shift+L">
-							<Path Data="{StaticResource CategoryEdit}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform"/>
+							<Path Data="{StaticResource CategoryEdit}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
 						</Button>
 						<Button Classes="IconButton" ToolTip.Tip="Load snippets" IsEnabled="{Binding IsLoadSnippetEnabled}"
 								Command="{Binding LoadSnippetsDatabaseCommand}">
-							<Path Data="{StaticResource DatabaseRefresh}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform"/>
+							<Path Data="{StaticResource DatabaseRefresh}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
 						</Button>
 						<Border Width="1" Height="24"  VerticalAlignment="Center" Background="{DynamicResource ThemeControlHighBrush}"/>
 						<Button Classes="IconButton" Command="{Binding OpenCodeRunnerViewCommand}"
 								ToolTip.Tip="Run&#xA;Ctrl+Shift+R">
-							<Path Data="{StaticResource DebugStart}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform"/>
+							<Path Data="{StaticResource DebugStart}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding OpenCompilerSettingsCommand}"
 								ToolTip.Tip="Compiler Explorer settings">
-							<Path Data="{StaticResource CompilerExplorer}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform"/>
+							<Path Data="{StaticResource CompilerExplorer}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
 						</Button>
 						<Border Width="1" Height="24"  VerticalAlignment="Center" Background="{DynamicResource ThemeControlHighBrush}"/>
 						<Button Classes="IconButton" Command="{Binding IncreaseFontSizeCommand}"
 								ToolTip.Tip="Zoom In&#xA;Ctrl++">
-							<Path Data="{StaticResource ZoomIn}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform"/>
+							<Path Data="{StaticResource ZoomIn}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding DecreaseFontSizeCommand}"
 								ToolTip.Tip="Zoom Out&#xA;Ctrl+-">
-							<Path Data="{StaticResource ZoomOut}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform"/>
+							<Path Data="{StaticResource ZoomOut}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding ResetFontSizeCommand}"
 								ToolTip.Tip="Reset Zoom&#xA;Ctrl+0">
-							<Path Data="{StaticResource ZoomOutMap}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform">
+							<Path Data="{StaticResource ZoomOutMap}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform">
 								<Path.RenderTransform>
 									<ScaleTransform ScaleY="-1"/>
 								</Path.RenderTransform>
@@ -370,24 +370,24 @@
 						</Button>
 						<ToggleButton Classes="IconButton"  ToolTip.Tip="Disable intendation" IsChecked="{Binding DisableIndentation, Mode=TwoWay}"
 									  Background="Transparent" BorderThickness="0">
-							<Path Data="{StaticResource FormatIndentDecrease}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform"/>
+							<Path Data="{StaticResource FormatIndentDecrease}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
 						</ToggleButton>
 						<ToggleButton ToolTip.Tip="Word wrap" IsChecked="{Binding #textEditor.WordWrap}"
 									  Background="Transparent" BorderThickness="0">
 							<ToggleButton.Content>
-								<Path Fill="{DynamicResource AccentBrush}" Data="{StaticResource WrapText}" Width="24" Height="24" Stretch="UniformToFill"/>
+								<Path Fill="{DynamicResource HighlightBrush}" Data="{StaticResource WrapText}" Width="24" Height="24" Stretch="UniformToFill"/>
 							</ToggleButton.Content>
 						</ToggleButton>
 						<Button Classes="IconButton" Click="FormatAll_Click"
 								ToolTip.Tip="Format code">
-							<Path Data="{StaticResource FormatText}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform"/>
+							<Path Data="{StaticResource FormatText}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
 						</Button>
 						<Border Width="1" Height="24"  VerticalAlignment="Center" Background="{DynamicResource ThemeControlHighBrush}"/>
 						<Button Classes="IconButton" Command="{Binding OpenHighlightingEditorCommand}" ToolTip.Tip="Highlighting Editor&#xA;Ctrl+Shift+H" >
-							<Path Data="{StaticResource ColorPaletteiOS}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform"/>
+							<Path Data="{StaticResource ColorPaletteiOS}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
 						</Button>
 						<Button Classes="IconButton"  Command="{Binding OpenSettingsCommand}"  ToolTip.Tip="Settings&#xA;Ctrl+Shift+P" >
-							<Path Data="{StaticResource GearBold}" Width="24" Height="24" Fill="{DynamicResource AccentBrush}" Stretch="Uniform"/>
+							<Path Data="{StaticResource GearBold}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
 						</Button>
 					</StackPanel>
 					<Border DockPanel.Dock="Bottom"
@@ -420,7 +420,7 @@
 
 											<!-- VACUUM Button -->
 											<Button Command="{Binding VacuumDatabaseCommand}"
-													Background="{DynamicResource AccentBrush}"
+													Background="{DynamicResource HighlightBrush}"
 													Foreground="White"
 													CornerRadius="4"
 													Padding="12,6"
