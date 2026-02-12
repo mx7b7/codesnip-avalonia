@@ -2,12 +2,16 @@
 
 **CodeSnip** — a snippet manager & local code runner with multi-language interpreter support and Compiler Explorer integration.
 
-This project is a cross-platform port of the original **[CodeSnip (WPF) application](https://github.com/mx7b7/codesnip-wpf)** to the cross-platform UI framework **[Avalonia](https://github.com/AvaloniaUI/Avalonia)**.
+This project is a cross-platform port of the original **[CodeSnip (WPF) application](https://github.com/mx7b7/codesnip-wpf)** to the UI framework **[Avalonia](https://github.com/AvaloniaUI/Avalonia)**.
 
 ![.NET](https://img.shields.io/badge/.NET-10.0-blue)
 ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green)
 ![Status](https://img.shields.io/badge/Status-Active-success)
+
+## ⬇️ Download
+
+[![GitHub Release](https://img.shields.io/github/v/release/mx7b7/codesnip-avalonia?sort=semver&display_name=tag)](https://github.com/mx7b7/codesnip-avalonia/releases/latest)
 
 ---
 
@@ -40,14 +44,14 @@ This project is a cross-platform port of the original **[CodeSnip (WPF) applicat
 - **Compiler Explorer (Godbolt) integration**:
   - Compile snippets without installing compilers locally
   - Support for 30+ languages
-  - Add and edit available compilers
+  - Add or edit available compilers
   - Select compiler and flags
   - View stdout/stderr output
   - **View assembly output** with syntax highlighting for supported languages
   - Generate shareable shortlinks to Compiler Explorer
   
  - **Local Code Execution**
-  - Run scripts using built‑in support for Shell script (.sh), C#, F#, PowerShell, Python, PHP, Perl, Lua, Ruby, Node.js, and Java (via `JShell`) directly using local interpreters.
+  - Run scripts using built‑in support for Shell scripts (.sh), C#, F#, PowerShell, Python, PHP, Perl, Lua, Ruby, Node.js, and Java (via `JShell`) directly using local interpreters.
   - > **Note:** If an interpreter is not in your system's PATH, you can place its portable executable (e.g., `lua`, `node`, `csrunner`, `fsrunner`) in the `Tools/Interpreters` directory within the application's installation folder.
   - For C# and F# execution, you can use these custom wrappers:  
     - **C#**: [`csrunner`](https://gist.github.com/mx7b7/90013b77c1d0bcfb6b9e77399f62e409)  
@@ -60,7 +64,7 @@ This project is a cross-platform port of the original **[CodeSnip (WPF) applicat
   - Automatic loading of theme and syntax definitions
   
 - **Export & Sharing**:
-  - **Copy As**: Copy selected code as Markdown, HTML, BBCode, Base64, a JSON string.
+  - **Copy As**: Copy selected code as Markdown, HTML, BBCode, Base64, or JSON string.
   - **Export to File**: Save snippets in their original language format.
 ---
 
@@ -141,7 +145,7 @@ To build and run CodeSnip, you need the **.NET 10 SDK**. The main project is loc
 
 You can create a portable, self-contained release package for your target platform using the `dotnet publish` command. Run these commands from the root of the repository.
 
-> **Note:** The application has been tested on Windows 10 and Linux Mint 21.3. macOS support is untested.
+> **Note:** The application has been tested on Windows 10 and Linux Mint 22.3. macOS support is untested.
 
 #### Windows (x64)
 ```bash
