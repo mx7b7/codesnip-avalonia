@@ -1,0 +1,10 @@
+# https://github.com/integrated-application-development/pasfmt/blob/master/docs/CONFIGURATION.md
+encoding = "UTF-8" # native
+line_ending = "crlf" # native, lf
+use_tabs = false
+tab_width = 2
+format_multiline_strings = true
+wrap_column = 120
+continuation_indents = 2
+begin_style = "auto" # always_wrap
+

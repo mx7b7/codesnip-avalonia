@@ -1,0 +1,6 @@
+# Same as Black.
+line-length = 88
+indent-width = 4
+
+# py37, py38, py39, py310, py311, py312, py313, py314
+target-version = "py39"
