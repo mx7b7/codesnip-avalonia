@@ -179,12 +179,21 @@
 										 HorizontalAlignment="Stretch"
 										 VerticalContentAlignment="Stretch"
 										 Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
-										 FontSize="14">
+										 FontSize="12">
 									<TextBox.InnerRightContent>
 										<Button Classes="IconButton"
-												Content="▼" Cursor="Hand" Flyout="{StaticResource SearchFilterFlyout}"
+												Cursor="Hand"
+												Flyout="{StaticResource SearchFilterFlyout}"
 												Foreground="{DynamicResource ThemeAccentBrush}"
-												ToolTip.Tip="Search Mode">
+												ToolTip.Tip="Search Mode"
+												Padding="0"
+												Margin="5,0">
+											<Path Data="{StaticResource ArrowDown}" Width="10" Height="10"
+                                                Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill">
+												<Path.RenderTransform>
+													<ScaleTransform ScaleY="-1"/>
+												</Path.RenderTransform>
+											</Path>
 										</Button>
 									</TextBox.InnerRightContent>
 								</TextBox>

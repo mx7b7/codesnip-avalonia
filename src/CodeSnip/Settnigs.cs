@@ -5,7 +5,7 @@ namespace CodeSnip;
 public class MainWindowSettings
 {
     public bool LoadSnippetsOnStartup { get; set; } = true;
-    public string LastSnippet { get; set; } = "1:1:2";
+    public string LastSnippet { get; set; } = "9:22:3";
     public double SplitViewPanelLength { get; set; } = 300;
     public bool ShowEmptyLanguages { get; set; } = false;
     public bool ShowEmptyCategories { get; set; } = false;
@@ -16,7 +16,7 @@ public class MainWindowSettings
 
 public class EditorSettings
 {
-    public bool ScrollBelowDocument { get; set; } = true;
+    public bool ScrollBelowDocument { get; set; } = false;
     public bool TabToSpaces { get; set; } = true;
     public bool EnableEmailLinks { get; set; } = false;
     public bool EnableHyperinks { get; set; } = false;

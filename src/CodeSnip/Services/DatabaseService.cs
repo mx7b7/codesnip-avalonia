@@ -649,7 +649,8 @@ INSERT INTO Languages (ID, Code, Name) VALUES
 (32, 'asm', 'Asm'),
 (33, 'il', 'IL'),
 (34, 'go', 'Go'),
-(35, 'zig', 'Zig');
+(35, 'zig', 'Zig'),
+(36, 'sh', 'Bash');
 
 INSERT INTO Categories (LanguageId, Name) VALUES
 -- C++
