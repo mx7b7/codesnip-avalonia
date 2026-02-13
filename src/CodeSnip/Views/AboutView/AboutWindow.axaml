@@ -55,13 +55,12 @@
 						<TextBlock Text="Libraries"
                                    FontWeight="Bold"
                                    FontSize="16"
-                                   Foreground="{DynamicResource ThemeAccentBrush}"
-                                   Margin="0,0,0,10"/>
+                                   Foreground="{DynamicResource ThemeAccentBrush}"/>
 
 						<ItemsControl ItemsSource="{Binding Libraries}">
 							<ItemsControl.ItemTemplate>
 								<DataTemplate>
-									<Grid Margin="0,5" VerticalAlignment="Center">
+									<Grid VerticalAlignment="Center">
 										<Grid.ColumnDefinitions>
 											<ColumnDefinition Width="10"/>
 											<ColumnDefinition Width="*"/>
@@ -88,12 +87,12 @@
                                    FontWeight="Bold"
                                    FontSize="16"
                                    Foreground="{DynamicResource ThemeAccentBrush}"
-                                   Margin="0,20,0,10"/>
+                                   Margin="0,20,0,0"/>
 
 						<ItemsControl ItemsSource="{Binding Services}">
 							<ItemsControl.ItemTemplate>
 								<DataTemplate>
-									<Grid Margin="0,5" VerticalAlignment="Center">
+									<Grid VerticalAlignment="Center">
 										<Grid.ColumnDefinitions>
 											<ColumnDefinition Width="10"/>
 											<ColumnDefinition Width="*"/>
@@ -113,7 +112,7 @@
                                    FontWeight="Bold"
                                    FontSize="16"
                                    Foreground="{DynamicResource ThemeAccentBrush}"
-                                   Margin="0,20,0,10"/>
+                                   Margin="0,20,0,0"/>
 
 						<Grid>
 							<Grid.ColumnDefinitions>
@@ -124,13 +123,13 @@
 							<ItemsControl Grid.Column="0" ItemsSource="{Binding Tools}">
 								<ItemsControl.ItemTemplate>
 									<DataTemplate>
-										<Grid Margin="0,5" VerticalAlignment="Center">
+										<Grid VerticalAlignment="Center">
 											<Grid.ColumnDefinitions>
 												<ColumnDefinition Width="10"/>
 												<ColumnDefinition Width="*"/>
 											</Grid.ColumnDefinitions>
 											<TextBlock Grid.Column="0" Text="•" FontSize="16" VerticalAlignment="Center" />
-											<HyperlinkButton Grid.Column="1" Margin="0,5,10,5" VerticalAlignment="Center"
+											<HyperlinkButton Grid.Column="1" VerticalAlignment="Center"
 															 Content="{Binding Name}"
 															 NavigateUri="{Binding Url}"
 															 ToolTip.Tip="{Binding Url}"
@@ -142,13 +141,13 @@
 							<ItemsControl Grid.Column="1" ItemsSource="{Binding Tools2}">
 								<ItemsControl.ItemTemplate>
 									<DataTemplate>
-										<Grid Margin="0,5" VerticalAlignment="Center">
+										<Grid VerticalAlignment="Center">
 											<Grid.ColumnDefinitions>
 												<ColumnDefinition Width="10"/>
 												<ColumnDefinition Width="*"/>
 											</Grid.ColumnDefinitions>
 											<TextBlock Grid.Column="0" Text="•" FontSize="16" VerticalAlignment="Center" />
-											<HyperlinkButton Grid.Column="1" Margin="0,5,10,5" VerticalAlignment="Center"
+											<HyperlinkButton Grid.Column="1" VerticalAlignment="Center"
 															 Content="{Binding Name}"
 															 NavigateUri="{Binding Url}"
 															 ToolTip.Tip="{Binding Url}"
