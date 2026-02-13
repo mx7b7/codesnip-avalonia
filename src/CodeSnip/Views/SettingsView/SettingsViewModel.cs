@@ -68,7 +68,7 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
 
     [ObservableProperty] private FontFamily _selectedEditorFont;
 
-    public ObservableCollection<FontFamily> SystemFonts { get; } = new ObservableCollection<FontFamily>(FontManager.Current.SystemFonts);
+    public ObservableCollection<FontFamily> SystemFonts { get; } = new ObservableCollection<FontFamily>(FontManager.Current.SystemFonts.OrderBy(f => f.Name, StringComparer.CurrentCultureIgnoreCase));
 
     public event Func<Task>? RequestCloseAsync;
 
@@ -92,7 +92,11 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
         ShowEmptyLanguages = _settingsService.ShowEmptyLanguages;
         ShowEmptyCategories = _settingsService.ShowEmptyCategories;
         SplitViewOpenPaneLength = _settingsService.SplitViewOpenPaneLength;
-        SelectedEditorFont = SystemFonts.FirstOrDefault(f => f.Name == _settingsService.EditorFontFamily) ?? new FontFamily("Consolas");
+        SelectedEditorFont = SystemFonts.FirstOrDefault(f => f.Name == _settingsService.EditorFontFamily)
+                   ?? SystemFonts.FirstOrDefault(f => f.Name.Contains("Consolas", StringComparison.OrdinalIgnoreCase))
+                   ?? SystemFonts.FirstOrDefault(f => f.Name.Contains("Mono", StringComparison.OrdinalIgnoreCase))
+                   ?? SystemFonts.FirstOrDefault(f => f.Name.Contains("Courier", StringComparison.OrdinalIgnoreCase))
+                   ?? SystemFonts.First();
         IsDarkTheme = settingsService.BaseColor == "Dark"; HeaderText = "Settings";
     }
 
