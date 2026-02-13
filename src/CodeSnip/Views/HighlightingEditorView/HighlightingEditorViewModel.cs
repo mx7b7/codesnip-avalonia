@@ -27,7 +27,7 @@ namespace CodeSnip.Views.HighlightingEditorView
 
     public partial class HighlightingEditorViewModel : ObservableObject, IOverlayViewModel
     {
-        public Action? CloseOverlay { get; set; }
+        public Func<Task>? CloseOverlayAsync { get; set; }
         private XshdValidationService validationService = new();
         #region Fields
         private readonly IHighlightingDefinition? _originalDefinition;
@@ -333,9 +333,10 @@ namespace CodeSnip.Views.HighlightingEditorView
         #endregion
 
         [RelayCommand]
-        private void Cancel()
+        private async Task Cancel()
         {
-            CloseOverlay?.Invoke();
+            if (CloseOverlayAsync != null)
+                await CloseOverlayAsync();
         }
     }
 

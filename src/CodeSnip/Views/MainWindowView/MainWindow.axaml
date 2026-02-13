@@ -172,7 +172,7 @@
 							   Background="{DynamicResource ThemeBackgroundBrush}" ExpandDirection="Down"
 							   BorderBrush="{DynamicResource HighlightBrush}" BorderThickness="0 0 1 0" >
 						<Expander.Header>
-							<Border BorderBrush="{DynamicResource HighlightBrush}" BorderThickness="0 1 0 1" Height="32">
+							<Border BorderBrush="{DynamicResource HighlightBrush}" BorderThickness="0 1 0 1" Height="30">
 								<TextBox x:Name="txtFilter"
 										 Watermark="Search snippets..."
 										 BorderBrush="Transparent"

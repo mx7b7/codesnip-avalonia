@@ -53,7 +53,7 @@ public partial class LanguageCategoryViewModel : ObservableObject, IDisposable
     [NotifyCanExecuteChangedFor(nameof(SaveCategoryCommand))]
     private bool isAddingCategory;
 
-    public event Action? RequestClose;
+    public event Func<Task>? RequestCloseAsync;
 
     public LanguageCategoryViewModel(DatabaseService dbService)
     {
@@ -519,13 +519,15 @@ public partial class LanguageCategoryViewModel : ObservableObject, IDisposable
     }
 
     [RelayCommand]
-    private void Close()
+    private async Task Close()
     {
-        RequestClose?.Invoke();
+        if (RequestCloseAsync != null)
+            await RequestCloseAsync();
     }
+
 
     public void Dispose()
     {
-        RequestClose = null;
+        RequestCloseAsync = null;
     }
 }

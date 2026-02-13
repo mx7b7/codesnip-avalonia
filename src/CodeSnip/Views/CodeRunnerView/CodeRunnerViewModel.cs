@@ -19,7 +19,7 @@ namespace CodeSnip.Views.CodeRunnerView;
 
 public partial class CodeRunnerViewModel : ObservableObject, IOverlayViewModel
 {
-    public Action? CloseOverlay { get; set; }
+    public Func<Task>? CloseOverlayAsync { get; set; }
 
     public string? HeaderText { get; private set; }
 
@@ -525,12 +525,13 @@ public partial class CodeRunnerViewModel : ObservableObject, IOverlayViewModel
     }
 
     [RelayCommand]
-    private void Cancel()
+    private async Task Cancel()
     {
         if (RunningProcess != null && !RunningProcess.HasExited)
         {
             KillRunningProcess();
         }
-        CloseOverlay?.Invoke();
+        if (CloseOverlayAsync != null)
+            await CloseOverlayAsync();
     }
 }

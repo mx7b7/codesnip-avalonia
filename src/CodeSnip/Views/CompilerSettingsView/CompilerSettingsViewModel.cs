@@ -6,12 +6,13 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace CodeSnip.Views.CompilerSettingsView;
 
 public partial class CompilerSettingsViewModel : ObservableObject, IOverlayViewModel
 {
-    public Action? CloseOverlay { get; set; }
+    public Func<Task>? CloseOverlayAsync { get; set; }
     private readonly CompilerSettingsService _manager;
 
     [ObservableProperty] private ObservableCollection<LanguageInfo> _languages = [];
@@ -222,8 +223,9 @@ public partial class CompilerSettingsViewModel : ObservableObject, IOverlayViewM
     }
 
     [RelayCommand]
-    private void Cancel()
+    private async Task Cancel()
     {
-        CloseOverlay?.Invoke();
+        if (CloseOverlayAsync != null)
+            await CloseOverlayAsync();
     }
 }

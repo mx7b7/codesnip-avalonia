@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace CodeSnip.Views.SnippetView;
 
@@ -38,7 +39,7 @@ public partial class SnippetViewModel : ObservableObject,  IOverlayViewModel
     [ObservableProperty]
     private string? _selectedLanguageName;
 
-    public Action? CloseOverlay { get; set; }
+    public Func<Task>? CloseOverlayAsync { get; set; }
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
@@ -141,7 +142,7 @@ public partial class SnippetViewModel : ObservableObject,  IOverlayViewModel
                         mainVM.StatusMessage = $"Snippet '{saved.Title}' saved at {DateTime.Now:HH:mm:ss}";
                     }
                 }
-                CloseOverlay?.Invoke();
+                CloseOverlayAsync?.Invoke();
             }
         }
         catch (Exception ex)
@@ -151,9 +152,10 @@ public partial class SnippetViewModel : ObservableObject,  IOverlayViewModel
     }
 
     [RelayCommand]
-    private void Cancel()
+    private async Task Cancel()
     {
-        CloseOverlay?.Invoke();
+        if (CloseOverlayAsync != null)
+            await CloseOverlayAsync();
     }
 
     // Default "Hello, World!" code templates for various programming languages

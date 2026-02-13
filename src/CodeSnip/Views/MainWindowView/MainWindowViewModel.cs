@@ -389,14 +389,14 @@ public partial class MainWindowViewModel : ObservableObject
     partial void OnLeftOverlayContentChanged(object? oldValue, object? newValue)
     {
         if (newValue is IOverlayViewModel overlay)
-            overlay.CloseOverlay = CloseLeftOverlay;
+            overlay.CloseOverlayAsync = CloseLeftOverlayAsync;
 
     }
 
     partial void OnRightOverlayContentChanged(object? oldValue, object? newValue)
     {
         if (newValue is IOverlayViewModel overlay)
-            overlay.CloseOverlay = CloseRightOverlay;
+            overlay.CloseOverlayAsync = CloseRightOverlayAsync;
     }
 
     public string SaveSelectedSnippetState()
@@ -728,18 +728,18 @@ public partial class MainWindowViewModel : ObservableObject
         var vm = new LanguageCategoryViewModel(
             dbService: _databaseService);
 
-        vm.RequestClose += OnLanguageCategoryViewClosed;
+        vm.RequestCloseAsync += OnLanguageCategoryViewClosedAsync;
 
         LeftOverlayContent = vm;
         LeftOverlayWidth = 400;
         IsLeftOverlayOpen = true;
     }
 
-    private void OnLanguageCategoryViewClosed()
+    private async Task OnLanguageCategoryViewClosedAsync()
     {
         if (LeftOverlayContent is LanguageCategoryViewModel vm)
         {
-            vm.RequestClose -= OnLanguageCategoryViewClosed;
+            vm.RequestCloseAsync -= OnLanguageCategoryViewClosedAsync;
         }
 
         Snippet? tmpSnippet = null;
@@ -752,7 +752,7 @@ public partial class MainWindowViewModel : ObservableObject
             }
         }
         LoadSnippets(); // Reload the entire snippet collection from the database
-        CloseLeftOverlay(); // Close the overlay panel
+
         if (tmpSnippet != null)
         {
             // Flatten the entire collection of snippets from the newly loaded data and check if our snippet's ID is still present.
@@ -780,6 +780,7 @@ public partial class MainWindowViewModel : ObservableObject
                 StatusMessage = "The previously selected snippet was deleted.";
             }
         }
+        await CloseLeftOverlayAsync(); // Close the overlay panel
     }
 
     [RelayCommand]
@@ -819,13 +820,13 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void OpenSettings()
+    private async Task OpenSettings()
     {
         if (IsRightOverlayOpen) return;
 
         var vm = new SettingsView.SettingsViewModel(settingsService, _databaseService);
 
-        vm.RequestClose += OnSettingsViewClosed;
+        vm.RequestCloseAsync += OnSettingsViewClosedAsync;
 
 
         RightOverlayContent = vm;
@@ -833,11 +834,11 @@ public partial class MainWindowViewModel : ObservableObject
         IsRightOverlayOpen = true;
     }
 
-    private void OnSettingsViewClosed()
+    private async Task OnSettingsViewClosedAsync()
     {
         if (RightOverlayContent is SettingsView.SettingsViewModel vm)
         {
-            vm.RequestClose -= OnSettingsViewClosed;
+            vm.RequestCloseAsync -= OnSettingsViewClosedAsync;
 
             bool oldShowEmptyLanguages = ShowEmptyLanguages;
             bool oldShowEmptyCategories = ShowEmptyCategories;
@@ -890,7 +891,7 @@ public partial class MainWindowViewModel : ObservableObject
                         tmpSnippet.Id);
                 }
             }
-            CloseRightOverlay();
+            await CloseRightOverlayAsync();
             // Raise event to notify MainWindow to replace the line highlight renderer
             // ReplaceLineHighlightRendererRequested?.Invoke();
             //settingsService.SaveSettings(); // Moved to OnWindowClosing
@@ -1036,33 +1037,32 @@ public partial class MainWindowViewModel : ObservableObject
 
     // CLOSE LEFT PANEL
     [RelayCommand]
-    public void CloseLeftOverlay()
+    public async Task CloseLeftOverlayAsync()
     {
         if (LeftOverlayContent is IDisposable d)
             d.Dispose();
 
         LeftOverlayWidth = 0;
+        await Task.Delay(250);
 
-        Task.Delay(250).ContinueWith(_ =>
-        {
-            LeftOverlayContent = null;
-            IsLeftOverlayOpen = false;
-        });
+        LeftOverlayContent = null;
+        IsLeftOverlayOpen = false;
+
     }
 
     // CLOSE RIGHT PANEL
     [RelayCommand]
-    public void CloseRightOverlay()
+    public async Task CloseRightOverlayAsync()
     {
         if (RightOverlayContent is IDisposable d)
             d.Dispose();
 
         RightOverlayWidth = 0;
-        Task.Delay(250).ContinueWith(_ =>
-        {
-            RightOverlayContent = null;
-            IsRightOverlayOpen = false;
-        });
+        await Task.Delay(250);
+
+        RightOverlayContent = null;
+        IsRightOverlayOpen = false;
+
     }
 
     public async Task HandleHighlightingErrorAsync(string errorMessage)

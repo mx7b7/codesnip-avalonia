@@ -70,7 +70,7 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
 
     public ObservableCollection<FontFamily> SystemFonts { get; } = new ObservableCollection<FontFamily>(FontManager.Current.SystemFonts);
 
-    public event Action? RequestClose;
+    public event Func<Task>? RequestCloseAsync;
 
     public string? HeaderText { get; private set; }
 
@@ -254,9 +254,16 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
     }
 
     [RelayCommand]
-    private void Close() => RequestClose?.Invoke();
+    private async Task Close()
+    {
+        if (RequestCloseAsync != null)
+            await RequestCloseAsync();
+    }
 
-    public void Dispose() => RequestClose = null;
+    public void Dispose()
+    {
+        RequestCloseAsync = null;
+    }
 
 }
 

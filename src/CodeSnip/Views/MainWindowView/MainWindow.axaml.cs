@@ -10,12 +10,13 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace CodeSnip.Views.MainWindowView;
 
 public interface IOverlayViewModel
 {
-    Action? CloseOverlay { get; set; }
+    Func<Task>? CloseOverlayAsync { get; set; }
 }
 
 public partial class MainWindow : ControlsEx.Window.Window
@@ -54,12 +55,12 @@ public partial class MainWindow : ControlsEx.Window.Window
             if (args.PropertyName == nameof(MainWindowViewModel.LeftOverlayContent) &&
                  vm.LeftOverlayContent is IOverlayViewModel leftOverlay)
             {
-                leftOverlay.CloseOverlay = vm.CloseLeftOverlay;
+                leftOverlay.CloseOverlayAsync = vm.CloseLeftOverlayAsync;
             }
             if (args.PropertyName == nameof(MainWindowViewModel.RightOverlayContent) &&
                  vm.RightOverlayContent is IOverlayViewModel rightOverlay)
             {
-                rightOverlay.CloseOverlay = vm.CloseRightOverlay;
+                rightOverlay.CloseOverlayAsync = vm.CloseRightOverlayAsync;
             }
         };
     }
