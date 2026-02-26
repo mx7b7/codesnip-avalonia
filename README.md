@@ -119,6 +119,8 @@ CodeSnip integrates various code formatters. The application first looks for the
 - [prettier](https://prettier.io/) – JavaScript, TypeScript, JSX, HTML, CSS, JSON, Markdown, and more
 - [rustfmt](https://github.com/rust-lang/rustfmt) – Rust
 - [ruff](https://github.com/astral-sh/ruff) – Python
+- [shfmt](https://github.com/mvdan/sh) – Shell scripts
+- [sqlfmt](https://github.com/GrantFBarnes/sqlfmt) – SQL
 - [stylua](https://github.com/JohnnyMorganz/StyLua) – Lua
 
 
