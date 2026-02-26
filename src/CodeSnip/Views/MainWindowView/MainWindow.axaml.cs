@@ -382,6 +382,24 @@ public partial class MainWindow : ControlsEx.Window.Window
         }
     }
 
+    private async void FormatSqlfmt_Click(object? sender, RoutedEventArgs e)
+    {
+        string? code = ViewModel.SelectedSnippet?.Category?.Language?.Code;
+        if (code is not null and "sql")
+        {
+            string originalCode = textEditor.Text;
+            var (isSuccess, formatted, error) = await FormattingService.TryFormatCodeWithSqlFmtAsync(originalCode);
+            if (isSuccess)
+            {
+                textEditor.Document.Text = formatted;
+            }
+            else
+            {
+                _ = await MessageBoxManager.GetMessageBoxStandard("Formatting error", error ?? "", ButtonEnum.Ok).ShowAsync();
+            }
+        }
+    }
+
     private async void FormatAll_Click(object? sender, RoutedEventArgs e)
     {
         string? code = ViewModel.SelectedSnippet?.Category?.Language?.Code;
@@ -434,6 +452,11 @@ public partial class MainWindow : ControlsEx.Window.Window
                 case "sh":
                     FormatShfmt_Click(sender, e);
                     break;
+
+                case "sql":
+                    FormatSqlfmt_Click(sender, e);
+                    break;
+
                 default:
                     // DEFAULT: Use clang-format for other supported languages
                     FormatClang_Click(sender, e);

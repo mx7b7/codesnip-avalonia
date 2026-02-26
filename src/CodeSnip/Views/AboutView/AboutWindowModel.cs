@@ -46,17 +46,19 @@ namespace CodeSnip.Views.AboutView
             new() { Name = "dfmt", Url = new Uri("https://github.com/dlang-community/dfmt")},
             new() { Name = "gofmt", Url = new Uri("https://pkg.go.dev/cmd/gofmt")},
             new() { Name = "fantomas", Url = new Uri("https://github.com/fsprojects/fantomas")},
+            new() { Name = "pasfmt", Url = new Uri("https://github.com/integrated-application-development/pasfmt")}
 
     ];
 
         public ObservableCollection<ToolsInfo> Tools2 { get; } =
         [
-            new() { Name = "pasfmt", Url = new Uri("https://github.com/integrated-application-development/pasfmt")},
             new() { Name = "prettier", Url = new Uri("https://prettier.io/")},
             new() { Name = "rustfmt", Url = new Uri("https://github.com/rust-lang/rustfmt")},
             new() { Name = "ruff", Url = new Uri("https://github.com/astral-sh/ruff")},
             new() { Name = "shfmt", Url = new Uri("https://github.com/mvdan/sh" ) },
-            new() { Name = "stylua", Url = new Uri("https://github.com/JohnnyMorganz/StyLua" ) }
+            new() { Name = "stylua", Url = new Uri("https://github.com/JohnnyMorganz/StyLua" ) },
+            new() { Name = "sqlfmt", Url = new Uri("https://github.com/GrantFBarnes/sqlfmt" ) }
+
          ];
 
         public AboutWindowModel()
