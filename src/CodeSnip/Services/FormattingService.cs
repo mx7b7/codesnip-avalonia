@@ -125,6 +125,21 @@ namespace CodeSnip.Services
         }
 
         /// <summary>
+        /// Attempts to format the provided code using the 'shfmt' external process asynchronously.
+        /// </summary>
+        /// <remarks>If the formatting operation exceeds the specified timeout, it will return false and
+        /// an appropriate error message.</remarks>
+        /// <param name="code">The code to be formatted. This parameter cannot be null or empty.</param>
+        /// <param name="timeoutMs">The maximum time, in milliseconds, to wait for the formatting operation to complete. The default value is
+        /// 5000 milliseconds.</param>
+        /// <returns>A tuple containing a boolean indicating success, the formatted code as a string, and an error message if the
+        /// operation fails.</returns>
+        public static async Task<(bool Success, string? FormattedCode, string? ErrorMessage)> TryFormatCodeWithShFmtAsync(string code, int timeoutMs = 5000)
+        {
+            return await TryFormatWithExternalProcessAsync("shfmt", "-", code, timeoutMs);
+        }
+
+        /// <summary>
         ///Format Pascal source code using the external 'pasfmt.exe' formatter from the 'Tools' directory or system's PATH.
         /// </summary>
         /// <param name="code">The Pascal source code to format.</param>
@@ -308,6 +323,6 @@ namespace CodeSnip.Services
             }
         }
 
-        
+
     }
 }

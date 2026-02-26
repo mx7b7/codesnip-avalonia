@@ -703,6 +703,15 @@
 													  Foreground="{DynamicResource ThemeAccentBrush}"/>
 										</MenuItem.Icon>
 									</MenuItem>
+									<MenuItem Header="shfmt" Click="FormatShfmt_Click"
+											IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
+										Converter={StaticResource LanguageToBoolConverter},
+										ConverterParameter='sh'}">
+										<MenuItem.Icon>
+											<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"
+													  Foreground="{DynamicResource ThemeAccentBrush}"/>
+										</MenuItem.Icon>
+									</MenuItem>
 								</MenuItem>
 							</MenuFlyout>
 						</AvaloniaEdit:TextEditor.ContextFlyout>

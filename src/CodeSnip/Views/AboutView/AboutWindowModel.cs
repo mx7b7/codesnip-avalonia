@@ -55,6 +55,7 @@ namespace CodeSnip.Views.AboutView
             new() { Name = "prettier", Url = new Uri("https://prettier.io/")},
             new() { Name = "rustfmt", Url = new Uri("https://github.com/rust-lang/rustfmt")},
             new() { Name = "ruff", Url = new Uri("https://github.com/astral-sh/ruff")},
+            new() { Name = "shfmt", Url = new Uri("https://github.com/mvdan/sh" ) },
             new() { Name = "stylua", Url = new Uri("https://github.com/JohnnyMorganz/StyLua" ) }
          ];
 
