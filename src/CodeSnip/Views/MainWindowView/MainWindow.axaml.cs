@@ -146,14 +146,14 @@ public partial class MainWindow : ControlsEx.Window.Window
 
             (bool isSuccess, string? formatted, string? error) = code switch
             {
-                "cs" => await FormattingService.TryFormatCodeWithCSharpierAsync(originalCode),
-                "xml" => await FormattingService.TryFormatXmlWithCSharpierAsync(originalCode),
+                "cs" => await FormattingService.TryFormatWithCSharpierAsync(originalCode),
+                "xml" => await FormattingService.TryFormatWithCSharpierAsync(originalCode),
                 _ => (false, null, $"Formatting for '{code}' is not supported with CSharpier")
             };
 
             if (isSuccess)
             {
-                _textEditor.Document.Text = formatted!;
+                _textEditor.Document.Text = formatted;
             }
             else
             {

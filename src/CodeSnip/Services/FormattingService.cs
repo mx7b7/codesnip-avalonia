@@ -1,6 +1,4 @@
-﻿using CSharpier.Core.CSharp;
-using CSharpier.Core.Xml;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -15,39 +13,27 @@ namespace CodeSnip.Services
     public static class FormattingService
     {
         /// <summary>
-		/// Formats C# code using the built-in CSharpier library.
-		/// </summary>
-		/// <param name="code">The C# code to format.</param>
-		/// <returns>A tuple indicating success, the formatted code, and any error message.</returns>
-        public static async Task<(bool isSuccess, string? formattedCode, string? errorMessage)> TryFormatCodeWithCSharpierAsync(string code)
-        {
-            try
-            {
-                var result = await CSharpFormatter.FormatAsync(code);
-                return (true, result.Code, null);
-            }
-            catch (Exception ex)
-            {
-                return (false, null, ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Formats XML code using the built-in CSharpier library.
+        /// Formats C# or XML code using the CSharpier CLI tool.
         /// </summary>
-        /// <param name="code">The XML code to format.</param>
+        /// <param name="code">The code to format.</param>
         /// <returns>A tuple indicating success, the formatted code, and any error message.</returns>
-        public static async Task<(bool isSuccess, string? formattedCode, string? errorMessage)> TryFormatXmlWithCSharpierAsync(string code)
+        public static async Task<(bool isSuccess, string? formattedCode, string? errorMessage)> TryFormatWithCSharpierAsync(string code, int timeoutMs = 10000)
         {
-            try
+            var (isSuccess, formattedCode, errorMessage) = await TryFormatWithExternalProcessAsync(
+               "dotnet",
+               "csharpier format --write-stdout",
+               code,
+               timeoutMs
+           );
+
+            // CSharpier returns exit code 0 even on failure, writing errors to stdout.
+            // We need to manually check for failure messages in the output.
+            if (isSuccess && formattedCode != null && formattedCode.Contains("not formatted", StringComparison.OrdinalIgnoreCase))
             {
-                var result = await Task.Run(() => XmlFormatter.Format(code));
-                return (true, result.Code, null);
+                return (false, null, formattedCode.Trim());
             }
-            catch (Exception ex)
-            {
-                return (false, null, ex.Message);
-            }
+
+            return (isSuccess, formattedCode, errorMessage);
         }
 
         /// <summary>
