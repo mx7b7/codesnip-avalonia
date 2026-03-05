@@ -15,6 +15,7 @@ namespace CodeSnip.Services
         private static readonly Dictionary<string, string> singleLineComments = new()
         {
     { "as", "//" },      // ActionScript3
+    { "asm", ";" },      // Assembly (Intel/NASM syntax)
     { "aspx", "//" },    // ASP/XHTML
     { "atg", "//" },     // Coco
     { "bat", "REM" },    // BAT
@@ -37,10 +38,11 @@ namespace CodeSnip.Services
     { "py", "#" },       // Python
     { "rb", "#" },       // Ruby
     { "rs", "//" },      // Rust
+    { "sh", "#" },       // Bash/Shell script
     { "sql", "--" },     // SQL
     { "tex", "%" },      // TeX
     { "vb", "'" },       // VB
-    { "vtl","##" },      // Velocity Template Language ( After this line no embedded syntax definition aviable )
+    { "vtl","##" },      // Velocity Template Language
     { "vbs", "'" },      // VBScript
     { "vhdl", "--" },    // VHDL
     { "yaml", "#" },     // YAML
@@ -113,7 +115,7 @@ namespace CodeSnip.Services
     { "sql", ("/*", "*/") },      // SQL
     { "html", ("<!--", "-->") },  // HTML
     { "xml", ("<!--", "-->") },   // XML
-    { "md", ("<!--", "-->") },    // Markdown ( After this line no embedded syntax definition aviable )
+    { "md", ("<!--", "-->") },    // Markdown
     { "zig", ("/*", "*/") },          // Zig
     { "mm", ("/*", "*/") },           // Objective-C++
     { "raku", ("=pod", "=cut") },     // Raku (Perl 6) - POD blokovi
