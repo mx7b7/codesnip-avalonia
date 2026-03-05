@@ -53,7 +53,8 @@
 											   FontWeight="DemiBold" VerticalAlignment="Center"/>
 								</StackPanel>
 								<Slider Minimum="150" Maximum="500" Value="{Binding SplitViewOpenPaneLength, Mode=TwoWay}"
-										TickFrequency="2" IsSnapToTickEnabled="True"/>
+										TickFrequency="2" IsSnapToTickEnabled="True"
+										ToolTip.Tip="Ctrl+Shift++&#xA;Ctrl+Shift+-"/>
 							</StackPanel>
 						</Border>
 					</StackPanel>
