@@ -96,7 +96,6 @@ This project uses the following open-source libraries:
 - **[Avalonia](https://github.com/AvaloniaUI/Avalonia)**
 - **[AvaloniaEdit](https://github.com/avaloniaui/avaloniaedit)**
 - **[CommunityToolkit.Mvvm](https://github.com/CommunityToolkit/dotnet)**
-- **[CSharpier](https://csharpier.com/)**
 - **[Dapper](https://github.com/DapperLib/Dapper)**
 - **[System.Data.SQLite](https://system.data.sqlite.org/)**
   
@@ -111,7 +110,7 @@ CodeSnip integrates various code formatters. The application first looks for the
 - [autopep8](https://pypi.org/project/autopep8) – Python
 - [black](https://black.readthedocs.io/en/stable) – Python
 - [clang-format](https://clang.llvm.org/docs/ClangFormat.html) – C, C++, C#, Java, and more
-- [csharpier](https://csharpier.com/) – C#, XML (built-in)
+- [csharpier](https://csharpier.com/) – C#, XML
 - [dfmt](https://github.com/dlang-community/dfmt) – D
 - [gofmt](https://pkg.go.dev/cmd/gofmt) – Go
 - [fantomas](https://github.com/fsprojects/fantomas) – F#

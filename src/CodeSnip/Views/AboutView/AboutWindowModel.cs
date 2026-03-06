@@ -28,7 +28,6 @@ namespace CodeSnip.Views.AboutView
             new() { Name = "Avalonia", Url = new Uri("https://github.com/AvaloniaUI/Avalonia"), LicenseName = "MIT License", LicenseUrl = new Uri("https://github.com/AvaloniaUI/Avalonia/blob/master/licence.md") },
             new() { Name = "AvaloniaEdit", Url = new Uri("https://github.com/avaloniaui/avaloniaedit"), LicenseName = "MIT License", LicenseUrl = new Uri("https://github.com/AvaloniaUI/AvaloniaEdit/blob/master/LICENSE") },
             new() { Name = "CommunityToolkit.Mvvm", Url = new Uri("https://github.com/CommunityToolkit/dotnet"),LicenseName = "MIT License", LicenseUrl = new Uri("https://github.com/CommunityToolkit/dotnet/blob/main/License.md") },
-            new() { Name = "CSharpier.Core", Url = new Uri("https://csharpier.com/"), LicenseName = "MIT License", LicenseUrl = new Uri("https://github.com/belav/csharpier/blob/main/LICENSE") },
             new() { Name = "Dapper", Url = new Uri("https://github.com/DapperLib/Dapper"),LicenseName = "Apache 2.0 License", LicenseUrl = new Uri("https://github.com/DapperLib/Dapper/blob/main/License.txt") },
             new() { Name = "System.Data.SQLite.Core", Url = new Uri("https://system.data.sqlite.org/"),LicenseName = "Public Domain License", LicenseUrl = new Uri("https://system.data.sqlite.org/home/doc/trunk/www/copyright.wiki") }
         ];
@@ -43,15 +42,15 @@ namespace CodeSnip.Views.AboutView
             new() { Name = "autopep8", Url = new Uri("https://pypi.org/project/autopep8")},
             new() { Name = "black", Url = new Uri("https://black.readthedocs.io/en/stable/")},
             new() { Name = "clang-format", Url = new Uri("https://clang.llvm.org/docs/ClangFormat.html")},
+            new() { Name = "csharpier", Url = new Uri("https://csharpier.com/")},
             new() { Name = "dfmt", Url = new Uri("https://github.com/dlang-community/dfmt")},
             new() { Name = "gofmt", Url = new Uri("https://pkg.go.dev/cmd/gofmt")},
             new() { Name = "fantomas", Url = new Uri("https://github.com/fsprojects/fantomas")},
-            new() { Name = "pasfmt", Url = new Uri("https://github.com/integrated-application-development/pasfmt")}
-
     ];
 
         public ObservableCollection<ToolsInfo> Tools2 { get; } =
         [
+            new() { Name = "pasfmt", Url = new Uri("https://github.com/integrated-application-development/pasfmt")},
             new() { Name = "prettier", Url = new Uri("https://prettier.io/")},
             new() { Name = "rustfmt", Url = new Uri("https://github.com/rust-lang/rustfmt")},
             new() { Name = "ruff", Url = new Uri("https://github.com/astral-sh/ruff")},
