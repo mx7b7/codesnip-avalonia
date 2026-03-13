@@ -28,8 +28,10 @@ namespace CodeSnip.Views.AboutView
             new() { Name = "Avalonia", Url = new Uri("https://github.com/AvaloniaUI/Avalonia"), LicenseName = "MIT License", LicenseUrl = new Uri("https://github.com/AvaloniaUI/Avalonia/blob/master/licence.md") },
             new() { Name = "AvaloniaEdit", Url = new Uri("https://github.com/avaloniaui/avaloniaedit"), LicenseName = "MIT License", LicenseUrl = new Uri("https://github.com/AvaloniaUI/AvaloniaEdit/blob/master/LICENSE") },
             new() { Name = "CommunityToolkit.Mvvm", Url = new Uri("https://github.com/CommunityToolkit/dotnet"),LicenseName = "MIT License", LicenseUrl = new Uri("https://github.com/CommunityToolkit/dotnet/blob/main/License.md") },
-            new() { Name = "Dapper", Url = new Uri("https://github.com/DapperLib/Dapper"),LicenseName = "Apache 2.0 License", LicenseUrl = new Uri("https://github.com/DapperLib/Dapper/blob/main/License.txt") },
-            new() { Name = "System.Data.SQLite.Core", Url = new Uri("https://system.data.sqlite.org/"),LicenseName = "Public Domain License", LicenseUrl = new Uri("https://system.data.sqlite.org/home/doc/trunk/www/copyright.wiki") }
+            new() { Name = "Dapper", Url = new Uri("https://github.com/DapperLib/Dapper"), LicenseName = "Apache 2.0 License", LicenseUrl = new Uri("https://github.com/DapperLib/Dapper/blob/main/License.txt") },
+            new() { Name = "MessageBox.Avalonia", Url = new Uri("https://github.com/AvaloniaCommunity/MessageBox.Avalonia"), LicenseName = "MIT License", LicenseUrl = new Uri("https://github.com/AvaloniaCommunity/MessageBox.Avalonia/blob/master/LICENSE") },
+            new() { Name = "System.Data.SQLite", Url = new Uri("https://system.data.sqlite.org/"),LicenseName = "Public Domain License", LicenseUrl = new Uri("https://system.data.sqlite.org/home/doc/trunk/www/copyright.wiki") },
+            new() { Name = "Xaml.Behaviors.Interactivity", Url = new Uri("https://github.com/wieslawsoltes/Xaml.Behaviors"),LicenseName = "MIT License", LicenseUrl = new Uri("https://github.com/wieslawsoltes/Xaml.Behaviors/blob/master/LICENSE.TXT") }
         ];
 
         public ObservableCollection<ServicesInfo> Services { get; } =
