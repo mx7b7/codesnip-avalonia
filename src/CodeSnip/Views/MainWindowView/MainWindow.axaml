@@ -345,7 +345,11 @@
 						</Button>
 						<Button Classes="IconButton" Command="{Binding EditLanguageCategoryCommand}"
 								ToolTip.Tip="Language/Category edit&#xA;Ctrl+Shift+L">
-							<Path Data="{StaticResource CategoryEdit}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
+							<Path Data="{StaticResource CategoryEdit}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform">
+								<Path.RenderTransform>
+									<ScaleTransform ScaleY="-1"/>
+								</Path.RenderTransform>
+							</Path>
 						</Button>
 						<Button Classes="IconButton" ToolTip.Tip="Load snippets" IsEnabled="{Binding IsLoadSnippetEnabled}"
 								Command="{Binding LoadSnippetsDatabaseCommand}">
