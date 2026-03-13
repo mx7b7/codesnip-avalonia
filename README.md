@@ -73,7 +73,7 @@ This project is a cross-platform port of the original **[CodeSnip (WPF) applicat
 | Engine | Status | Language Coverage |
 |--------|--------|-------------------|
 | **XSHD (AvaloniaEdit)** | Built‑in | 36+ bundled definitions (light/dark variants included); unlimited via custom `.xshd` files |
-| **TextMateSharp** | Planned | 160+ grammars supported via `.tmLanguage` / `.plist` |
+| **TextMateSharp** | Planned | 50+ grammars supported via `.tmLanguage` / `.plist` |
 | **User‑Provided Definitions** | Supported | Unlimited — users can add any language manually |
 
 ---
@@ -97,8 +97,9 @@ This project uses the following open-source libraries:
 - **[AvaloniaEdit](https://github.com/avaloniaui/avaloniaedit)**
 - **[CommunityToolkit.Mvvm](https://github.com/CommunityToolkit/dotnet)**
 - **[Dapper](https://github.com/DapperLib/Dapper)**
+- **[MessageBox.Avalonia](https://github.com/AvaloniaCommunity/MessageBox.Avalonia)**
 - **[System.Data.SQLite](https://system.data.sqlite.org/)**
-  
+- **[Xaml.Behaviors.Interactivity](https://github.com/wieslawsoltes/Xaml.Behaviors)**
 ---
 
 ## 🧹 Code Formatters
