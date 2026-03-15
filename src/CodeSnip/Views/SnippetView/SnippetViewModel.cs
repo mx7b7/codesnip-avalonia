@@ -10,12 +10,13 @@ using MsBox.Avalonia.Enums;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace CodeSnip.Views.SnippetView;
 
-public partial class SnippetViewModel : ObservableObject,  IOverlayViewModel
+public partial class SnippetViewModel : ObservableValidator,  IOverlayViewModel
 {
     private readonly DatabaseService _databaseService;
 
@@ -43,6 +44,8 @@ public partial class SnippetViewModel : ObservableObject,  IOverlayViewModel
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    [NotifyDataErrorInfo]
+    [Required(ErrorMessage = "Title cannot be empty")]
     private string? _title = string.Empty;
 
     public string? HeaderText { get; private set; }
@@ -69,9 +72,10 @@ public partial class SnippetViewModel : ObservableObject,  IOverlayViewModel
 
         InitializeSelections();
         HeaderText = IsEditMode ? $"Edit {Snippet?.Title ?? ""}" : "Create New Snippet";
+        ValidateAllProperties();
     }
 
-     public bool CanSave() => !string.IsNullOrWhiteSpace(Title) && SelectedCategory != null;
+     public bool CanSave() => !HasErrors && SelectedCategory != null && SelectedLanguage != null;
 
     private void InitializeSelections()
     {

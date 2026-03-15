@@ -81,7 +81,7 @@
 						<!-- Tags textbox -->
 					</Grid.RowDefinitions>
 					<TextBlock Text="Title:" FontWeight="Bold" Grid.Row="0" Margin="0,10,0,2"/>
-					<TextBox Grid.Row="1" Watermark="Enter title" Text="{Binding Title}" />
+					<TextBox Grid.Row="1" Watermark="Enter title" Text="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 					<TextBlock Text="Description:" FontWeight="Bold" Grid.Row="2" Margin="0,10,0,2"/>
 					<TextBox Grid.Row="3" AcceptsReturn="True" TextWrapping="Wrap" Text="{Binding Snippet.Description}" Height="200"/>
 					<TextBlock Text="Tags:" FontWeight="Bold" Grid.Row="4" Margin="0,10,0,2"/>
