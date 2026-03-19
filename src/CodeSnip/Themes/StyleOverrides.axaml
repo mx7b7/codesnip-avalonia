@@ -51,44 +51,49 @@
 		<Setter Property="Width" Value="5"/>
 		<Setter Property="Background" Value="{DynamicResource ThemeControlHighBrush}"/>
 	</Style>
-	<!-- ................IconButton Toolbar Style .......................................... -->
+	<!-- ................IconButton Style .......................................... -->
 	<Style Selector="Button.IconButton">
-		<Setter Property="Width" Value="32"/>
-		<Setter Property="Height" Value="32"/>
 		<Setter Property="BorderThickness" Value="0"/>
 		<Setter Property="Background" Value="Transparent"/>
 	</Style>
-	<!-- Hover efekt -->
-	<Style Selector="Button.IconButton:pointerover">
+	<!-- Hover -->
+	<Style Selector="Button.IconButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
 		<Setter Property="Opacity" Value="0.7"/>
 	</Style>
-
-	<!-- Focus visible efekt -->
-	<Style Selector="Button.IconButton:focus-visible">
-		<Setter Property="Opacity" Value="0.5"/>
-	</Style>
-	<!-- Disabled efekt -->
+	<!-- Disabled -->
 	<Style Selector="Button.IconButton:disabled">
 		<Setter Property="Opacity" Value="0.3"/>
 	</Style>
-	<!-- .........................Titlebar buttons style........................................-->
-	<Style Selector="Button.TitleBarButton">
+	<!-- Pressed -->
+	<Style Selector="Button.IconButton:pressed /template/ ContentPresenter#PART_ContentPresenter">
+		<Setter Property="Opacity" Value="0.5"/>
 		<Setter Property="Background" Value="Transparent"/>
-		<Setter Property="BorderThickness" Value="0"/>
-		<Setter Property="Height" Value="30"/>
-		<Setter Property="Width" Value="30"/>
-		<Setter Property="HorizontalContentAlignment" Value="Center"/>
-		<Setter Property="VerticalContentAlignment" Value="Center"/>
 	</Style>
-
-	<Style Selector="Button.TitleBarButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+	<!-- ................ToggleIconButton Style .......................................... -->
+	<Style Selector="ToggleButton.ToggleIconButton">
+		<Setter Property="BorderBrush" Value="Transparent"/>
+		<Setter Property="Background" Value="Transparent"/>
+	</Style>
+	<!-- Hover -->
+	<Style Selector="ToggleButton.ToggleIconButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
 		<Setter Property="Opacity" Value="0.7"/>
+		<Setter Property="BorderBrush" Value="Transparent"/>
 	</Style>
-
-	<Style Selector="Button.TitleBarButton:pressed /template/ ContentPresenter#PART_ContentPresenter">
+	<!-- Disabled -->
+	<Style Selector="ToggleButton.ToggleIconButton:disabled">
+		<Setter Property="Opacity" Value="0.3"/>
+	</Style>
+	<!-- Pressed -->
+	<Style Selector="ToggleButton.ToggleIconButton:pressed /template/ ContentPresenter#PART_ContentPresenter">
+		<Setter Property="Opacity" Value="0.5"/>
 		<Setter Property="Background" Value="Transparent"/>
 	</Style>
-	<!--.............................................................................................-->
+	<Style Selector="ToggleButton.ToggleIconButton:checked /template/ ContentPresenter#PART_ContentPresenter">
+		<Setter Property="Opacity" Value="0.5"/>
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentBrush}" />
+	</Style>
+	<!--......................ScrollViewerThin Style............................................-->
 	<Style Selector="ScrollViewer.ScrollViewerThin ScrollBar:vertical">
 		<Setter Property="Width" Value="6"/>
 	</Style>
@@ -103,6 +108,6 @@
 		<Setter Property="MinWidth" Value="24"/>
 		<Setter Property="Height" Value="5"/>
 	</Style>
-   <!--................................................................................................-->
-	
+	<!--................................................................................................-->
+
 </Styles>
