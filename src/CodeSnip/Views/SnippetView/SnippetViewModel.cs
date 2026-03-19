@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace CodeSnip.Views.SnippetView;
 
-public partial class SnippetViewModel : ObservableValidator,  IOverlayViewModel
+public partial class SnippetViewModel : ObservableValidator, IOverlayViewModel
 {
     private readonly DatabaseService _databaseService;
 
@@ -27,7 +27,7 @@ public partial class SnippetViewModel : ObservableValidator,  IOverlayViewModel
     private ObservableCollection<Category> _availableCategories = [];
 
     [ObservableProperty]
-    private Snippet? _snippet;
+    private Snippet? _selectedSnippet;
 
     public bool IsEditMode { get; }
 
@@ -63,7 +63,7 @@ public partial class SnippetViewModel : ObservableValidator,  IOverlayViewModel
         IsEditMode = isEditMode;
 
         Languages = new ObservableCollection<Language>(languages ?? new List<Language>());
-        Snippet = snippet;
+        SelectedSnippet = snippet;
 
         if (preselectedCategory != null)
         {
@@ -71,20 +71,20 @@ public partial class SnippetViewModel : ObservableValidator,  IOverlayViewModel
         }
 
         InitializeSelections();
-        HeaderText = IsEditMode ? $"Edit {Snippet?.Title ?? ""}" : "Create New Snippet";
+        HeaderText = IsEditMode ? $"Edit {SelectedSnippet?.Title ?? ""}" : "Create New Snippet";
         ValidateAllProperties();
     }
 
-     public bool CanSave() => !HasErrors && SelectedCategory != null && SelectedLanguage != null;
+    public bool CanSave() => !HasErrors && SelectedCategory != null && SelectedLanguage != null;
 
     private void InitializeSelections()
     {
         if (IsEditMode)
         {
-            SelectedLanguage = Snippet?.Category?.Language;
+            SelectedLanguage = SelectedSnippet?.Category?.Language;
             AvailableCategories = new ObservableCollection<Category>(SelectedLanguage?.Categories ?? []);
-            SelectedCategory = Snippet?.Category;
-            Title = Snippet?.Title ?? string.Empty;
+            SelectedCategory = SelectedSnippet?.Category;
+            Title = SelectedSnippet?.Title ?? string.Empty;
         }
         else
         {
@@ -113,10 +113,10 @@ public partial class SnippetViewModel : ObservableValidator,  IOverlayViewModel
 
     partial void OnSelectedCategoryChanged(Category? value)
     {
-        if (value != null && Snippet != null)
+        if (value != null && SelectedSnippet != null)
         {
-            Snippet.Category = value;
-            Snippet.CategoryId = value.Id;
+            SelectedSnippet.Category = value;
+            SelectedSnippet.CategoryId = value.Id;
         }
     }
 
@@ -125,14 +125,14 @@ public partial class SnippetViewModel : ObservableValidator,  IOverlayViewModel
     {
         try
         {
-            if (SelectedLanguage != null && SelectedCategory != null && Snippet != null)
+            if (SelectedLanguage != null && SelectedCategory != null && SelectedSnippet != null)
             {
-                Snippet.Title = Title ?? string.Empty;
+                SelectedSnippet.Title = Title ?? string.Empty;
                 if (!IsEditMode)
                 {
-                    Snippet.Code = _defaultCodeTemplates.TryGetValue(SelectedLanguage!.Code!, out var template) ? template : string.Empty;
+                    SelectedSnippet.Code = _defaultCodeTemplates.TryGetValue(SelectedLanguage!.Code!, out var template) ? template : string.Empty;
                 }
-                Snippet saved = _databaseService.SaveSnippet(Snippet);
+                Snippet saved = _databaseService.SaveSnippet(SelectedSnippet);
 
                 if (saved != null)
                 {
@@ -151,7 +151,7 @@ public partial class SnippetViewModel : ObservableValidator,  IOverlayViewModel
         }
         catch (Exception ex)
         {
-            _ = MessageBoxManager.GetMessageBoxStandard("Save Error", $"Failed to save snippet '{Snippet?.Title}'.\n\nDetails: {ex.Message}", ButtonEnum.Ok).ShowAsync();
+            _ = MessageBoxManager.GetMessageBoxStandard("Save Error", $"Failed to save snippet '{SelectedSnippet?.Title}'.\n\nDetails: {ex.Message}", ButtonEnum.Ok).ShowAsync();
         }
     }
 
@@ -199,6 +199,14 @@ void main()
         ["fs"] = @"
 // Learn more about F# at http://fsharp.org
 printfn ""Hello, World!""
+".Trim(),
+
+        ["go"] = @"
+package main
+import ""fmt""
+func main() {
+    fmt.Println(""Hello, World!"")
+}
 ".Trim(),
 
         ["html"] = @"
@@ -260,6 +268,26 @@ puts 'Hello, World!'
 fn main() {
     println!(""Hello, World!"");
 }
+".Trim(),
+
+        ["sh"] = @"
+#!/bin/bash
+echo ""Hello, World!""
+".Trim(),
+
+        ["vb"] = @"
+Module HelloWorld
+    Sub Main()
+        Console.WriteLine(""Hello, World!"")
+    End Sub
+End Module
+".Trim(),
+
+        ["zig"] = @"
+const std = @import(""std"");
+pub fn main() void {
+    std.debug.print(""Hello, World!"", .{});
+    }
 ".Trim()
     };
 }
