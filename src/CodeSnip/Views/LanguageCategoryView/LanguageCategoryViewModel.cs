@@ -5,13 +5,14 @@ using CommunityToolkit.Mvvm.Input;
 using MsBox.Avalonia.Enums;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace CodeSnip.Views.LanguageCategoryView;
 
-public partial class LanguageCategoryViewModel : ObservableObject, IDisposable
+public partial class LanguageCategoryViewModel : ObservableValidator, IDisposable
 {
     private readonly DatabaseService _databaseService;
 
@@ -35,14 +36,22 @@ public partial class LanguageCategoryViewModel : ObservableObject, IDisposable
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SaveLanguageCommand))]
+    [NotifyDataErrorInfo]
+    [Required(ErrorMessage = "Extension cannot be empty")]
+    [RegularExpression(@"^[a-zA-Z0-9]+$", ErrorMessage = "Extension must be alphanumeric.")]
+    [CustomValidation(typeof(LanguageCategoryViewModel), nameof(ValidateDuplicateExtension))]
     private string newLanguageCode = string.Empty;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SaveLanguageCommand))]
+    [NotifyDataErrorInfo]
+    [Required(ErrorMessage = "Language Name cannot be empty")]
     private string newLanguageName = string.Empty;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SaveCategoryCommand))]
+    [NotifyDataErrorInfo]
+    [Required(ErrorMessage = "Category Name cannot be empty")]
     private string newCategoryName = string.Empty;
 
     [ObservableProperty]
@@ -59,6 +68,20 @@ public partial class LanguageCategoryViewModel : ObservableObject, IDisposable
     {
         _databaseService = dbService;
         LoadLanguages();
+    }
+
+    public static ValidationResult? ValidateDuplicateExtension(string? value, ValidationContext context)
+    {
+        if (context.ObjectInstance is not LanguageCategoryViewModel vm)
+            return ValidationResult.Success;
+
+        bool isDuplicate = vm.IsAddingLanguage
+        ? vm.Languages.Any(l => l.Code != null && l.Code.Equals(value, StringComparison.OrdinalIgnoreCase))
+        : vm.SelectedLanguage != null && vm.Languages.Any(l => l.Id != vm.SelectedLanguage.Id && l.Code != null && l.Code.Equals(value, StringComparison.OrdinalIgnoreCase));
+
+        return isDuplicate
+            ? new ValidationResult("A language with this extension already exists.")
+            : ValidationResult.Success;
     }
 
     private static bool IsValidLanguageCode(string code)
@@ -177,14 +200,19 @@ public partial class LanguageCategoryViewModel : ObservableObject, IDisposable
         }
     }
 
+    partial void OnNewLanguageCodeChanged(string value) => ValidateProperty(value, nameof(NewLanguageCode));
+
     [RelayCommand]
     private void ToggleAddLanguage()
     {
         if (IsAddingLanguage)
         {
-            // Cancel
+            // Cancel Mode
             IsAddingLanguage = false;
             SelectedLanguage = Languages.FirstOrDefault();
+
+            if (SelectedLanguage != null)
+                ClearErrors(nameof(NewLanguageCode));
         }
         else
         {

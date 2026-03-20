@@ -11,7 +11,7 @@ using System.Xml.Linq;
 
 namespace CodeSnip.Services;
 
-public class ValidationResult
+public class XshdValidationResult
 {
     public List<string> Errors { get; } = [];
     public bool IsValid => Errors.Count == 0;
@@ -20,9 +20,9 @@ public class ValidationResult
 public class XshdValidationService
 {
 
-    public ValidationResult Validate(string xshdXml)
+    public XshdValidationResult Validate(string xshdXml)
     {
-        var result = new ValidationResult();
+        var result = new XshdValidationResult();
 
         // 1) XML well-formed
         XDocument doc;
@@ -45,7 +45,7 @@ public class XshdValidationService
         return result;
     }
 
-    private static void ValidateHighlightingStructure(XDocument doc, ValidationResult result)
+    private static void ValidateHighlightingStructure(XDocument doc, XshdValidationResult result)
     {
         try
         {
@@ -59,7 +59,7 @@ public class XshdValidationService
         }
     }
 
-    private static void ValidateFatalSpanPatterns(XDocument doc, ValidationResult result)
+    private static void ValidateFatalSpanPatterns(XDocument doc, XshdValidationResult result)
     {
         XNamespace ns = doc.Root?.Name.Namespace ?? "";
 
