@@ -411,6 +411,9 @@ public partial class CodeRunnerViewModel : ObservableObject, IOverlayViewModel
                string fileName, string? arguments, string input, int timeoutMs,
                Action<string> onOutputReceived, Action<string> onErrorReceived)
     {
+        string appDir = Path.GetDirectoryName(Environment.ProcessPath)!;
+        string workingDirectory = Path.Combine(appDir, "Tools", "Interpreters");
+
         var psi = new ProcessStartInfo
         {
             FileName = fileName,
@@ -420,7 +423,7 @@ public partial class CodeRunnerViewModel : ObservableObject, IOverlayViewModel
             RedirectStandardError = true,
             UseShellExecute = false,
             CreateNoWindow = true,
-            WorkingDirectory = Path.GetDirectoryName(fileName) ?? AppContext.BaseDirectory
+            WorkingDirectory = workingDirectory
         };
 
         var process = new Process { StartInfo = psi, EnableRaisingEvents = true };
