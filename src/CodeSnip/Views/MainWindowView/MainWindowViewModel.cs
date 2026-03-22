@@ -2,10 +2,12 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
 using Avalonia.Media;
+using Avalonia.Media.Immutable;
 using Avalonia.Styling;
 using AvaloniaEdit;
 using AvaloniaEdit.Indentation;
 using AvaloniaEdit.Indentation.CSharp;
+using CodeSnip.Helpers;
 using CodeSnip.Services;
 using CodeSnip.Views.CodeRunnerView;
 using CodeSnip.Views.CompilerSettingsView;
@@ -33,6 +35,12 @@ public partial class MainWindowViewModel : ObservableObject
 
     private readonly DefaultIndentationStrategy defaultIndentationStrategy = new();
     private readonly CSharpIndentationStrategy csharpIndentationStrategy = new();
+
+    private static readonly IBrush _darkThemeHighlighterBrush =
+    new ImmutableSolidColorBrush(Color.FromArgb(60, 220, 220, 220));
+
+    private static readonly IBrush _lightThemeHighlighterBrush =
+        new ImmutableSolidColorBrush(Color.FromArgb(60, 100, 100, 100));
 
     public TextEditor? Editor { get; set; }
     public TextEditorOptions EditorOptions = new();
@@ -132,6 +140,30 @@ public partial class MainWindowViewModel : ObservableObject
         textEditor.Options = EditorOptions;
         // AvaloniaEdit.FontFamily = ONLY FontFamily OBJECT, binding from string does not work like in WPF and AvalonEdit
         textEditor.FontFamily = new FontFamily(EditorFontFamily);
+
+        ReplaceCurrentLineRenderer();
+    }
+
+    private void ReplaceCurrentLineRenderer()
+    {
+        if (Editor?.TextArea?.TextView == null) return;
+
+        var textView = Editor.TextArea.TextView;
+
+        var isDarkTheme = Editor.ActualThemeVariant == ThemeVariant.Dark;
+
+        IBrush borderBrush = isDarkTheme
+            ? _darkThemeHighlighterBrush
+            : _lightThemeHighlighterBrush;
+
+        var renderersToRemove = textView.BackgroundRenderers
+            .Where(r => r is CurrentLineHighlighter || r.GetType().Name == "CurrentLineHighlightRenderer")
+            .ToList();
+
+        foreach (var renderer in renderersToRemove)
+            textView.BackgroundRenderers.Remove(renderer);
+
+        textView.BackgroundRenderers.Add(new CurrentLineHighlighter(Editor, null, borderBrush));
     }
 
     public Geometry? OpenCloseIcon
@@ -892,8 +924,8 @@ public partial class MainWindowViewModel : ObservableObject
                 }
             }
             await CloseRightOverlayAsync();
-            // Raise event to notify MainWindow to replace the line highlight renderer
-            // ReplaceLineHighlightRendererRequested?.Invoke();
+
+            ReplaceCurrentLineRenderer();
             //settingsService.SaveSettings(); // Moved to OnWindowClosing
         }
     }
@@ -917,6 +949,7 @@ public partial class MainWindowViewModel : ObservableObject
                 if (Editor != null)
                     HighlightingService.ApplyHighlighting(Editor, SelectedSnippet?.Category?.Language?.Code);
 
+                ReplaceCurrentLineRenderer();
             }
         }
         catch (Exception ex)
