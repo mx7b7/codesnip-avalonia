@@ -68,6 +68,7 @@ public partial class LanguageCategoryViewModel : ObservableValidator, IDisposabl
     {
         _databaseService = dbService;
         LoadLanguages();
+        ValidateAllProperties();
     }
 
     public static ValidationResult? ValidateDuplicateExtension(string? value, ValidationContext context)
@@ -199,8 +200,6 @@ public partial class LanguageCategoryViewModel : ObservableValidator, IDisposabl
             SelectedLanguageForCategory = value;
         }
     }
-
-    partial void OnNewLanguageCodeChanged(string value) => ValidateProperty(value, nameof(NewLanguageCode));
 
     [RelayCommand]
     private void ToggleAddLanguage()
