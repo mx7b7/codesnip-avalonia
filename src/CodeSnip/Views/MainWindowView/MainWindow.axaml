@@ -16,6 +16,7 @@
 		xmlns:editing="using:AvaloniaEdit.Editing"
 		xmlns:i="using:Avalonia.Xaml.Interactivity"
 		xmlns:behaviors="using:CodeSnip.Helpers"
+		xmlns:controls="using:Avalonia.Controls"
         x:DataType="vm:MainWindowViewModel"
         Title ="{Binding WindowTitle}"
 		Width="{Binding WindowWidth,Mode=TwoWay}"
@@ -43,6 +44,23 @@
 				<PathIcon Data="{StaticResource ThemeLightDark}"
 						  Width="20" Height="20"
 						  Foreground="{DynamicResource HighlightBrush}"/>
+			</Button>
+			<Button
+				Classes="IconButton"
+			    ToolTip.Tip="Pick Accent">
+				<PathIcon Data="{StaticResource ColorPaletteiOS}"
+						  Width="20" Height="20"
+						  Foreground="{DynamicResource HighlightBrush}"/>
+				<Button.Flyout>
+					<Flyout>
+						<ColorView Color="{Binding SelectedAccentColor, Mode=TwoWay}">
+							<ColorView.Palette>
+								<!-- FluentColorPalette, FlatColorPalette, FlatHalfColorPalette, MaterialColorPalette, MaterialHalfColorPalette, SixteenColorPalette -->
+								<controls:MaterialColorPalette/>
+							</ColorView.Palette>
+						</ColorView>
+					</Flyout>
+				</Button.Flyout>
 			</Button>
 			<Button
 				Classes="IconButton"

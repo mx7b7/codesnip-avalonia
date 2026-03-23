@@ -50,6 +50,7 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] private string? _databaseStatusTooltip;
     [ObservableProperty] private bool _isDatabaseAlertActive;
     [ObservableProperty] private string? _databaseStatusPopupMessage;
+    [ObservableProperty] Color _selectedAccentColor = Color.Parse("#FF87794E");
 
     public ObservableCollection<Language> Languages { get; } = [];
 
@@ -122,6 +123,7 @@ public partial class MainWindowViewModel : ObservableObject
         ShowEmptyCategories = settingsService.ShowEmptyCategories;
         ShowEmptyLanguages = settingsService.ShowEmptyLanguages;
         IsLoadSnippetEnabled = settingsService.LoadSnippetsOnStartup;
+        SelectedAccentColor = Color.Parse(settingsService.AccentColor);
 
         // Editor settings
         EditorOptions.AllowScrollBelowDocument = settingsService.ScrollBelowDocument;
@@ -484,6 +486,68 @@ public partial class MainWindowViewModel : ObservableObject
             PerformSave();
         }
         _ = SaveSettings();
+    }
+
+    partial void OnSelectedAccentColorChanging(Color oldValue, Color newValue)
+    {
+        ApplyAccentColor(newValue);
+        settingsService.AccentColor = newValue.ToString();
+    }
+
+    private static void ApplyAccentColor(Color baseColor)
+    {
+        if (Application.Current is App app)
+        {
+            // -----------------------------
+            // RGB
+            // -----------------------------
+            byte r = baseColor.R;
+            byte g = baseColor.G;
+            byte b = baseColor.B;
+
+            // -----------------------------
+            // Predefined shades
+            // -----------------------------
+            var c100 = new Color(255, r, g, b); // FF
+            var c80 = new Color(204, r, g, b); // CC
+            var c60 = new Color(153, r, g, b); // 99
+            var c40 = new Color(102, r, g, b); // 66
+            var c20 = new Color(51, r, g, b); // 33
+
+            // -----------------------------
+            // Accent Colors
+            // -----------------------------
+            app.Resources["AccentBrush"] = new SolidColorBrush(baseColor);
+            app.Resources["ThemeAccentColor"] = c80;
+            app.Resources["ThemeAccentColor2"] = c60;
+            app.Resources["ThemeAccentColor3"] = c40;
+            app.Resources["ThemeAccentColor4"] = c20;
+
+            app.Resources["ThemeAccentBrush"] = new SolidColorBrush(c80);
+            app.Resources["ThemeAccentBrush2"] = new SolidColorBrush(c60);
+            app.Resources["ThemeAccentBrush3"] = new SolidColorBrush(c40);
+            app.Resources["ThemeAccentBrush4"] = new SolidColorBrush(c20);
+
+            // -----------------------------
+            // Highlight Colors
+            // -----------------------------
+            app.Resources["HighlightColor"] = c100;
+            app.Resources["HighlightColor2"] = c80;
+
+            app.Resources["HighlightBrush"] = new SolidColorBrush(c100);
+            app.Resources["HighlightBrush2"] = new SolidColorBrush(c80);
+
+            // -----------------------------
+            // Control Highlight Colors
+            // -----------------------------
+            app.Resources["ThemeControlHighlightHighColor"] = c100;
+            app.Resources["ThemeControlHighlightMidColor"] = c80;
+            app.Resources["ThemeControlHighlightLowColor"] = c40;
+
+            app.Resources["ThemeControlHighlightHighBrush"] = new SolidColorBrush(c100);
+            app.Resources["ThemeControlHighlightMidBrush"] = new SolidColorBrush(c80);
+            app.Resources["ThemeControlHighlightLowBrush"] = new SolidColorBrush(c40);
+        }
     }
 
     #region FILTERING
