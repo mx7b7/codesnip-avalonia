@@ -263,7 +263,6 @@ public class SettingsService
         // -----------------------------
         // Accent Colors
         // -----------------------------
-        app.Resources["AccentBrush"] = new SolidColorBrush(baseColor);
         app.Resources["ThemeAccentColor"] = c80;
         app.Resources["ThemeAccentColor2"] = c60;
         app.Resources["ThemeAccentColor3"] = c40;
