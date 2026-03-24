@@ -272,7 +272,11 @@
 										<MenuItem Header="Edit LangCat" Command="{Binding EditLanguageCategoryCommand}">
 											<MenuItem.Icon>
 												<PathIcon Data="{StaticResource CategoryEdit}" Width="16" Height="16"
-														  Foreground="{DynamicResource ThemeAccentBrush}"/>
+														  Foreground="{DynamicResource ThemeAccentBrush}">
+													<PathIcon.RenderTransform>
+														<ScaleTransform ScaleY="-1"/>
+													</PathIcon.RenderTransform>
+												</PathIcon>
 											</MenuItem.Icon>
 										</MenuItem>
 									</MenuFlyout>
