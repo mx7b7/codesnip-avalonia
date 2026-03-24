@@ -17,7 +17,7 @@ This project is a cross-platform port of the original **[CodeSnip (WPF) applicat
 
 ## 🖼️ Preview
 
-![CodeSnip Avalonia Screenshot](images/codesnip-avalonia.png)
+![Slideshow GIF](images/slideshow.gif)
 
 ---
 
@@ -81,9 +81,6 @@ This project is a cross-platform port of the original **[CodeSnip (WPF) applicat
 ## 🚧 Planned Features
 
 The following features are planned for future releases:
-
-- **Dynamic Accent Color**  
-  Ability to change the application's accent color at runtime, with the selected color loaded automatically on startup.
 
 - **Dual-Mode Syntax Highlighting**  
   Support for both native XSHD and TextMateSharp tokenizers in AvaloniaEdit. Users will be able to choose their preferred syntax highlighting engine in settings.  
