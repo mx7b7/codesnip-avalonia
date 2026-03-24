@@ -53,7 +53,7 @@
 						  Foreground="{DynamicResource HighlightBrush}"/>
 				<Button.Flyout>
 					<Flyout>
-						<ColorView Color="{Binding SelectedAccentColor, Mode=TwoWay}">
+						<ColorView Color="{Binding SelectedAccentColor, Mode=TwoWay}" SelectedIndex="1" ColorSpectrumShape="Ring" HexInputAlphaPosition="Leading">
 							<ColorView.Palette>
 								<!-- FluentColorPalette, FlatColorPalette, FlatHalfColorPalette, MaterialColorPalette, MaterialHalfColorPalette, SixteenColorPalette -->
 								<controls:MaterialColorPalette/>

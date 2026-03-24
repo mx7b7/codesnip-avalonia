@@ -97,7 +97,7 @@
 						</ListBox>
 						<StackPanel Grid.Row="1" Margin="0,10,0,0" Orientation="Horizontal">
 							<TextBlock Text="Foreground Color:" FontWeight="Bold" Margin="0,0,10,0" VerticalAlignment="Center"/>
-							<ColorPicker Color="{Binding SelectedColor.Foreground, Mode=TwoWay}" Width="200">
+							<ColorPicker Color="{Binding SelectedColor.Foreground, Mode=TwoWay}" Width="200" HexInputAlphaPosition="Leading">
 								<ColorPicker.Palette>
 									<!-- FluentColorPalette, FlatColorPalette, FlatHalfColorPalette, MaterialColorPalette, MaterialHalfColorPalette, SixteenColorPalette -->
 									<controls:MaterialColorPalette/>
