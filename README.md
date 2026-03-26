@@ -15,8 +15,6 @@ This project is a cross-platform port of the original **[CodeSnip (WPF) applicat
 
 ---
 
-## 🖼️ Preview
-
 ![Slideshow GIF](images/slideshow.gif)
 
 ---
@@ -119,6 +117,7 @@ CodeSnip integrates various code formatters. The application first looks for the
 - [shfmt](https://github.com/mvdan/sh) – Shell scripts
 - [sqlfmt](https://github.com/GrantFBarnes/sqlfmt) – SQL
 - [stylua](https://github.com/JohnnyMorganz/StyLua) – Lua
+- [zig fmt](https://ziglang.org/) – Zig (Included with Zig installation)
 
 
 ---
