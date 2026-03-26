@@ -36,7 +36,8 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
     [ObservableProperty] private IBrush _badgeColor = Brushes.Transparent;
 
     // Theme
-    [ObservableProperty] private bool isDarkTheme = true;
+    [ObservableProperty] private bool _isDarkTheme = true;
+    [ObservableProperty] Color _selectedAccentColor = Color.Parse("#FF87794E");
 
     // Editor
     [ObservableProperty] private bool _scrollBelowDocument;
@@ -97,7 +98,9 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
                    ?? SystemFonts.FirstOrDefault(f => f.Name.Contains("Mono", StringComparison.OrdinalIgnoreCase))
                    ?? SystemFonts.FirstOrDefault(f => f.Name.Contains("Courier", StringComparison.OrdinalIgnoreCase))
                    ?? SystemFonts.First();
-        IsDarkTheme = settingsService.BaseColor == "Dark"; HeaderText = "Settings";
+        IsDarkTheme = settingsService.BaseColor == "Dark";
+        HeaderText = "Settings";
+        SelectedAccentColor = Color.Parse(settingsService.AccentColor);
     }
 
     public void InitializeFromCurrentTheme()
@@ -157,6 +160,12 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
     partial void OnEditorFontSizeChanged(int value)
     {
         _settingsService.EditorFontSize = value;
+    }
+
+    partial void OnSelectedAccentColorChanged(Color value)
+    {
+        _settingsService.AccentColor = value.ToString();
+        _settingsService.ApplyAccentColor();
     }
 
     [RelayCommand]

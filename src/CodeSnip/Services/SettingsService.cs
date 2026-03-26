@@ -243,7 +243,7 @@ public class SettingsService
         return Regex.IsMatch(hex.Trim(), @"^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3}|[A-Fa-f0-9]{8})$");
     }
 
-    private void ApplyAccentColor()
+    public void ApplyAccentColor()
     {
         if (Application.Current is not Application app)
             return;

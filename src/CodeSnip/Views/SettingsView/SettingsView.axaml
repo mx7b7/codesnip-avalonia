@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:vm="clr-namespace:CodeSnip.Views.SettingsView"
 			 x:DataType="vm:SettingsViewModel"
+			 xmlns:controls="using:Avalonia.Controls"
 			 Background="{DynamicResource ThemeBackgroundBrush}">
 	<Grid>
 		<Grid.RowDefinitions>
@@ -50,11 +51,11 @@
 		<TabControl Grid.Row="1" TabStripPlacement="Left" Margin="10,0">
 			<!-- Appearance -->
 			<TabItem Header="Appearance">
-				<ScrollViewer Classes="ScrollViewerThin" Margin="10, 0" VerticalScrollBarVisibility="Auto">
+				<ScrollViewer Classes="ScrollViewerThin" Margin="10" VerticalScrollBarVisibility="Auto">
 					<StackPanel>
 						<!-- Theme -->
 						<Border CornerRadius="5" BorderBrush="{DynamicResource ThemeControlHighlightMidBrush}"
-								BorderThickness="1" Padding="10" Margin=" 0, 0, 0, 10">
+								BorderThickness="1" Padding="10">
 							<StackPanel>
 								<TextBlock Text="Base theme" FontWeight="Bold" FontSize="16"/>
 								<StackPanel Orientation="Horizontal">
@@ -63,6 +64,17 @@
 									<RadioButton Content="Dark" Margin="20,5"
 												 IsChecked="{Binding IsDarkTheme}"/>
 								</StackPanel>
+								<TextBlock Text="Accent" FontWeight="Bold" FontSize="16" />
+								<ColorPicker Color="{Binding SelectedAccentColor, Mode=TwoWay}"
+											 Width="180"
+											 Height="30"
+											 HexInputAlphaPosition="Leading"
+											 ColorSpectrumShape="Ring"
+											 SelectedIndex="1">
+									<ColorPicker.Palette>
+										<controls:MaterialColorPalette/>
+									</ColorPicker.Palette>
+								</ColorPicker>
 							</StackPanel>
 						</Border>
 					</StackPanel>
