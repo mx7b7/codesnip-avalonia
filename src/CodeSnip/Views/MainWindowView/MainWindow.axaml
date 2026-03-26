@@ -734,6 +734,15 @@
 													  Foreground="{DynamicResource ThemeAccentBrush}"/>
 										</MenuItem.Icon>
 									</MenuItem>
+									<MenuItem Header="zigfmt" Click="FormatZigfmt_Click"
+											IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
+										Converter={StaticResource LanguageToBoolConverter},
+										ConverterParameter='zig'}">
+										<MenuItem.Icon>
+											<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"
+													  Foreground="{DynamicResource ThemeAccentBrush}"/>
+										</MenuItem.Icon>
+									</MenuItem>
 								</MenuItem>
 							</MenuFlyout>
 						</AvaloniaEdit:TextEditor.ContextFlyout>

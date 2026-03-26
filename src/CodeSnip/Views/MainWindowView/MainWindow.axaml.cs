@@ -400,6 +400,24 @@ public partial class MainWindow : ControlsEx.Window.Window
         }
     }
 
+    private async void FormatZigfmt_Click(object? sender, RoutedEventArgs e)
+    {
+        string? code = ViewModel.SelectedSnippet?.Category?.Language?.Code;
+        if (code is not null and "zig")
+        {
+            string originalCode = textEditor.Text;
+            var (isSuccess, formatted, error) = await FormattingService.TryFormatCodeWithZigFmtAsync(originalCode);
+            if (isSuccess)
+            {
+                textEditor.Document.Text = formatted;
+            }
+            else
+            {
+                _ = await MessageBoxManager.GetMessageBoxStandard("Formatting error", error ?? "", ButtonEnum.Ok).ShowAsync();
+            }
+        }
+    }
+
     private async void FormatAll_Click(object? sender, RoutedEventArgs e)
     {
         string? code = ViewModel.SelectedSnippet?.Category?.Language?.Code;
@@ -455,6 +473,10 @@ public partial class MainWindow : ControlsEx.Window.Window
 
                 case "sql":
                     FormatSqlfmt_Click(sender, e);
+                    break;
+
+                case "zig":
+                    FormatZigfmt_Click(sender, e);
                     break;
 
                 default:

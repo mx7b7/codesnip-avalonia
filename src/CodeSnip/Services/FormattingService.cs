@@ -230,6 +230,12 @@ namespace CodeSnip.Services
             return await TryFormatWithExternalProcessAsync(pythonExe, arguments, code, timeoutMs);
         }
 
+        public static async Task<(bool Success, string? FormattedCode, string? ErrorMessage)> TryFormatCodeWithZigFmtAsync(string code, int timeoutMs = 5000)
+        {
+            string arguments = "fmt  --stdin";
+            return await TryFormatWithExternalProcessAsync("zig", arguments, code, timeoutMs);
+        }
+
         /// <summary>
         /// A generic helper method to run an external formatting tool from the 'Tools' directory.
         /// </summary>
