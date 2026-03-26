@@ -10,13 +10,44 @@
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
-		<StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10">
-			<Button Classes="IconButton" Margin="0,0,10,0" ToolTip.Tip="Close" Command="{Binding CloseCommand}">
-				<Path Data="{StaticResource ArrowRightBoldBox}" Width="28" Height="28" Fill="{DynamicResource ThemeAccentBrush}" Stretch="UniformToFill"/>
+		<Grid Grid.Row="0" Margin="10">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="Auto"/>
+			</Grid.ColumnDefinitions>
+			<Button Grid.Column="0"
+					Classes="IconButton"
+					Margin="0,0,10,0"
+					ToolTip.Tip="Close"
+					Command="{Binding CloseCommand}"
+					HorizontalAlignment="Left">
+				<Path Data="{StaticResource ArrowRightBoldBox}"
+					  Width="28"
+					  Height="28"
+					  Fill="{DynamicResource ThemeAccentBrush}"
+					  Stretch="UniformToFill"/>
 			</Button>
-			<TextBlock Text="{Binding HeaderText}" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center"/>
-		</StackPanel>
-		<TabControl Grid.Row="1" TabStripPlacement="Left" Margin="10,0" HorizontalAlignment="">
+			<TextBlock Grid.Column="1"
+					   Text="{Binding HeaderText}"
+					   FontSize="18"
+					   FontWeight="SemiBold"
+					   VerticalAlignment="Center"
+					   HorizontalAlignment="Left"/>
+			<Button Grid.Column="2"
+					Classes="IconButton"
+					Margin="10,0,10,0"
+					ToolTip.Tip="Reset all settings to default values"
+					Command="{Binding ResetSettingsCommand}"
+					HorizontalAlignment="Right">
+				<Path Data="{StaticResource ResetSettings}"
+					  Width="28"
+					  Height="28"
+					  Fill="{DynamicResource ThemeAccentBrush}"
+					  Stretch="UniformToFill"/>
+			</Button>
+		</Grid>
+		<TabControl Grid.Row="1" TabStripPlacement="Left" Margin="10,0">
 			<!-- Appearance -->
 			<TabItem Header="Appearance">
 				<ScrollViewer Classes="ScrollViewerThin" Margin="10, 0" VerticalScrollBarVisibility="Auto">

@@ -264,6 +264,25 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
             await RequestCloseAsync();
     }
 
+    [RelayCommand]
+    private async Task ResetSettings()
+    {
+        try
+        {
+            var result = await MessageBoxService.Instance.AskYesNoAsync("Reset Settings", "Are you sure you want to reset all settings to their default values?");
+            if (result)
+            {
+                await _settingsService.ResetToDefaults();
+                InitializeFromCurrentTheme();
+                NotificationService.Instance.Show("Settings Reset", "All settings have been reset to default values.", NotificationType.Success);
+            }
+        }
+        catch (Exception ex)
+        {
+            await MessageBoxService.Instance.OkAsync("Reset Failed", $"An error occurred while resetting settings:\n{ex.Message}", Icon.Error);
+        }
+    }
+
     public void Dispose()
     {
         RequestCloseAsync = null;

@@ -184,6 +184,12 @@ public class SettingsService
         }
     }
 
+    public async Task ResetToDefaults()
+    {
+        _settings = new AppSettings();
+        ApplyAccentColor();
+        ApplyTheme();
+    }
 
     public void ApplyTheme()
     {
