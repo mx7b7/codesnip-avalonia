@@ -135,6 +135,12 @@ public partial class MainWindowViewModel : ObservableObject
         ShowLineNumbers = settingsService.ShowLineNumbers;
         EditorFontFamily = settingsService.EditorFontFamily;
         EditorFontSize = settingsService.EditorFontSize;
+        // FIX: AvaloniaEdit.Rendering.VisualLinesInvalidException
+        // Disabled rectangle selection due to a critical bug in AvaloniaEdit:
+        // Selecting text up to the right edge of the editor causes a VisualLinesInvalidException
+        // which crashes the application. This occurs in versions 11.4.x and 12.0 RC1.
+        EditorOptions.EnableRectangularSelection = false;
+        //---------------------------------------------------------------------------------------
     }
 
     public void InitializeEditor(TextEditor textEditor)

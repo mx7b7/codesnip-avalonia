@@ -8,6 +8,7 @@ using CodeSnip.Views.SplashScreenView;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -93,10 +94,10 @@ namespace CodeSnip
             }
             else if (e.Exception != null)
             {
+                File.WriteAllText("codesnip_crash.txt", $"{e.Exception.Message}\n{e.Exception.InnerException}\n{e.Exception.StackTrace}");
                 // For other unhandled exceptions, show a generic error
                 // Introduce a small delay to allow the UI thread to stabilize
                 await Task.Delay(50);
-
                 await MessageBoxManager.GetMessageBoxStandard("Application Error", $"An unhandled error occurred:\n\n{e.Exception.Message}", ButtonEnum.Ok)
                                      .ShowAsync(); // Pass mainWindow as owner
             }
