@@ -144,6 +144,7 @@ public partial class SnippetViewModel : ObservableValidator, IOverlayViewModel
                         mainVM.LoadSnippets(); // Refresh the snippet list in the main window
                         mainVM.ExpandAndSelectSnippet(SelectedLanguage.Id, saved.CategoryId, saved.Id); // Expand and select the saved snippet
                         mainVM.StatusMessage = $"Snippet '{saved.Title}' saved at {DateTime.Now:HH:mm:ss}";
+                        mainVM.UpdateWindowTitle();// Edit mode: Update the window title to reflect if the snippet title is modified
                     }
                 }
                 CloseOverlayAsync?.Invoke();

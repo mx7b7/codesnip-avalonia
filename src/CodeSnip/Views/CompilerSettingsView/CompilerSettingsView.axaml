@@ -36,7 +36,7 @@
 						 DisplayMemberBinding="{Binding Name}" Height="120"/>
 
 				<TextBlock Text="Compiler Id:" FontWeight="Bold" Margin="0,10,0,0"/>
-				<TextBox Text="{Binding CompilerId, Mode=TwoWay}" IsEnabled="{Binding CanSaveCompiler}">
+				<TextBox Text="{Binding CompilerId, Mode=TwoWay}">
 					<ToolTip.Tip>
 						<TextBlock Text="{Binding HelpText}"
 								   TextWrapping="Wrap"
@@ -46,15 +46,15 @@
 				</TextBox>
 
 				<TextBlock Text="Compiler name:" FontWeight="Bold" Margin="0,10,0,0"/>
-				<TextBox Text="{Binding CompilerName, Mode=TwoWay}" IsEnabled="{Binding CanSaveCompiler}" />
+				<TextBox Text="{Binding CompilerName, Mode=TwoWay}" />
 
 				<TextBlock Text="Compiler flags:" FontWeight="Bold" Margin="0,10,0,0"/>
-				<TextBox Text="{Binding CompilerFlags, Mode=TwoWay}" IsEnabled="{Binding CanSaveCompiler}" />
+				<TextBox Text="{Binding CompilerFlags, Mode=TwoWay}" />
 
 				<StackPanel Orientation="Horizontal" Margin="0,10,0,0">
 					<Button Content="{Binding IsAddingLanguage, Converter={StaticResource BoolToAddCancelConverter}}"
 							Command="{Binding ToggleAddCompilerCommand}" />
-					<Button Content="Save" Margin="10,0,0,0" IsEnabled="{Binding CanSaveCompiler}"
+					<Button Content="Save" Margin="10,0,0,0"
 							Command="{Binding SaveCompilerCommand}" />
 					<Button Content="Delete" Margin="10,0,0,0" Command="{Binding DeleteCompilerCommand}" />
 					<Button Content="Set default" Margin="10,0,0,0" IsEnabled="{Binding CanSetDefaultCompiler}"

@@ -416,7 +416,7 @@ public partial class MainWindowViewModel : ObservableObject
         StatusMessage = "Ready";
     }
 
-    private void UpdateWindowTitle()
+    public void UpdateWindowTitle()
     {
         var title = "CodeSnip";
         if (SelectedSnippet != null)
@@ -693,6 +693,8 @@ public partial class MainWindowViewModel : ObservableObject
             IsEditorModified = false;
             EditingSnippet = null;
 
+            UpdateWindowTitle();
+
             NotificationService.Instance.Show("CodeSnip", $"Snippet '{snippetTitle}' deleted successfully.", NotificationType.Success);
         }
         catch (Exception ex)
@@ -857,7 +859,13 @@ public partial class MainWindowViewModel : ObservableObject
     {
         if (IsRightOverlayOpen) return;
 
-        if (Editor == null) return;
+        if (Editor is null) return;
+
+        if (EditingSnippet is null)
+        {
+            NotificationService.Instance.Show("No Snippet Selected", "Select a snippet from the list before attempting to edit syntax highlighting.");
+            return;
+        }
 
         string? langCode = SelectedSnippet?.Category?.Language?.Code ?? "d";
         RightOverlayContent = new HighlightingEditorViewModel(Editor.SyntaxHighlighting, Editor, langCode);
