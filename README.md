@@ -63,7 +63,8 @@ This project is a cross-platform port of the original **[CodeSnip (WPF) applicat
   
 - **Export & Sharing**:
   - **Copy As**: Copy selected code as Markdown, HTML, BBCode, Base64, or JSON string.
-  - **Export to File**: Save snippets in their original language format.
+  - **Export to File**: Save the entire snippet or a specific selection as a **PNG Images** or in its original language format.
+
 ---
 
 ## 🧩 Supported Syntax Engines
