@@ -5,8 +5,6 @@ using AvaloniaEdit;
 using AvaloniaEdit.Editing;
 using CodeSnip.Helpers;
 using CodeSnip.Services;
-using MsBox.Avalonia;
-using MsBox.Avalonia.Enums;
 using System;
 using System.IO;
 using System.Linq;
@@ -134,7 +132,7 @@ public partial class MainWindow : ControlsEx.Window.Window
                 }
                 else
                 {
-                    _ = await MessageBoxManager.GetMessageBoxStandard("Formatting error", $"Formatting failed:\n {errorClang}" ?? "", ButtonEnum.Ok).ShowAsync();
+                    await MessageBoxService.Instance.OkAsync("Formatting error", $"Formatting failed:\n {errorClang}" ?? "", MsBox.Avalonia.Enums.Icon.Error);
                 }
             }
         }
@@ -171,7 +169,7 @@ public partial class MainWindow : ControlsEx.Window.Window
             }
             else
             {
-                _ = await MessageBoxManager.GetMessageBoxStandard("Formatting error", $"Formatting failed:\n {error}", ButtonEnum.Ok).ShowAsync();
+                await MessageBoxService.Instance.OkAsync("Formatting error", $"Formatting failed:\n {error}", MsBox.Avalonia.Enums.Icon.Error);
             }
         }
     }
@@ -196,7 +194,7 @@ public partial class MainWindow : ControlsEx.Window.Window
                 }
                 else
                 {
-                    _ = await MessageBoxManager.GetMessageBoxStandard("Formatting error", $"Formatting failed:\n {error}", ButtonEnum.Ok).ShowAsync();
+                    await MessageBoxService.Instance.OkAsync("Formatting error", $"Formatting failed:\n {error}", MsBox.Avalonia.Enums.Icon.Error);
                 }
             }
         }
@@ -222,11 +220,11 @@ public partial class MainWindow : ControlsEx.Window.Window
                          "Open command prompt in Tools directory" +
                          "  dotnet new tool-manifest\n" +
                          "  dotnet tool install fantomas";
-                _ = await MessageBoxManager.GetMessageBoxStandard("Formatting error", $"Formatting failed:\n {error}", ButtonEnum.Ok).ShowAsync();
+                await MessageBoxService.Instance.OkAsync("Formatting error", $"Formatting failed:\n {error}", MsBox.Avalonia.Enums.Icon.Error);
             }
             else
             {
-                _ = await MessageBoxManager.GetMessageBoxStandard("Formatting error", $"Formatting failed:\n {error}", ButtonEnum.Ok).ShowAsync();
+                await MessageBoxService.Instance.OkAsync("Formatting error", $"Formatting failed:\n {error}", MsBox.Avalonia.Enums.Icon.Error);
             }
         }
     }
@@ -244,7 +242,7 @@ public partial class MainWindow : ControlsEx.Window.Window
             }
             else
             {
-                _ = await MessageBoxManager.GetMessageBoxStandard("Formatting error", error ?? "", ButtonEnum.Ok).ShowAsync();
+                await MessageBoxService.Instance.OkAsync("Formatting error", error ?? "", MsBox.Avalonia.Enums.Icon.Error);
             }
         }
     }
@@ -262,7 +260,7 @@ public partial class MainWindow : ControlsEx.Window.Window
             }
             else
             {
-                _ = await MessageBoxManager.GetMessageBoxStandard("Formatting error", error ?? "", ButtonEnum.Ok).ShowAsync();
+                await MessageBoxService.Instance.OkAsync("Formatting error", error ?? "", MsBox.Avalonia.Enums.Icon.Error);
             }
 
         }
@@ -281,7 +279,7 @@ public partial class MainWindow : ControlsEx.Window.Window
             }
             else
             {
-                _ = await MessageBoxManager.GetMessageBoxStandard("Formatting error", error ?? "", ButtonEnum.Ok).ShowAsync();
+                await MessageBoxService.Instance.OkAsync("Formatting error", error ?? "", MsBox.Avalonia.Enums.Icon.Error);
             }
 
         }
@@ -300,7 +298,7 @@ public partial class MainWindow : ControlsEx.Window.Window
             }
             else
             {
-                _ = await MessageBoxManager.GetMessageBoxStandard("Formatting error", error ?? "", ButtonEnum.Ok).ShowAsync();
+                await MessageBoxService.Instance.OkAsync("Formatting error", error ?? "", MsBox.Avalonia.Enums.Icon.Error);
             }
 
         }
@@ -319,7 +317,7 @@ public partial class MainWindow : ControlsEx.Window.Window
             }
             else
             {
-                _ = await MessageBoxManager.GetMessageBoxStandard("Formatting error", error ?? "", ButtonEnum.Ok).ShowAsync();
+                await MessageBoxService.Instance.OkAsync("Formatting error", error ?? "", MsBox.Avalonia.Enums.Icon.Error);
             }
         }
     }
@@ -337,7 +335,7 @@ public partial class MainWindow : ControlsEx.Window.Window
             }
             else
             {
-                _ = await MessageBoxManager.GetMessageBoxStandard("Formatting error", error ?? "", ButtonEnum.Ok).ShowAsync();
+                await MessageBoxService.Instance.OkAsync("Formatting error", error ?? "", MsBox.Avalonia.Enums.Icon.Error);
             }
         }
     }
@@ -355,7 +353,7 @@ public partial class MainWindow : ControlsEx.Window.Window
             }
             else
             {
-                _ = await MessageBoxManager.GetMessageBoxStandard("Formatting error", error ?? "", ButtonEnum.Ok).ShowAsync();
+                await MessageBoxService.Instance.OkAsync("Formatting error", error ?? "", MsBox.Avalonia.Enums.Icon.Error);
             }
         }
     }
@@ -373,7 +371,7 @@ public partial class MainWindow : ControlsEx.Window.Window
             }
             else
             {
-                _ = await MessageBoxManager.GetMessageBoxStandard("Formatting error", error ?? "", ButtonEnum.Ok).ShowAsync();
+                await MessageBoxService.Instance.OkAsync("Formatting error", error ?? "", MsBox.Avalonia.Enums.Icon.Error);
             }
         }
     }
@@ -391,7 +389,7 @@ public partial class MainWindow : ControlsEx.Window.Window
             }
             else
             {
-                _ = await MessageBoxManager.GetMessageBoxStandard("Formatting error", error ?? "", ButtonEnum.Ok).ShowAsync();
+                await MessageBoxService.Instance.OkAsync("Formatting error", error ?? "", MsBox.Avalonia.Enums.Icon.Error);
             }
         }
     }
@@ -409,7 +407,7 @@ public partial class MainWindow : ControlsEx.Window.Window
             }
             else
             {
-                _ = await MessageBoxManager.GetMessageBoxStandard("Formatting error", error ?? "", ButtonEnum.Ok).ShowAsync();
+                await MessageBoxService.Instance.OkAsync("Formatting error", error ?? "", MsBox.Avalonia.Enums.Icon.Error);
             }
         }
     }
@@ -427,7 +425,7 @@ public partial class MainWindow : ControlsEx.Window.Window
             }
             else
             {
-                _ = await MessageBoxManager.GetMessageBoxStandard("Formatting error", error ?? "", ButtonEnum.Ok).ShowAsync();
+                await MessageBoxService.Instance.OkAsync("Formatting error", error ?? "", MsBox.Avalonia.Enums.Icon.Error);
             }
         }
     }
@@ -690,7 +688,7 @@ public partial class MainWindow : ControlsEx.Window.Window
         }
         catch (Exception ex)
         {
-            await MessageBoxService.Instance.OkAsync("Error", $"Failed to export as image: {ex.Message}", MsBox.Avalonia.Enums.Icon.Info);
+            await MessageBoxService.Instance.OkAsync("Error", $"Failed to export as image: {ex.Message}", MsBox.Avalonia.Enums.Icon.Error);
         }
     }
 
