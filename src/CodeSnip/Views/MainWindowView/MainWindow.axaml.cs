@@ -592,8 +592,14 @@ public partial class MainWindow : ControlsEx.Window.Window
         {
             if (ViewModel != null && ViewModel.SelectedSnippet != null)
             {
+                string fileNameTitle = ViewModel.SelectedSnippet.Title;
+                string invalidChars = new(Path.GetInvalidFileNameChars());
 
-                var success = await FileExporter.ExportToFile(StorageProvider, ViewModel.EditorText, ViewModel.SelectedSnippet.Title, ViewModel.SelectedSnippet?.Category?.Language?.Code);
+                foreach (char c in invalidChars) fileNameTitle = fileNameTitle.Replace(c.ToString(), "_");
+
+                fileNameTitle = Regex.Replace(fileNameTitle, @"\s+", "_");
+
+                var success = await FileExporter.ExportToFile(StorageProvider, ViewModel.EditorText, fileNameTitle, ViewModel.SelectedSnippet?.Category?.Language?.Code);
                 if (success)
                 {
                     NotificationService.Instance.Show("Export Success", $"File '{ViewModel.SelectedSnippet?.Title}' exported successfully!");
@@ -648,9 +654,7 @@ public partial class MainWindow : ControlsEx.Window.Window
 
         try
         {
-
-
-            string invalidChars = new(System.IO.Path.GetInvalidFileNameChars());
+            string invalidChars = new(Path.GetInvalidFileNameChars());
             foreach (char c in invalidChars) fileNameTitle = fileNameTitle.Replace(c.ToString(), "_");
             // Replace one or more whitespace characters with a single underscore
             fileNameTitle = Regex.Replace(fileNameTitle, @"\s+", "_");
@@ -664,10 +668,10 @@ public partial class MainWindow : ControlsEx.Window.Window
                                             textEditor.ShowLineNumbers
                                         ) ?? throw new Exception("Image exporter returned null.");
 
-            string exportsDir = System.IO.Path.Combine(AppContext.BaseDirectory, "Exports");
+            string exportsDir = Path.Combine(AppContext.BaseDirectory, "Exports");
             Directory.CreateDirectory(exportsDir);
 
-            string filePath = System.IO.Path.Combine(exportsDir, $"{fileNameTitle}.png");
+            string filePath = Path.Combine(exportsDir, $"{fileNameTitle}.png");
 
             using var fs = File.Create(filePath);
             bitmap?.Save(fs);
