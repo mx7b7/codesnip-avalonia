@@ -142,7 +142,6 @@ public partial class MainWindow : ControlsEx.Window.Window
 
     private async void FormatCSharpier_Click(object? sender, RoutedEventArgs e)
     {
-
         string? code = ViewModel.SelectedSnippet?.Category?.Language?.Code;
         if (code is not null)
         {
@@ -158,6 +157,17 @@ public partial class MainWindow : ControlsEx.Window.Window
             if (isSuccess)
             {
                 _textEditor.Document.Text = formatted;
+            }
+            else if (error != null && error.Contains("command available", StringComparison.OrdinalIgnoreCase))
+            {
+                error += "\n\nMake sure CSharpier is installed. You can install it via the .NET CLI:\n\n" +
+                         "Globally:\n" +
+                         "  dotnet tool install -g csharpier\n\n" +
+                         "Local:\n" +
+                         "Open command prompt in Tools directory" +
+                         " dotnet new tool-manifest\n" +
+                         " dotnet tool install csharpier";
+                await MessageBoxService.Instance.OkAsync("Formatting error", $"Formatting failed:\n {error}", MsBox.Avalonia.Enums.Icon.Error);
             }
             else
             {
