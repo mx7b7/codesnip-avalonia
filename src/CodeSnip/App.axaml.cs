@@ -3,6 +3,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
+using CodeSnip.Services;
 using CodeSnip.Views.MainWindowView;
 using CodeSnip.Views.SplashScreenView;
 using MsBox.Avalonia;
@@ -51,6 +52,23 @@ namespace CodeSnip
                         await ((MainWindowViewModel)mainWindow.DataContext!).InitializeAsync();
                         mainWindow.Show();
                         mainWindow.Focus();
+
+                        await Task.Delay(1000);
+
+                        string crashFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "codesnip_crash.txt");
+                        if (File.Exists(crashFilePath))
+                        {
+                            string crashInfo = File.ReadAllText(crashFilePath);
+                            string message = "IMPORTANT: If you want to keep this crash log, please copy 'codesnip_crash.txt' " +
+                                             "from the app folder BEFORE closing this dialog, as it will be deleted automatically.\n\n" +
+                                             $"CodeSnip detected a crash in the previous session. Here are the details:\n\n{crashInfo}";
+
+                            await MessageBoxService.Instance.OkAsync("Previous Crash Detected", message, Icon.Warning);
+
+                            if (File.Exists(crashFilePath))
+                                File.Delete(crashFilePath);
+                            
+                        }
                     }
                     catch (Exception ex)
                     {

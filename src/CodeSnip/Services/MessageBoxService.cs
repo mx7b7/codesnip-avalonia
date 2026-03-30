@@ -50,9 +50,7 @@ public sealed class MessageBoxService
             Topmost = true,
             CanResize = false,
             SizeToContent = SizeToContent.WidthAndHeight,
-            ShowInCenter = true,
-            MaxWidth = 500,
-            MaxHeight = 800
+            ShowInCenter = true
         };
     }
 
