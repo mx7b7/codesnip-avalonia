@@ -83,9 +83,9 @@ public partial class CompilerSettingsViewModel : ObservableValidator, IOverlayVi
                    !string.IsNullOrWhiteSpace(CompilerId) &&
                    !string.IsNullOrWhiteSpace(CompilerName) &&
                    SelectedCompiler != null &&
-                   (!string.Equals(CompilerId, SelectedCompiler.Id, StringComparison.OrdinalIgnoreCase) ||
-                    !string.Equals(CompilerName, SelectedCompiler.Name, StringComparison.OrdinalIgnoreCase) ||
-                    !string.Equals(CompilerFlags, SelectedCompiler.Flags, StringComparison.OrdinalIgnoreCase));
+                   (!string.Equals(CompilerId, SelectedCompiler.Id, StringComparison.Ordinal) ||
+                    !string.Equals(CompilerName, SelectedCompiler.Name, StringComparison.Ordinal) ||
+                    !string.Equals(CompilerFlags, SelectedCompiler.Flags, StringComparison.Ordinal));
         }
     }
 

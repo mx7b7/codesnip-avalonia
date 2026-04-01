@@ -36,7 +36,8 @@ namespace CodeSnip.Helpers
                 {
                     ColumnDefinitions = new ColumnDefinitions("Auto,*,Auto"),
                     Margin = new Thickness(0, 0, 0, 15),
-                    Background = new SolidColorBrush(titleBarBackground)
+                    Background = new SolidColorBrush(titleBarBackground), 
+                    MinHeight = 22
                 };
 
                 var dots = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8, Margin = new Thickness(8, 0, 0, 0) };
@@ -141,7 +142,7 @@ namespace CodeSnip.Helpers
 
                 await Task.Delay(200); // Syntax highlighting delay
 
-                double scale = 1.5;
+                double scale = 1.25;
                 var pixelSize = new PixelSize((int)(finalSize.Width * scale), (int)(finalSize.Height * scale));
                 var rtb = new RenderTargetBitmap(pixelSize, new Vector(96 * scale, 96 * scale));
 
