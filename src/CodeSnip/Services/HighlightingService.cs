@@ -205,21 +205,27 @@ namespace CodeSnip.Services
 
             // 1. Check on disk (both themes)
             string darkDiskPath = Path.Combine(appBase, "Highlighting", "Dark", $"{lowerLangCode}.xshd");
-            if (File.Exists(darkDiskPath)) return true;
-
             string lightDiskPath = Path.Combine(appBase, "Highlighting", "Light", $"{lowerLangCode}.xshd");
-            if (File.Exists(lightDiskPath)) return true;
+
+            bool darkDiskExists = File.Exists(darkDiskPath);
+            bool lightDiskExists = File.Exists(lightDiskPath);
+
+            if (darkDiskExists && lightDiskExists)
+                return true;
 
             // 2. Check in resources (both themes)
             try
             {
-                Uri darkResourceUri = new($"avares://CodesnipAvalonia/Resources/Highlighting/Dark/{lowerLangCode}.xshd");
+                Uri darkResourceUri = new($"avares://CodeSnip/Resources/Highlighting/Dark/{lowerLangCode}.xshd");
                 using var stream = AssetLoader.Open(darkResourceUri);
-                if (stream.Length > 0) return true;
+                bool darkResourceExists = stream.Length > 0;
 
-                Uri lightResourceUri = new($"avares://CodesnipAvalonia/Resources/Highlighting/Light/{lowerLangCode}.xshd");
+                Uri lightResourceUri = new($"avares://CodeSnip/Resources/Highlighting/Light/{lowerLangCode}.xshd");
                 using var stream2 = AssetLoader.Open(lightResourceUri);
-                if (stream2.Length > 0) return true;
+                bool lightResourceExists = stream2.Length > 0;
+
+                if (darkResourceExists && lightResourceExists)
+                    return true;
             }
             catch (IOException)
             {
@@ -330,8 +336,11 @@ namespace CodeSnip.Services
                     Directory.CreateDirectory(lightDir);
                 string darkFilePath = Path.Combine(darkDir, $"{langCode.ToLower()}.xshd");
                 string lightFilePath = Path.Combine(lightDir, $"{langCode.ToLower()}.xshd");
-                File.WriteAllText(darkFilePath, darkContent);
-                File.WriteAllText(lightFilePath, lightContent);
+                if (!File.Exists(darkFilePath))
+                    File.WriteAllText(darkFilePath, darkContent);
+
+                if (!File.Exists(lightFilePath))
+                    File.WriteAllText(lightFilePath, lightContent);
                 return true;
             }
             catch

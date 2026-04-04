@@ -66,6 +66,10 @@
 							ToolTip.Tip="Deletes the language and ALL its categories and snippets">
 						<Path Data="{StaticResource DeleteAlert}" Fill="Red" Width="25" Height="25" Stretch="UniformToFill"/>
 					</Button>
+					<Button Classes="IconButton" Command="{Binding CreateXshdForLanguageCommand}"
+							ToolTip.Tip="{Binding NewLanguageCode, StringFormat='Create {0}.xshd templates', FallbackValue='Create .xshd templates'}}">
+						<Path Data="{StaticResource FileXml}" Fill="{DynamicResource HighlightBrush}" Width="25" Height="25" Stretch="UniformToFill"/>
+					</Button>
 				</StackPanel>
 
 				<Separator Margin="0,30,0,30"/>

@@ -474,6 +474,40 @@ public partial class LanguageCategoryViewModel : ObservableValidator, IDisposabl
         }
     }
 
+    [RelayCommand]
+    private async Task CreateXshdForLanguage()
+    {
+        if (SelectedLanguage == null)
+        {
+            NotificationService.Instance.Show("Action Skipped", "Select a language to create XSHD for.");
+            return;
+        }
+
+        if (HighlightingService.SyntaxDefinitionExists(SelectedLanguage.Code!))
+        {
+            NotificationService.Instance.Show("XSHD Already Exists", $"A syntax highlighting definition already exists for '{SelectedLanguage.Name}'.", NotificationType.Information);
+            return;
+        }
+
+        try
+        {
+            bool success = HighlightingService.GenerateBasicXshdFile(SelectedLanguage.Code!, SelectedLanguage.Name!);
+            if (success)
+            {
+                NotificationService.Instance.Show("XSHD Created", $"A basic syntax highlighting definition for '{SelectedLanguage.Name}' ({SelectedLanguage.Code}.xshd) has been created.", NotificationType.Success);
+            }
+            else
+            {
+                NotificationService.Instance.Show("XSHD Creation Failed", $"Failed to create syntax highlighting definition for '{SelectedLanguage.Name}'", NotificationType.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            await MessageBoxService.Instance.OkAsync("Error Creating XSHD", $"Failed to create syntax highlighting definition for '{SelectedLanguage.Name}'.\n\nDetails: {ex.Message}", Icon.Error);
+        }
+    }
+
+
     private void HandleLanguageDeletion(Language languageToDelete)
     {
         if (languageToDelete == null) return;
