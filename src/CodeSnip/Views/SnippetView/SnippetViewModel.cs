@@ -5,7 +5,6 @@ using CodeSnip.Views.LanguageCategoryView;
 using CodeSnip.Views.MainWindowView;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using System;
 using System.Collections.Generic;
@@ -121,7 +120,7 @@ public partial class SnippetViewModel : ObservableValidator, IOverlayViewModel
     }
 
     [RelayCommand(CanExecute = nameof(CanSave))]
-    private void Save()
+    private async Task Save()
     {
         try
         {
@@ -152,7 +151,7 @@ public partial class SnippetViewModel : ObservableValidator, IOverlayViewModel
         }
         catch (Exception ex)
         {
-            _ = MessageBoxManager.GetMessageBoxStandard("Save Error", $"Failed to save snippet '{SelectedSnippet?.Title}'.\n\nDetails: {ex.Message}", ButtonEnum.Ok).ShowAsync();
+            await MessageBoxService.Instance.OkAsync("Save Error", $"Failed to save snippet '{SelectedSnippet?.Title}'.\n\nDetails: {ex.Message}", Icon.Error);
         }
     }
 

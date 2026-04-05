@@ -625,7 +625,7 @@ public partial class MainWindow : ControlsEx.Window.Window
     {
         if (ViewModel.SelectedSnippet == null)
         {
-            await MessageBoxService.Instance.OkAsync("No Snippet Selected", "Select a snippet first to determine the filename.", MsBox.Avalonia.Enums.Icon.Info);
+            NotificationService.Instance.Show("No Snippet Selected", "Select a snippet first to determine the filename.");
             return;
         }
 
@@ -681,7 +681,7 @@ public partial class MainWindow : ControlsEx.Window.Window
             using var fs = File.Create(filePath);
             bitmap?.Save(fs);
 
-            NotificationService.Instance.Show($"Image successfully saved to Exports directory");
+            NotificationService.Instance.Show("Export Success", $"Image exported successfully as '{fileNameTitle}.png' in Exports directory!");
         }
         catch (Exception ex)
         {

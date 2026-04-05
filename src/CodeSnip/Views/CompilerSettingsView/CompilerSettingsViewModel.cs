@@ -260,7 +260,7 @@ public partial class CompilerSettingsViewModel : ObservableValidator, IOverlayVi
                     SelectedCompiler = null;
                     ClearCompilerFields();
                 }
-                NotificationService.Instance.Show("Success", "Compiler deleted successfully.");
+                NotificationService.Instance.Show("Success", "Compiler deleted successfully.", NotificationType.Success);
             }
             else
             {
