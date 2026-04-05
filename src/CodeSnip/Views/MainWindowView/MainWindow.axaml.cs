@@ -23,13 +23,10 @@ public interface IOverlayViewModel
 
 public partial class MainWindow : ControlsEx.Window.Window
 {
-    private MainWindowViewModel? _viewModel;
     private readonly TextEditor? _textEditor;
     private int _lastSnippetId = -1;
 
-    private MainWindowViewModel ViewModel =>
-    _viewModel ??= (MainWindowViewModel?)DataContext
-    ?? throw new InvalidOperationException("ViewModel not initialized");
+    private MainWindowViewModel ViewModel => (MainWindowViewModel)DataContext!;
 
     public MainWindow()
     {
