@@ -692,7 +692,7 @@ public partial class MainWindowViewModel : ObservableObject
 
             IsEditorModified = false;
             EditingSnippet = null;
-
+            SelectedCategory= null;
             UpdateWindowTitle();
 
             NotificationService.Instance.Show("CodeSnip", $"Snippet '{snippetTitle}' deleted successfully.", NotificationType.Success);

@@ -36,7 +36,7 @@ namespace CodeSnip.Helpers
                 {
                     ColumnDefinitions = new ColumnDefinitions("Auto,*,Auto"),
                     Margin = new Thickness(0, 0, 0, 15),
-                    Background = new SolidColorBrush(titleBarBackground), 
+                    Background = new SolidColorBrush(titleBarBackground),
                     MinHeight = 22
                 };
 
@@ -94,7 +94,7 @@ namespace CodeSnip.Helpers
                     Foreground = fgBrush,
                     Opacity = 0.5,
                     HorizontalAlignment = HorizontalAlignment.Right,
-                    Margin = new Thickness(0, 5, 15, 10)
+                    Margin = new Thickness(5)
                 };
 
                 // COMPOSITION
@@ -105,19 +105,14 @@ namespace CodeSnip.Helpers
 
                 var mainBorder = new Border
                 {
-                    CornerRadius = new CornerRadius(10),
-                    Child = new Border
-                    {
-                        ClipToBounds = true,
-                        CornerRadius = new CornerRadius(10),
-                        Child = mainStack
-                    },
+                    ClipToBounds = true,
+                    Child = mainStack,
                     BorderBrush = isDark ? Brush.Parse("#3E3E42") : Brush.Parse("#E0E0E0"),
                     BorderThickness = new Thickness(1)
                 };
 
 
-                var wrapper = new Border { Padding = new Thickness(20), Background = Brushes.Transparent, Child = mainBorder };
+                var wrapper = new Border { Background = Brushes.Transparent, Child = mainBorder };
 
                 // RENDER PASS
                 var window = new Window
