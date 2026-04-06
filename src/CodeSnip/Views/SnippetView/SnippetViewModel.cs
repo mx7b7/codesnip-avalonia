@@ -131,6 +131,12 @@ public partial class SnippetViewModel : ObservableValidator, IOverlayViewModel
                 {
                     SelectedSnippet.Code = _defaultCodeTemplates.TryGetValue(SelectedLanguage!.Code!, out var template) ? template : string.Empty;
                 }
+                else
+                {
+                    // LoadSnippets refreshes list without Code (lazy loading triggers only on TreeView index change)
+                    SelectedSnippet.Code = _databaseService.GetSnippetCode(SelectedSnippet.Id);
+                }
+
                 Snippet saved = _databaseService.SaveSnippet(SelectedSnippet);
 
                 if (saved != null)

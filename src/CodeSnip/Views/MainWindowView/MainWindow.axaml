@@ -207,20 +207,20 @@
 							</Border>
 						</Expander.Header>
 						<Grid RowDefinitions="*, Auto">
-							<TreeView Grid.Row="0" Name="TreeSnippets" AutoScrollToSelectedItem="True" x:CompileBindings="False"
-									  ItemsSource="{Binding Languages}"
-									  SelectionChanged="TreeView_SelectionChanged" BorderThickness="0">
+							<TreeView Grid.Row="0" Name="TreeSnippets" AutoScrollToSelectedItem="True"
+                                  ItemsSource="{Binding Languages}"
+                                  SelectionChanged="TreeView_SelectionChanged" BorderThickness="0">
 
 								<TreeView.Styles>
 									<Style Selector="TreeViewItem">
-										<Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
-										<Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
-										<Setter Property="IsVisible" Value="{Binding IsVisible}"/>
+										<Setter Property="IsExpanded"  Value="{ReflectionBinding Path=IsExpanded, Mode=TwoWay}"/>
+										<Setter Property="IsSelected" Value="{ReflectionBinding Path=IsSelected, Mode=TwoWay}"/>
+										<Setter Property="IsVisible" Value="{ReflectionBinding Path=IsVisible, Mode=TwoWay}"/>
 									</Style>
 								</TreeView.Styles>
 
 								<TreeView.DataTemplates>
-									<TreeDataTemplate DataType="langcat:Language" ItemsSource="{Binding Categories}">
+									<TreeDataTemplate x:DataType="langcat:Language" ItemsSource="{Binding Categories}">
 										<StackPanel Orientation="Horizontal" Spacing="5">
 											<PathIcon Data="{StaticResource LanguageIcon}" Width="20" Height="20"
 													  VerticalAlignment="Center" Foreground="{DynamicResource HighlightBrush}" />
@@ -229,7 +229,7 @@
 										</StackPanel>
 									</TreeDataTemplate>
 
-									<TreeDataTemplate DataType="langcat:Category" ItemsSource="{Binding Snippets}">
+									<TreeDataTemplate x:DataType="langcat:Category" ItemsSource="{Binding Snippets}">
 										<StackPanel Orientation="Horizontal" Spacing="5">
 											<PathIcon Data="{StaticResource CategoryIcon}" Width="20" Height="20"
 													  VerticalAlignment="Center" Foreground="{DynamicResource HighlightBrush}"/>
@@ -238,7 +238,7 @@
 										</StackPanel>
 									</TreeDataTemplate>
 
-									<DataTemplate DataType="snippet:Snippet">
+									<DataTemplate x:DataType="snippet:Snippet" >
 										<StackPanel Orientation="Horizontal" Spacing="5">
 											<PathIcon Data="{StaticResource SnippetIcon}" Width="16" Height="16"
 													  VerticalAlignment="Center" Foreground="{DynamicResource HighlightBrush}"/>

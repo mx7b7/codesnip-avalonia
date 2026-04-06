@@ -294,7 +294,7 @@ public partial class MainWindowViewModel : ObservableObject
         snip.IsSelected = true;
         SelectedSnippet = snip;
         SelectedCategory = cat; // SlelectedCategory is needed for AddSnippet command
-        // Selection in the TreeView should be handled via data binding in the View.
+                                // Selection in the TreeView should be handled via data binding in the View.
     }
 
     partial void OnEditorTextChanged(string value)
@@ -752,12 +752,12 @@ public partial class MainWindowViewModel : ObservableObject
     private async Task OpenCodeRunnerView()
     {
         if (IsRightOverlayOpen) return;
-        if (EditingSnippet is null)
+        if (SelectedSnippet is null)
         {
             NotificationService.Instance.Show("No Snippet Selected", "Select a snippet from the list before attempting to run it.");
             return;
         }
-        string langCode = EditingSnippet?.Category?.Language?.Code ?? "d";
+        string langCode = SelectedSnippet?.Category?.Language?.Code ?? "d";
         if (EditorText != string.Empty)
         {
             RightOverlayContent = new CodeRunnerViewModel(langCode, EditorText, () => EditorText);
@@ -791,9 +791,9 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         Snippet? tmpSnippet = null;
-        if (EditingSnippet != null)
+        if (SelectedSnippet != null)
         {
-            tmpSnippet = EditingSnippet;
+            tmpSnippet = SelectedSnippet;
             if (IsEditorModified)
             {
                 PerformSave();
@@ -861,7 +861,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         if (Editor is null) return;
 
-        if (EditingSnippet is null)
+        if (SelectedSnippet is null)
         {
             NotificationService.Instance.Show("No Snippet Selected", "Select a snippet from the list before attempting to edit syntax highlighting.");
             return;
