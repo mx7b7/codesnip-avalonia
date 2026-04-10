@@ -310,6 +310,9 @@ public partial class CodeRunnerViewModel : ObservableObject, IOverlayViewModel
         string toolsDir = Path.Combine(appDir, "Tools", "Interpreters");
         string interpreterPath = Path.Combine(toolsDir, exe);
 
+        if(!Directory.Exists(toolsDir))
+            Directory.CreateDirectory(toolsDir);
+
         return File.Exists(interpreterPath)
             ? (interpreterPath, info.args)
             : (exe, info.args);

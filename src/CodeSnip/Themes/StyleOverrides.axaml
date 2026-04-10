@@ -108,6 +108,14 @@
 		<Setter Property="MinWidth" Value="24"/>
 		<Setter Property="Height" Value="5"/>
 	</Style>
-	<!--................................................................................................-->
+	<!--....................................SearchTextBox...........................................-->
+	<Style Selector="TextBox.SearchTextBox:pointerover /template/ Border#border">
+		<Setter Property="BorderBrush" Value="{DynamicResource HighlightBrush}" />
+	</Style>
+	<Style Selector="TextBox.SearchTextBox:focus /template/ Border#border">
+		<Setter Property="BorderBrush" Value="{DynamicResource HighlightBrush}" />
+	</Style>
+	<!--.............................................................................................-->
+
 
 </Styles>

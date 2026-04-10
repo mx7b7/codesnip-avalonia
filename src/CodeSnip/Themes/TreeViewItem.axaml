@@ -5,6 +5,7 @@
 
 	<ControlTheme x:Key="SimpleTreeViewItemToggleButtonTheme"
 				  TargetType="ToggleButton">
+		<Setter Property="Cursor" Value="Hand" />
 		<Setter Property="Template">
 			<ControlTemplate>
 				<Border Width="16"
