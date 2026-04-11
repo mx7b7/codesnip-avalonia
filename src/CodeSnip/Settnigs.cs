@@ -5,7 +5,7 @@ namespace CodeSnip;
 public class MainWindowSettings
 {
     public bool LoadSnippetsOnStartup { get; set; } = true;
-    public string LastSnippet { get; set; } = "9:22:3";
+    public string LastSnippet { get; set; } = "9:22:6";
     public double SplitViewPanelLength { get; set; } = 300;
     public bool ShowEmptyLanguages { get; set; } = false;
     public bool ShowEmptyCategories { get; set; } = false;

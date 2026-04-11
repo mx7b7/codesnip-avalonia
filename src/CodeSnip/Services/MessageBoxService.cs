@@ -84,12 +84,12 @@ public sealed class MessageBoxService
 
     public async Task<bool> AskYesNoAsync(string title, string message)
     {
-        var result = await ShowPopUpAsync(title, message, ButtonEnum.YesNo, Icon.Question);
+        var result = await ShowAsync(title, message, ButtonEnum.YesNo, Icon.Question);
         return result == ButtonResult.Yes;
     }
 
     public async Task<ButtonResult> AskYesNoCancelAsync(string title, string message)
     {
-        return await ShowPopUpAsync(title, message, ButtonEnum.YesNoCancel, Icon.Question);
+        return await ShowAsync(title, message, ButtonEnum.YesNoCancel, Icon.Question);
     }
 }

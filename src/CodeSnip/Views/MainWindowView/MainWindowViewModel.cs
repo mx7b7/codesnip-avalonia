@@ -346,17 +346,12 @@ public partial class MainWindowViewModel : ObservableObject
     {
         if (newSnippet == null) return;
 
-        // need this because if click Cancel and select node with SelectedSnippet then will prompt again for unsaved changes
-        // because avalonia SelectionChangedEventArgs work diferently than WPF RoutedPropertyChangedEventArgs
-        if (newSnippet == EditingSnippet)
-            return;
-
         if (IsEditorModified && EditingSnippet != null)
         {
-            var result = await MessageBoxService.Instance.AskYesNoCancelAsync($"Unsaved Changes for {EditingSnippet?.Title}",
-                $"You have unsaved changes. Do you want to save them?");
+            var message = $"You have unsaved changes for ''{EditingSnippet.Title}'.\nDo you want to save them?\n";
+            var result = await MessageBoxService.Instance.AskYesNoAsync($"Unsaved Changes", message);
 
-            if (result == ButtonResult.Yes)
+            if (result)
             {
                 try
                 {
@@ -374,16 +369,11 @@ public partial class MainWindowViewModel : ObservableObject
                     return;
                 }
             }
-            else if (result == ButtonResult.No)
+            else
             {
                 IsEditorModified = false;
             }
-            // cancel
-            else
-            {
-                SelectedSnippet = EditingSnippet;
-                return;
-            }
+
         }
         // Lazy load the snippet code if it hasn't been loaded yet.
         if (!newSnippet.IsCodeLoaded)
@@ -395,7 +385,6 @@ public partial class MainWindowViewModel : ObservableObject
             }
             catch (Exception ex)
             {
-                StatusMessage = $"Error loading snippet '{newSnippet.Title}'";
                 await MessageBoxService.Instance.OkAsync("Load Error", $"Failed to load content for snippet '{newSnippet.Title}'.\n\nDetails: {ex.Message}", Icon.Error);
                 // Revert the TreeView selection and stop the switch.
                 SelectedSnippet = EditingSnippet;
@@ -692,7 +681,7 @@ public partial class MainWindowViewModel : ObservableObject
 
             IsEditorModified = false;
             EditingSnippet = null;
-            SelectedCategory= null;
+            SelectedCategory = null;
             UpdateWindowTitle();
 
             NotificationService.Instance.Show("CodeSnip", $"Snippet '{snippetTitle}' deleted successfully.", NotificationType.Success);
