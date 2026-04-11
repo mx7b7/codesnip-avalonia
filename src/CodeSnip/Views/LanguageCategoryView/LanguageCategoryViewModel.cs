@@ -350,9 +350,11 @@ public partial class LanguageCategoryViewModel : ObservableValidator, IDisposabl
                 NotificationService.Instance.Show("Action required", "Select a language to delete.");
                 return;
             }
-            if (SelectedLanguage.Categories.Any())
+
+            int snippetCount = _databaseService.CountSnippetsInLanguage(SelectedLanguage.Id);
+            if (snippetCount > 0)
             {
-                NotificationService.Instance.Show("Error", "Cannot delete language that has categories.\nDelete them first.", NotificationType.Error);
+                NotificationService.Instance.Show("Language cannot be deleted", "This language contains snippets.\nDelete them first.", NotificationType.Information);
                 return;
             }
 
@@ -379,6 +381,15 @@ public partial class LanguageCategoryViewModel : ObservableValidator, IDisposabl
                 NotificationService.Instance.Show("Action required", "Select a category to delete.");
                 return;
             }
+
+            int snippetCount = _databaseService.CountSnippetsInCategory(SelectedCategory.Id);
+
+            if (snippetCount > 0)
+            {
+                NotificationService.Instance.Show("Category cannot be deleted", "Cannot delete category that has snippets.\nDelete them first.", NotificationType.Information);
+                return;
+            }
+
             var confirm = await MessageBoxService.Instance.AskYesNoAsync("Confirm", $"Delete category '{SelectedCategory.Name}'?");
             if (!confirm)
                 return;
@@ -389,14 +400,7 @@ public partial class LanguageCategoryViewModel : ObservableValidator, IDisposabl
         }
         catch (Exception ex)
         {
-            if (ex.Message.Contains("FOREIGN KEY constraint failed"))
-            {
-                NotificationService.Instance.Show("Error", "Cannot delete category that has snippets\nDelete them first.", NotificationType.Error);
-            }
-            else
-            {
-                await MessageBoxService.Instance.OkAsync("Error", $"Failed to delete category '{SelectedCategory?.Name}'.\n\nDetails: {ex.Message}", Icon.Error);
-            }
+            await MessageBoxService.Instance.OkAsync("Error", $"Failed to delete category '{SelectedCategory?.Name}'.\n\nDetails: {ex.Message}", Icon.Error);
         }
     }
 
