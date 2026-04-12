@@ -1110,20 +1110,5 @@ public partial class MainWindowViewModel : ObservableObject
 
     }
 
-    public async Task HandleHighlightingErrorAsync(string errorMessage)
-    {
-        // Ensure this runs on the UI thread if called from a background thread,
-        // though OnUnhandledException is usually on the UI thread.
-        await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(async () =>
-        {
-            await MessageBoxManager.GetMessageBoxStandard("Syntax Highlighting Error",
-                "A critical error occurred in the syntax highlighting definition (.xshd file).\n" +
-                "Highlighting has been disabled to prevent the application from crashing.\n\n" +
-                "Please check the .xshd file for rules that might match zero-length text (e.g., regex like '^' or '$' inside a <Span> tag).\n\n" +
-                $"Original error: {errorMessage}",
-                ButtonEnum.Ok, Icon.Error).ShowAsync();
-        });
-    }
-
 
 }

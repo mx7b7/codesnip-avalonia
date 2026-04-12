@@ -6,7 +6,6 @@ using Avalonia.Threading;
 using CodeSnip.Services;
 using CodeSnip.Views.MainWindowView;
 using CodeSnip.Views.SplashScreenView;
-using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using System;
 using System.IO;
@@ -67,7 +66,7 @@ namespace CodeSnip
 
                             if (File.Exists(crashFilePath))
                                 File.Delete(crashFilePath);
-                            
+
                         }
                     }
                     catch (Exception ex)
@@ -91,7 +90,7 @@ namespace CodeSnip
             return (DispatcherUnhandledExceptionEventArgs)ctor.Invoke([ex, false]);
         }
 
-        private async void OnUnhandledException(object? sender, DispatcherUnhandledExceptionEventArgs e)
+        private void OnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             if (_errorCount >= 1)
             {
@@ -99,26 +98,22 @@ namespace CodeSnip
                 return;
             }
 
-            e.Handled = true;
             _errorCount++;
+            try
+            {
+                string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss zzz");
+                string log = $@"[{timestamp}]
+Exception: {e.Exception.Message}
+InnerException: {e.Exception.InnerException?.Message}
 
-            if (e.Exception is InvalidOperationException ex && ex.Message.Contains("matched 0 characters"))
-            {
-                if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop && desktop.MainWindow?.DataContext is MainWindowViewModel vm)
-                {
-                    await Task.Delay(50);
-                    await vm.HandleHighlightingErrorAsync(ex.Message);
-                }
+StackTrace:
+{e.Exception.StackTrace}";
+
+                File.WriteAllText("codesnip_crash.txt", log);
             }
-            else if (e.Exception != null)
-            {
-                File.WriteAllText("codesnip_crash.txt", $"{e.Exception.Message}\n{e.Exception.InnerException}\n{e.Exception.StackTrace}");
-                // For other unhandled exceptions, show a generic error
-                // Introduce a small delay to allow the UI thread to stabilize
-                await Task.Delay(50);
-                await MessageBoxManager.GetMessageBoxStandard("Application Error", $"An unhandled error occurred:\n\n{e.Exception.Message}", ButtonEnum.Ok)
-                                     .ShowAsync(); // Pass mainWindow as owner
-            }
+            catch { }
+
+            e.Handled = true;
         }
         private void DisableAvaloniaDataAnnotationValidation()
         {
