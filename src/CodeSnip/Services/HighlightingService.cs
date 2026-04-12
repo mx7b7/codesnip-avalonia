@@ -21,6 +21,7 @@ namespace CodeSnip.Services
         /// The key is a composite string: "{themeFolder}/{langCode}".
         /// </summary>
         private static readonly ConcurrentDictionary<string, IHighlightingDefinition> _highlightCache = new();
+        private static string _oldLangCode = string.Empty;
 
 
 
@@ -34,6 +35,20 @@ namespace CodeSnip.Services
         {
             if (editor is null)
                 return;
+
+            if (string.IsNullOrWhiteSpace(langCode))
+            {
+                editor.SyntaxHighlighting = null;
+                _oldLangCode = string.Empty;
+                return;
+            }
+
+            if (_oldLangCode.Equals(langCode, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            _oldLangCode = langCode;
 
             if (Application.Current is App app)
             {
@@ -51,14 +66,8 @@ namespace CodeSnip.Services
         /// <summary>
         /// Loads and applies a specific highlighting definition from the cache or file system.
         /// </summary>
-        private static void ApplyHighlightingWithTheme(TextEditor editor, string? langCode, string themeFolder)
+        private static void ApplyHighlightingWithTheme(TextEditor editor, string langCode, string themeFolder)
         {
-            if (string.IsNullOrWhiteSpace(langCode))
-            {
-                editor.SyntaxHighlighting = null;
-                return;
-            }
-
             try
             {
                 //editor.ClearValue(TextEditor.ForegroundProperty);
