@@ -846,20 +846,19 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private void OpenHighlightingEditor()
     {
-        if (IsRightOverlayOpen) return;
-
-        if (Editor is null) return;
-
-        if (SelectedSnippet is null)
+        if (!IsRightOverlayOpen &&
+         Editor?.SyntaxHighlighting != null &&
+         SelectedSnippet != null)
+        {
+            string langCode = SelectedSnippet.Category?.Language?.Code ?? "d";
+            RightOverlayContent = new HighlightingEditorViewModel(Editor.SyntaxHighlighting, Editor, langCode);
+            RightOverlayWidth = 600;
+            IsRightOverlayOpen = true;
+        }
+        else if (SelectedSnippet == null)
         {
             NotificationService.Instance.Show("No Snippet Selected", "Select a snippet from the list before attempting to edit syntax highlighting.");
-            return;
         }
-
-        string? langCode = SelectedSnippet?.Category?.Language?.Code ?? "d";
-        RightOverlayContent = new HighlightingEditorViewModel(Editor.SyntaxHighlighting, Editor, langCode);
-        RightOverlayWidth = 600;
-        IsRightOverlayOpen = true;
     }
 
     [RelayCommand]
