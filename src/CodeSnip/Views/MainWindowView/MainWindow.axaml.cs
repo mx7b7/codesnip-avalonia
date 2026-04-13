@@ -25,6 +25,7 @@ public partial class MainWindow : ControlsEx.Window.Window
 {
     private readonly TextEditor? _textEditor;
     private int _lastSnippetId = -1;
+    private string _oldLangCode = string.Empty;
 
     private MainWindowViewModel ViewModel => (MainWindowViewModel)DataContext!;
 
@@ -81,7 +82,11 @@ public partial class MainWindow : ControlsEx.Window.Window
 
                 _lastSnippetId = snippet.Id;
                 var langCode = snippet.Category?.Language?.Code ?? string.Empty;
-                HighlightingService.ApplyHighlighting(_textEditor!, langCode);
+                if (!_oldLangCode.Equals(langCode, StringComparison.Ordinal))
+                {
+                    HighlightingService.ApplyHighlighting(_textEditor!, langCode);
+                    _oldLangCode = langCode;
+                }
                 _textEditor?.Document.UndoStack.ClearAll();
                 break;
 

@@ -21,8 +21,7 @@ namespace CodeSnip.Services
         /// The key is a composite string: "{themeFolder}/{langCode}".
         /// </summary>
         private static readonly ConcurrentDictionary<string, IHighlightingDefinition> _highlightCache = new();
-        private static string _oldLangCode = string.Empty;
-
+        
 
 
         /// <summary>
@@ -39,16 +38,8 @@ namespace CodeSnip.Services
             if (string.IsNullOrWhiteSpace(langCode))
             {
                 editor.SyntaxHighlighting = null;
-                _oldLangCode = string.Empty;
                 return;
             }
-
-            if (_oldLangCode.Equals(langCode, StringComparison.Ordinal))
-            {
-                return;
-            }
-
-            _oldLangCode = langCode;
 
             if (Application.Current is App app)
             {
