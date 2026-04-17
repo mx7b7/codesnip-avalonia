@@ -169,46 +169,41 @@
 						   OpenPaneLength="{Binding SplitViewOpenPaneLength, Mode=OneWay}"
 						   IsPaneOpen="{Binding IsPaneOpen, Mode=TwoWay}">
 			<SplitView.Pane>
-				<Grid>
-					<Expander IsExpanded="True" HorizontalAlignment="Stretch" Padding="0" VerticalAlignment="Stretch"
-							   Background="{DynamicResource ThemeBackgroundBrush}" ExpandDirection="Down"
-							   BorderBrush="{DynamicResource HighlightBrush}" BorderThickness="0 0 1 0" >
-						<Expander.Header>
-							<Border Height="30">
-								<TextBox x:Name="txtFilter"
-										 Classes="SearchTextBox"
-										 Watermark="Search snippets..."
-										 BorderBrush="{DynamicResource HighlightBrush}"
-										 BorderThickness="0 1 0 1"
-										 HorizontalAlignment="Stretch"
-										 VerticalContentAlignment="Center"
-										 Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
-										 FontSize="13"
-										 MinHeight="30">
-									<TextBox.InnerRightContent>
-										<Button Classes="IconButton"
-												Cursor="Hand"
-												Flyout="{StaticResource SearchFilterFlyout}"
-												Foreground="{DynamicResource ThemeAccentBrush}"
-												ToolTip.Tip="Search Mode"
-												Padding="0"
-												Margin="5,-2,5,0"
-												HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"
-                                                MinWidth="20"
-                                                MinHeight="20">
-											<Path Data="{StaticResource ArrowDown}" Width="16" Height="16"
-                                                Fill="{DynamicResource HighlightBrush}" Stretch="Uniform" VerticalAlignment="Center">
-												<Path.RenderTransform>
-													<ScaleTransform ScaleY="-1"/>
-												</Path.RenderTransform>
-											</Path>
-										</Button>
-									</TextBox.InnerRightContent>
-								</TextBox>
-							</Border>
-						</Expander.Header>
-						<Grid RowDefinitions="*, Auto">
+				<Border Background="{DynamicResource ThemeBackgroundBrush}"
+						BorderBrush="{DynamicResource HighlightBrush}"
+						BorderThickness="0 1 1 0">
+					<Grid RowDefinitions="Auto, *">
+						<TextBox x:Name="txtFilter" Grid.Row="0"
+								 Classes="SearchTextBox"
+								 Watermark="Search snippets..."
+								 BorderBrush="{DynamicResource HighlightBrush}"
+								 BorderThickness="0 0 0 1"
+								 HorizontalAlignment="Stretch"
+								 Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
+								 FontSize="14"
+								 MinHeight="30">
+							<TextBox.InnerRightContent>
+								<Button Classes="IconButton"
+										Cursor="Hand"
+										Flyout="{StaticResource SearchFilterFlyout}"
+										Foreground="{DynamicResource ThemeAccentBrush}"
+										ToolTip.Tip="Search Mode"
+										Padding="0"
+										Margin="5,-2,5,0"
+										HorizontalAlignment="Center"
+										VerticalAlignment="Center"
+										MinWidth="20"
+										MinHeight="20">
+									<Path Data="{StaticResource ArrowDown}" Width="16" Height="16"
+										Fill="{DynamicResource HighlightBrush}" Stretch="Uniform" VerticalAlignment="Center">
+										<Path.RenderTransform>
+											<ScaleTransform ScaleY="-1"/>
+										</Path.RenderTransform>
+									</Path>
+								</Button>
+							</TextBox.InnerRightContent>
+						</TextBox>
+						<Grid Grid.Row="1" RowDefinitions="*, Auto">
 							<TreeView Grid.Row="0" Name="TreeSnippets" AutoScrollToSelectedItem="True"
                                   ItemsSource="{Binding Languages}"
                                   SelectionChanged="TreeView_SelectionChanged" BorderThickness="0">
@@ -326,9 +321,8 @@
 								</Grid>
 							</Expander>
 						</Grid>
-					</Expander>
-				</Grid>
-
+					</Grid>
+				</Border>
 			</SplitView.Pane>
 			<SplitView.Content>
 				<DockPanel>
@@ -466,7 +460,8 @@
 								   FontFamily="{Binding EditorFontFamily, Mode=TwoWay}"
 								   ShowLineNumbers="{Binding ShowLineNumbers}"
 								   HorizontalScrollBarVisibility="Auto"
-								   VerticalScrollBarVisibility="Auto">
+								   VerticalScrollBarVisibility="Auto"
+								   Margin="0, 5">
 						<i:Interaction.Behaviors>
 							<behaviors:AvaloniaEditTextBindingBehavior
 								BoundText="{Binding EditorText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
