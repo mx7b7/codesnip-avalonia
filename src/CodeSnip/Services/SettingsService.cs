@@ -5,6 +5,7 @@ using Avalonia.Styling;
 using MsBox.Avalonia.Enums;
 using System;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -219,6 +220,18 @@ public class SettingsService
         if (string.IsNullOrWhiteSpace(_settings.Editor.EditorFontFamily))
         {
             _settings.Editor.EditorFontFamily = defaultSettings.Editor.EditorFontFamily;
+        }
+        else
+        {
+            var fontFamilies = FontManager.Current.SystemFonts
+                .Select(f => f.Name)
+                .Distinct(StringComparer.CurrentCultureIgnoreCase);
+
+            // Use StringComparer.CurrentCultureIgnoreCase to match user locale casing
+            if (!fontFamilies.Contains(_settings.Editor.EditorFontFamily, StringComparer.CurrentCultureIgnoreCase))
+            {
+                _settings.Editor.EditorFontFamily = defaultSettings.Editor.EditorFontFamily;
+            }
         }
 
         // 3. Validate Theme BaseColor

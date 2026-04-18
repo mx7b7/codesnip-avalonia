@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls;
+using System;
 
 namespace CodeSnip;
 
@@ -9,7 +10,7 @@ public class MainWindowSettings
     public double SplitViewPanelLength { get; set; } = 300;
     public bool ShowEmptyLanguages { get; set; } = false;
     public bool ShowEmptyCategories { get; set; } = false;
-    public double WindowWidth { get; set; } = 1200; 
+    public double WindowWidth { get; set; } = 1200;
     public double WindowHeight { get; set; } = 720;
     public WindowState WindowState { get; set; } = WindowState.Normal;
 }
@@ -23,9 +24,26 @@ public class EditorSettings
     public bool HighlightLine { get; set; } = true;
     public bool ShowLineNumbers { get; set; } = true;
     public int IntendationSize { get; set; } = 4;
-    public string EditorFontFamily { get; set; } = "Consolas";
+    public string EditorFontFamily { get; set; }
     public int EditorFontSize { get; set; } = 14;
-    
+
+    public EditorSettings()
+    {
+        EditorFontFamily = GetDefaultFontFamilyForOS();
+    }
+
+    private static string GetDefaultFontFamilyForOS()
+    {
+        if (OperatingSystem.IsWindows())
+            return "Consolas";
+        else if (OperatingSystem.IsLinux())
+            return "DejaVu Sans Mono";
+        else if (OperatingSystem.IsMacOS())
+            return "Menlo";
+        else
+            return "Inter";  // fallback to bundled font
+    }
+
 }
 public class ThemeSettings
 {

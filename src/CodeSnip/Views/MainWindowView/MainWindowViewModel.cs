@@ -79,7 +79,7 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] private double _splitViewOpenPaneLength = 280;
     [ObservableProperty] private bool _showEmptyLanguages = false;
     [ObservableProperty] private bool _showEmptyCategories = false;
-    [ObservableProperty] private string _editorFontFamily = "Consolas";
+    [ObservableProperty] private FontFamily _editorFontFamily = new("Inter");
     [ObservableProperty] private double _editorFontSize = 14;
     [ObservableProperty] private double _windowWidth = 1200;
     [ObservableProperty] private double _windowHeight = 720;
@@ -133,7 +133,7 @@ public partial class MainWindowViewModel : ObservableObject
         EditorOptions.HighlightCurrentLine = settingsService.HighlightLine;
         EditorOptions.IndentationSize = settingsService.IntendationSize;
         ShowLineNumbers = settingsService.ShowLineNumbers;
-        EditorFontFamily = settingsService.EditorFontFamily;
+        EditorFontFamily = new FontFamily(settingsService.EditorFontFamily);
         EditorFontSize = settingsService.EditorFontSize;
         // FIX: AvaloniaEdit.Rendering.VisualLinesInvalidException
         // Disabled rectangle selection due to a critical bug in AvaloniaEdit:
@@ -146,8 +146,6 @@ public partial class MainWindowViewModel : ObservableObject
     public void InitializeEditor(TextEditor textEditor)
     {
         textEditor.Options = EditorOptions;
-        // AvaloniaEdit.FontFamily = ONLY FontFamily OBJECT, binding from string does not work like in WPF and AvalonEdit
-        textEditor.FontFamily = new FontFamily(EditorFontFamily);
 
         ReplaceCurrentLineRenderer();
     }
@@ -909,8 +907,7 @@ public partial class MainWindowViewModel : ObservableObject
             EditorOptions.IndentationSize = vm.IntendationSize;
             EditorOptions.EnableHyperlinks = vm.HyperLinks;
             ShowLineNumbers = vm.ShowLineNumbers;
-            EditorFontFamily = vm.EditorFontFamily;
-            Editor?.FontFamily = new FontFamily(EditorFontFamily);
+            EditorFontFamily = new FontFamily(vm.EditorFontFamily);
             EditorFontSize = vm.EditorFontSize;
             // Main Window
             ShowEmptyLanguages = vm.ShowEmptyLanguages;

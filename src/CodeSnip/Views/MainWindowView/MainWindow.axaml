@@ -461,7 +461,8 @@
 								   ShowLineNumbers="{Binding ShowLineNumbers}"
 								   HorizontalScrollBarVisibility="Auto"
 								   VerticalScrollBarVisibility="Auto"
-								   Margin="0, 5">
+								   Margin="0, 5"
+								   LineNumbersMargin="5,0,5,0">
 						<i:Interaction.Behaviors>
 							<behaviors:AvaloniaEditTextBindingBehavior
 								BoundText="{Binding EditorText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />

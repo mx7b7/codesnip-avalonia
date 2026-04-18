@@ -163,7 +163,7 @@
 				<TabItem Header="Assembler">
 					<AvaloniaEdit:TextEditor
 						x:Name="asmEditor"
-						FontFamily="Consolas"
+						FontFamily="Consolas,Cascadia,Code,Menlo,Monospace"
 						IsReadOnly="True"
 						ShowLineNumbers="True"
 						VerticalScrollBarVisibility="Auto"
