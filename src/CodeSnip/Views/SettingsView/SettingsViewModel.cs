@@ -159,12 +159,10 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
             {
                 var vm = desktop.MainWindow.DataContext as MainWindowViewModel;
                 var langCode = vm?.SelectedSnippet?.Category?.Language?.Code;
-                if (SyntaxEngine == SyntaxEngine.TextMate)
+                if (HighlightingService.IsTextMateInstalled())
                 {
-                    if (value == true)
-                        HighlightingService.SetTextMateTheme(SelectedDarkTheme);
-                    else
-                        HighlightingService.SetTextMateTheme(SelectedLightTheme);
+                    var theme = value ? SelectedDarkTheme : SelectedLightTheme;
+                    HighlightingService.SetTextMateTheme(theme);
                 }
                 else
                 {
@@ -225,6 +223,9 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
             {
                 var vm = desktop.MainWindow.DataContext as MainWindowViewModel;
                 var langCode = vm?.SelectedSnippet?.Category?.Language?.Code;
+
+                textEditor.ClearValue(TextEditor.ForegroundProperty);
+                textEditor.ClearValue(TextEditor.BackgroundProperty);
 
                 if (SyntaxEngine == SyntaxEngine.TextMate)
                 {
