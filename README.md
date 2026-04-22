@@ -30,6 +30,7 @@ This project is a cross-platform port of the original **[CodeSnip (WPF) applicat
   - Instant search
 
 - **AvaloniaEdit integration**
+  - **Dual‑Mode syntax highlighting**: Support for both native XSHD and TextMateSharp tokenizers.
   - Syntax highlighting (light/dark mode)
   - Toggle single-line and multi-line comments
 
@@ -38,6 +39,7 @@ This project is a cross-platform port of the original **[CodeSnip (WPF) applicat
   - **Direct XSHD Source Editing**: Edit raw `.xshd` XML for full control over rules, spans, and keywords.
   - **Preview on Demand**: Apply changes from the XSHD source to the main editor before saving.
   - **Validation**: Integrated validation engine checks for XML errors and XSHD schema compliance.
+  - > **Note:** The Highlighting Editor is designed exclusively for editing XSHD syntax definition files.
 
 - **Compiler Explorer (Godbolt) integration**:
   - Compile snippets without installing compilers locally
@@ -72,18 +74,10 @@ This project is a cross-platform port of the original **[CodeSnip (WPF) applicat
 | Engine | Status | Language Coverage |
 |--------|--------|-------------------|
 | **XSHD (AvaloniaEdit)** | Built‑in | 36+ bundled definitions (light/dark variants included); unlimited via custom `.xshd` files |
-| **TextMateSharp** | Planned | 50+ grammars supported via `.tmLanguage` / `.plist` |
-| **User‑Provided Definitions** | Supported | Unlimited — users can add any language manually |
+| **TextMateSharp** | Supported | 60+ bundled grammars included in the TextMateSharp.Grammars library  |
+| **User‑Provided Definitions** | Supported | Unlimited — users can add custom XSHD manually |
 
 ---
-
-## 🚧 Planned Features
-
-The following features are planned for future releases:
-
-- **Dual-Mode Syntax Highlighting**  
-  Support for both native XSHD and TextMateSharp tokenizers in AvaloniaEdit. Users will be able to choose their preferred syntax highlighting engine in settings.  
-  > Currently, only XSHD is implemented due to its superior performance.
 
 ## 📦 Libraries
 
