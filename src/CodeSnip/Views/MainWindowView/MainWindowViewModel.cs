@@ -71,6 +71,9 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] private double leftOverlayWidth = 0;
     [ObservableProperty] private double rightOverlayWidth = 0;
     [ObservableProperty] private bool _disableIndentation = false;
+    [ObservableProperty] private object? _selectedNode;
+    private int _lastSnippetId = -1;
+    private string _oldLangCode = string.Empty;
     private bool _isInternalTextUpdate = true;
 
     #region SETTINGS PROPERTIES
@@ -146,6 +149,19 @@ public partial class MainWindowViewModel : ObservableObject
     public void InitializeEditor(TextEditor textEditor)
     {
         textEditor.Options = EditorOptions;
+
+        if (settingsService.SyntaxEngine == SyntaxEngine.TextMate)
+        {
+            if (textEditor.ActualThemeVariant == ThemeVariant.Dark)
+            {
+                HighlightingService.InstallTextMate(textEditor, settingsService.DefaultDarkTheme);
+            }
+            else
+            {
+                HighlightingService.InstallTextMate(textEditor, settingsService.DefaultLightTheme);
+            }
+            textEditor.SyntaxHighlighting = null;
+        }
 
         ReplaceCurrentLineRenderer();
     }
@@ -485,6 +501,48 @@ public partial class MainWindowViewModel : ObservableObject
     {
         settingsService.AccentColor = value.ToString();
         settingsService.ApplyAccentColor();
+    }
+
+    [RelayCommand]
+    private async Task ChangeSelectedSnippet(Snippet snippet)
+    {
+        await ChangeSelectedSnippetAsync(snippet);
+
+        var langCode = snippet.Category?.Language?.Code ?? string.Empty;
+        if (!_oldLangCode.Equals(langCode, StringComparison.Ordinal))
+        {
+            if (settingsService.SyntaxEngine == SyntaxEngine.TextMate)
+            {
+                if (!HighlightingService.ApplyTextMateHighlighting(langCode))
+                    NotificationService.Instance.Show("Syntax Highlighting", $"No TextMate grammar found for language extension '{langCode}'");
+            }
+            else
+            {
+                HighlightingService.ApplyHighlighting(Editor!, langCode);
+            }
+            _oldLangCode = langCode;
+        }
+        _lastSnippetId = snippet.Id;
+        Editor?.Document.UndoStack.ClearAll();
+    }
+
+    partial void OnSelectedNodeChanged(object? value)
+    {
+        switch (value)
+        {
+            case Snippet snippet:
+                if (snippet.Id == _lastSnippetId)
+                    return;
+
+                ChangeSelectedSnippetCommand.ExecuteAsync(snippet);
+                break;
+            case Category category:
+                SelectedCategory = category;
+                break;
+            case Language language:
+                SelectedCategory = language.Categories.FirstOrDefault();
+                break;
+        }
     }
 
     #region FILTERING
@@ -844,6 +902,12 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private void OpenHighlightingEditor()
     {
+        if (settingsService.SyntaxEngine == SyntaxEngine.TextMate)
+        {
+            NotificationService.Instance.Show("Not Supported", "The syntax highlighting editor is not supported when using the TextMate engine.");
+            return;
+        }
+
         if (!IsRightOverlayOpen &&
          Editor?.SyntaxHighlighting != null &&
          SelectedSnippet != null)
@@ -953,11 +1017,28 @@ public partial class MainWindowViewModel : ObservableObject
                 app.RequestedThemeVariant = next;
 
                 settingsService.BaseColor = next == ThemeVariant.Dark ? "Dark" : "Light";
+                // settingsService.ApplyAccentColor(); //Re - apply accent color because Avalonia 12 resets resources
 
                 if (Editor != null)
-                    HighlightingService.ApplyHighlighting(Editor, SelectedSnippet?.Category?.Language?.Code);
+                   {
+                    if (settingsService.SyntaxEngine == SyntaxEngine.TextMate)
+                    {
+                        if (next == ThemeVariant.Dark)
+                        {
+                            HighlightingService.SetTextMateTheme(settingsService.DefaultDarkTheme);
+                        }
+                        else
+                        {
+                            HighlightingService.SetTextMateTheme(settingsService.DefaultLightTheme);
+                        }
+                    }
+                    else
+                    {
+                        HighlightingService.ApplyHighlighting(Editor, SelectedSnippet?.Category?.Language?.Code);
+                    }
 
-                ReplaceCurrentLineRenderer();
+                    ReplaceCurrentLineRenderer();
+                }
             }
         }
         catch (Exception ex)

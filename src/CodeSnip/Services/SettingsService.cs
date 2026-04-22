@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using TextMateSharp.Grammars;
 
 namespace CodeSnip.Services;
 
@@ -101,6 +102,24 @@ public class SettingsService
         set => _settings.Editor.EditorFontSize = value;
     }
 
+    public SyntaxEngine SyntaxEngine
+    {
+        get => _settings.Editor.SyntaxEngine;
+        set => _settings.Editor.SyntaxEngine = value;
+    }
+
+    public ThemeName DefaultLightTheme
+    {
+        get => _settings.Editor.DefaultLightTheme;
+        set => _settings.Editor.DefaultLightTheme = value;
+    }
+
+    public ThemeName DefaultDarkTheme
+    {
+        get => _settings.Editor.DefaultDarkTheme;
+        set => _settings.Editor.DefaultDarkTheme = value;
+    }
+
     public bool ShowLineNumbers
     {
         get => _settings.Editor.ShowLineNumbers;
@@ -135,8 +154,8 @@ public class SettingsService
     {
         _settings = new AppSettings();
         _ = LoadSettingsAsync(); // Auto-load on init
-        ApplyAccentColor();
         ApplyTheme();
+        ApplyAccentColor();
     }
 
     private async Task LoadSettingsAsync()
@@ -188,8 +207,8 @@ public class SettingsService
     public async Task ResetToDefaults()
     {
         _settings = new AppSettings();
-        ApplyAccentColor();
         ApplyTheme();
+        ApplyAccentColor();
     }
 
     public void ApplyTheme()
@@ -211,7 +230,7 @@ public class SettingsService
         var defaultSettings = new AppSettings();
 
         // 1. Validate WindowState
-        if (!Enum.IsDefined(typeof(WindowState), _settings.MainWindow.WindowState))
+        if (!Enum.IsDefined(_settings.MainWindow.WindowState))
         {
             _settings.MainWindow.WindowState = defaultSettings.MainWindow.WindowState;
         }
@@ -244,6 +263,24 @@ public class SettingsService
         if (!IsValidHexColor(_settings.Theme.Accent))
         {
             _settings.Theme.Accent = defaultSettings.Theme.Accent; // "#FF87794E"
+        }
+
+        // 5. Validate SyntaxEngine
+        if (!Enum.IsDefined(_settings.Editor.SyntaxEngine))
+        {
+            _settings.Editor.SyntaxEngine = defaultSettings.Editor.SyntaxEngine;
+        }
+
+        // 6.Validate DefaultLightTheme
+        if (!Enum.IsDefined(_settings.Editor.DefaultLightTheme))
+        {
+            _settings.Editor.DefaultLightTheme = defaultSettings.Editor.DefaultLightTheme;
+        }
+
+        // 7. Validate DefaultDarkTheme
+        if (!Enum.IsDefined(_settings.Editor.DefaultDarkTheme))
+        {
+            _settings.Editor.DefaultDarkTheme = defaultSettings.Editor.DefaultDarkTheme;
         }
     }
 

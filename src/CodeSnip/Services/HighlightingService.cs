@@ -6,11 +6,13 @@ using Avalonia.Styling;
 using AvaloniaEdit;
 using AvaloniaEdit.Highlighting;
 using AvaloniaEdit.Highlighting.Xshd;
+using AvaloniaEdit.TextMate;
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Xml;
+using TextMateSharp.Grammars;
 
 namespace CodeSnip.Services
 {
@@ -21,7 +23,9 @@ namespace CodeSnip.Services
         /// The key is a composite string: "{themeFolder}/{langCode}".
         /// </summary>
         private static readonly ConcurrentDictionary<string, IHighlightingDefinition> _highlightCache = new();
-        
+        private static TextMate.Installation? _textMateInstallation;
+        private static RegistryOptions? _registryOptions = new(ThemeName.AtomOneDark);
+        private static Language? _oldLanguage;
 
 
         /// <summary>
@@ -347,6 +351,92 @@ namespace CodeSnip.Services
             {
                 return false;
             }
+        }
+
+        public static void InstallTextMate(TextEditor editor, ThemeName themeName)
+        {
+            if (editor is null)
+                return;
+
+            try
+            {
+                _registryOptions = new RegistryOptions(themeName);
+                _textMateInstallation = editor.InstallTextMate(_registryOptions);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"[HighlightingService] Failed to install TextMate: {ex.Message}");
+            }
+        }
+
+        public static void UninstallTextMate()
+        {
+            if (_textMateInstallation is null)
+                return;
+
+            try
+            {
+                _textMateInstallation.Dispose();
+                _textMateInstallation = null;
+                _registryOptions = null;
+                _oldLanguage = null;
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"[HighlightingService] Failed to uninstall TextMate: {ex.Message}");
+            }
+        }
+
+        public static void SetTextMateTheme(ThemeName themeName)
+        {
+            if (_textMateInstallation is null || _registryOptions is null)
+                return;
+            try
+            {
+                _textMateInstallation.SetTheme(_registryOptions.LoadTheme(themeName));
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"[HighlightingService] Failed to set TextMate theme: {ex.Message}");
+            }
+        }
+
+        public static bool ApplyTextMateHighlighting(string langCode)
+        {
+            if (_textMateInstallation is null || _registryOptions is null)
+                return false;
+
+            try
+            {
+                Language? language = _registryOptions.GetLanguageByExtension($".{langCode}");
+
+                if (language != null)
+                {
+                    if (language != _oldLanguage)
+                    {
+                        _textMateInstallation?.SetGrammar(_registryOptions.GetScopeByLanguageId(language.Id));
+                    }
+                    _oldLanguage = language;
+                    return true;
+                }
+                else if (_oldLanguage != null) // Samo ako smo imali prethodni language
+                {
+                    _textMateInstallation?.SetGrammar(null);
+                    _oldLanguage = null;
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"[HighlightingService] Failed to set TextMate language: {ex.Message}");
+                return false;
+            }
+            return false;
+        }
+
+        public static bool IsTextMateInstalled()
+        {
+            return _textMateInstallation != null;
         }
 
     }

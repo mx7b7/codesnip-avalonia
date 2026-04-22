@@ -1,7 +1,15 @@
 ﻿using Avalonia.Controls;
 using System;
+using TextMateSharp.Grammars;
 
 namespace CodeSnip;
+
+public enum SyntaxEngine
+{
+    XSHD,
+    TextMate
+
+}
 
 public class MainWindowSettings
 {
@@ -26,6 +34,9 @@ public class EditorSettings
     public int IntendationSize { get; set; } = 4;
     public string EditorFontFamily { get; set; }
     public int EditorFontSize { get; set; } = 14;
+    public SyntaxEngine SyntaxEngine { get; set; } = SyntaxEngine.XSHD;
+    public ThemeName DefaultLightTheme { get; set; } = ThemeName.LightPlus;
+    public ThemeName DefaultDarkTheme { get; set; } = ThemeName.DarkPlus;
 
     public EditorSettings()
     {

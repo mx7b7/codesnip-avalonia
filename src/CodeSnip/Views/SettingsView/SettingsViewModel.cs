@@ -15,6 +15,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using TextMateSharp.Grammars;
 
 namespace CodeSnip.Views.SettingsView;
 
@@ -69,6 +70,31 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
 
     [ObservableProperty] private FontFamily _selectedEditorFont;
 
+    [ObservableProperty] private SyntaxEngine _syntaxEngine;
+
+    [ObservableProperty] private ObservableCollection<ThemeName> _lightTextMateThemes;
+
+    [ObservableProperty] private ObservableCollection<ThemeName> _darkTextMateThemes;
+
+    [ObservableProperty] private ThemeName _selectedLightTheme;
+
+    [ObservableProperty] private ThemeName _selectedDarkTheme;
+
+    private static readonly ThemeName[] LightThemes =
+                            [
+                                ThemeName.Light, ThemeName.LightPlus, ThemeName.QuietLight,
+                                ThemeName.SolarizedLight, ThemeName.HighContrastLight,
+                                ThemeName.AtomOneLight, ThemeName.VisualStudioLight
+                            ];
+
+    private static readonly ThemeName[] DarkThemes =
+                            [
+                                ThemeName.Abbys, ThemeName.Dark, ThemeName.DarkPlus, ThemeName.DimmedMonokai,
+                                ThemeName.KimbieDark, ThemeName.OneDark, ThemeName.Monokai, ThemeName.Red,
+                                ThemeName.SolarizedDark, ThemeName.TomorrowNightBlue, ThemeName.HighContrastDark,
+                                ThemeName.Dracula, ThemeName.AtomOneDark, ThemeName.VisualStudioDark
+                            ];
+
     public ObservableCollection<FontFamily> SystemFonts { get; } = new ObservableCollection<FontFamily>(FontManager.Current.SystemFonts.OrderBy(f => f.Name, StringComparer.CurrentCultureIgnoreCase));
 
     public event Func<Task>? RequestCloseAsync;
@@ -101,6 +127,12 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
         IsDarkTheme = settingsService.BaseColor == "Dark";
         HeaderText = "Settings";
         SelectedAccentColor = Color.Parse(settingsService.AccentColor);
+        SyntaxEngine = _settingsService.SyntaxEngine;
+        LightTextMateThemes = new(LightThemes);
+        DarkTextMateThemes = new(DarkThemes);
+
+        SelectedLightTheme = _settingsService.DefaultLightTheme;
+        SelectedDarkTheme = _settingsService.DefaultDarkTheme;
     }
 
     public void InitializeFromCurrentTheme()
@@ -118,31 +150,26 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
         {
             app.RequestedThemeVariant = value ? ThemeVariant.Dark : ThemeVariant.Light;
             _settingsService.BaseColor = value ? "Dark" : "Light";
+            // _settingsService.ApplyAccentColor(); // Re-apply accent color to update theme resources avalonia v12 ???
         }
-        // V1
-        //if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        //{
-        //    var mainWindow = desktop.MainWindow;
-        //    if (mainWindow != null)
-        //    {
-        //        var textEditor = mainWindow.FindControl<TextEditor>("textEditor");
-        //        var mainViewModel = mainWindow.DataContext as MainWindowViewModel;
-
-        //        if (textEditor != null && mainViewModel?.SelectedSnippet?.Category?.Language?.Code != null)
-        //        {
-        //            HighlightingService.ApplyHighlighting(textEditor, mainViewModel.SelectedSnippet.Category.Language.Code);
-        //        }
-        //    }
-        //}
-
-        // V2
+        
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             if (desktop.MainWindow?.FindControl<TextEditor>("textEditor") is { } textEditor)
             {
                 var vm = desktop.MainWindow.DataContext as MainWindowViewModel;
                 var langCode = vm?.SelectedSnippet?.Category?.Language?.Code;
-                HighlightingService.ApplyHighlighting(textEditor, langCode);
+                if (SyntaxEngine == SyntaxEngine.TextMate)
+                {
+                    if (value == true)
+                        HighlightingService.SetTextMateTheme(SelectedDarkTheme);
+                    else
+                        HighlightingService.SetTextMateTheme(SelectedLightTheme);
+                }
+                else
+                {
+                    HighlightingService.ApplyHighlighting(textEditor, langCode);
+                }
             }
         }
     }
@@ -166,6 +193,72 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
     {
         _settingsService.AccentColor = value.ToString();
         _settingsService.ApplyAccentColor();
+    }
+
+    partial void OnSyntaxEngineChanged(SyntaxEngine value)
+    {
+        _settingsService.SyntaxEngine = value;
+    }
+
+    partial void OnSelectedLightThemeChanged(ThemeName value)
+    {
+        _settingsService.DefaultLightTheme = value;
+        if (!IsDarkTheme && HighlightingService.IsTextMateInstalled())
+            HighlightingService.SetTextMateTheme(value);
+
+    }
+
+    partial void OnSelectedDarkThemeChanged(ThemeName value)
+    {
+        _settingsService.DefaultDarkTheme = value;
+        if (IsDarkTheme && HighlightingService.IsTextMateInstalled())
+            HighlightingService.SetTextMateTheme(value);
+
+    }
+
+    [RelayCommand]
+    private async Task ApplySyntaxEngine()
+    {
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            if (desktop.MainWindow?.FindControl<TextEditor>("textEditor") is { } textEditor)
+            {
+                var vm = desktop.MainWindow.DataContext as MainWindowViewModel;
+                var langCode = vm?.SelectedSnippet?.Category?.Language?.Code;
+
+                if (SyntaxEngine == SyntaxEngine.TextMate)
+                {
+                    ThemeName themeName = IsDarkTheme ? SelectedDarkTheme : SelectedLightTheme;
+                    textEditor.SyntaxHighlighting = null;
+
+                    if (HighlightingService.IsTextMateInstalled())
+                    {
+                        if (langCode != null)
+                        {
+                            if (!HighlightingService.ApplyTextMateHighlighting(langCode))
+                                NotificationService.Instance.Show("Syntax Highlighting", $"No TextMate grammar found for language extension '{langCode}'");
+                        }
+                    }
+                    else
+                    {
+                        HighlightingService.InstallTextMate(textEditor, themeName);
+                       
+                        if (langCode != null)
+                        {
+                            if (!HighlightingService.ApplyTextMateHighlighting(langCode))
+                                NotificationService.Instance.Show("Syntax Highlighting", $"No TextMate grammar found for language extension '{langCode}'");
+                        }
+                    }
+                }
+                else  // XSHD
+                {
+                    if (HighlightingService.IsTextMateInstalled())
+                        HighlightingService.UninstallTextMate(); // Uninstall TextMate to revert to XSHD
+
+                    HighlightingService.ApplyHighlighting(textEditor, langCode);
+                }
+            }
+        }
     }
 
     [RelayCommand]
@@ -282,7 +375,10 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
             if (result)
             {
                 await _settingsService.ResetToDefaults();
+                SyntaxEngine = _settingsService.SyntaxEngine;
                 InitializeFromCurrentTheme();
+                await ApplySyntaxEngineCommand.ExecuteAsync(null);
+                //_settingsService.ApplyAccentColor(); //avalonia v12 need to re-apply accent color to update theme resources
                 NotificationService.Instance.Show("Settings Reset", "All settings have been reset to default values.", NotificationType.Success);
             }
         }

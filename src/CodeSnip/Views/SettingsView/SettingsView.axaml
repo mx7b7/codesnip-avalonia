@@ -5,7 +5,12 @@
 			 xmlns:vm="clr-namespace:CodeSnip.Views.SettingsView"
 			 x:DataType="vm:SettingsViewModel"
 			 xmlns:controls="using:Avalonia.Controls"
+			 xmlns:Converters="using:Avalonia.Controls.Converters"
+			 xmlns:local="using:CodeSnip"
 			 Background="{DynamicResource ThemeBackgroundBrush}">
+	<UserControl.Resources>
+		<Converters:EnumToBoolConverter x:Key="EnumToBoolConverter"/>
+	</UserControl.Resources>
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
@@ -57,14 +62,14 @@
 						<Border CornerRadius="5" BorderBrush="{DynamicResource ThemeControlHighlightMidBrush}"
 								BorderThickness="1" Padding="10">
 							<StackPanel>
-								<TextBlock Text="Base theme" FontWeight="Bold" FontSize="16"/>
+								<TextBlock Text="Base theme:" FontWeight="Bold"/>
 								<StackPanel Orientation="Horizontal">
 									<RadioButton Content="Light"  Margin="0,5"
 												 IsChecked="{Binding !IsDarkTheme, Mode=TwoWay}"/>
 									<RadioButton Content="Dark" Margin="20,5"
 												 IsChecked="{Binding IsDarkTheme}"/>
 								</StackPanel>
-								<TextBlock Text="Accent" FontWeight="Bold" FontSize="16" />
+								<TextBlock Text="Accent:" FontWeight="Bold"/>
 								<ColorPicker Color="{Binding SelectedAccentColor, Mode=TwoWay}"
 											 Width="180"
 											 Height="30"
@@ -86,7 +91,7 @@
 					<StackPanel>
 						<Border CornerRadius="5" BorderBrush="{DynamicResource ThemeControlHighlightMidBrush}" BorderThickness="1" Padding="10">
 							<StackPanel Spacing="5" Margin="0 0 0 12">
-								<TextBlock Text="Main Window" FontWeight="Bold" FontSize="16"/>
+								<TextBlock Text="Main Window:" FontWeight="Bold"/>
 								<CheckBox Content="Load snippets on startup" IsChecked="{Binding LoadSnippetsOnStartup, Mode=TwoWay}"/>
 								<CheckBox Content="Show empty languages" IsChecked="{Binding ShowEmptyLanguages, Mode=TwoWay}"/>
 								<CheckBox Content="Show empty categories" IsChecked="{Binding ShowEmptyCategories, Mode=TwoWay}"/>
@@ -108,21 +113,43 @@
 				<ScrollViewer Classes="ScrollViewerThin" Margin="10">
 					<StackPanel>
 						<Border CornerRadius="5" BorderBrush="{DynamicResource ThemeControlHighlightMidBrush}" BorderThickness="1" Padding="10">
-							<StackPanel Spacing="5" Margin="0 0 0 12">
-								<CheckBox Content="Scroll below document" IsChecked="{Binding ScrollBelowDocument, Mode=TwoWay}" />
-								<CheckBox Content="Tabs to spaces" IsChecked="{Binding TabToSpaces, Mode=TwoWay}" />
-								<CheckBox Content="Enable email hyperlinks" IsChecked="{Binding EmailLinks, Mode=TwoWay}" />
-								<CheckBox Content="Enable hyperlinks" IsChecked="{Binding HyperLinks, Mode=TwoWay}" />
-								<CheckBox Content="Highlight current line" IsChecked="{Binding HighlightLine, Mode=TwoWay}" />
-								<CheckBox Content="Show line numbers" IsChecked="{Binding ShowLineNumbers, Mode=TwoWay}" />
-								<TextBlock Text="Indentation size:" FontWeight="Bold" />
-								<NumericUpDown Maximum="10" Minimum="1" Increment="1" ParsingNumberStyle="Integer"
-                                               KeyDown="NumericUpDown_KeyDown" Value="{Binding IntendationSize, Mode=TwoWay}" />
-								<TextBlock Text="Font:" FontWeight="Bold" />
-								<ComboBox ItemsSource="{Binding SystemFonts}" SelectedItem="{Binding SelectedEditorFont, Mode=TwoWay}" />
-								<TextBlock Text="Font size:" FontWeight="Bold" />
-								<NumericUpDown Maximum="30" Minimum="8" ParsingNumberStyle="Integer" Increment="1"
-											   KeyDown="NumericUpDown_KeyDown" Value="{Binding EditorFontSize, Mode=TwoWay}" />
+							<StackPanel>
+								<TextBlock Text="Syntax engine:" FontWeight="Bold"/>
+								<StackPanel	Orientation="Horizontal">
+									<RadioButton GroupName="SyntaxGroup" Content="XSHD"  Margin="0,5,0,10"
+												 IsChecked="{Binding SyntaxEngine, 
+															Converter={StaticResource EnumToBoolConverter}, 
+															ConverterParameter={x:Static local:SyntaxEngine.XSHD}, Mode=TwoWay}"/>
+									<RadioButton GroupName="SyntaxGroup" Content="TextMate"  Margin="20,5,0,10"
+												 IsChecked="{Binding SyntaxEngine, 
+															Converter={StaticResource EnumToBoolConverter}, 
+															ConverterParameter={x:Static local:SyntaxEngine.TextMate}, Mode=TwoWay}"/>
+								</StackPanel>
+								<StackPanel Spacing="5">
+									<TextBlock Text="Default Light Theme:" FontWeight="Bold"/>
+									<ComboBox ItemsSource="{Binding LightTextMateThemes}"
+											  SelectedItem="{Binding SelectedLightTheme, Mode=TwoWay}"/>
+									<TextBlock Text="Default Dark Theme:" FontWeight="Bold"/>
+									<ComboBox ItemsSource="{Binding DarkTextMateThemes}"
+											  SelectedItem="{Binding SelectedDarkTheme, Mode=TwoWay}"/>
+									<Button Content="Apply Syntax Engine" Command="{Binding ApplySyntaxEngineCommand}" Margin="0,5"/>
+									<Separator BorderBrush="{DynamicResource ThemeControlHighlightMidBrush}" BorderThickness="1" Margin="0,0,0,5"/>
+									
+									<CheckBox Content="Scroll below document" IsChecked="{Binding ScrollBelowDocument, Mode=TwoWay}" />
+									<CheckBox Content="Tabs to spaces" IsChecked="{Binding TabToSpaces, Mode=TwoWay}" />
+									<CheckBox Content="Enable email hyperlinks" IsChecked="{Binding EmailLinks, Mode=TwoWay}" />
+									<CheckBox Content="Enable hyperlinks" IsChecked="{Binding HyperLinks, Mode=TwoWay}" />
+									<CheckBox Content="Highlight current line" IsChecked="{Binding HighlightLine, Mode=TwoWay}" />
+									<CheckBox Content="Show line numbers" IsChecked="{Binding ShowLineNumbers, Mode=TwoWay}" />
+									<TextBlock Text="Indentation size:" FontWeight="Bold" />
+									<NumericUpDown Maximum="10" Minimum="1" Increment="1" ParsingNumberStyle="Integer"
+												   KeyDown="NumericUpDown_KeyDown" Value="{Binding IntendationSize, Mode=TwoWay}" />
+									<TextBlock Text="Font:" FontWeight="Bold" />
+									<ComboBox ItemsSource="{Binding SystemFonts}" SelectedItem="{Binding SelectedEditorFont, Mode=TwoWay}" />
+									<TextBlock Text="Font size:" FontWeight="Bold" />
+									<NumericUpDown Maximum="30" Minimum="8" ParsingNumberStyle="Integer" Increment="1"
+												   KeyDown="NumericUpDown_KeyDown" Value="{Binding EditorFontSize, Mode=TwoWay}" />
+								</StackPanel>
 							</StackPanel>
 						</Border>
 					</StackPanel>

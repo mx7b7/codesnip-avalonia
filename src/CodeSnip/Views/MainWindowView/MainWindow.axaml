@@ -205,8 +205,9 @@
 						</TextBox>
 						<Grid Grid.Row="1" RowDefinitions="*, Auto">
 							<TreeView Grid.Row="0" Name="TreeSnippets" AutoScrollToSelectedItem="True"
-                                  ItemsSource="{Binding Languages}"
-                                  SelectionChanged="TreeView_SelectionChanged" BorderThickness="0">
+									  BorderThickness="0"
+									  ItemsSource="{Binding Languages}"
+								      SelectedItem="{Binding SelectedNode}">
 
 								<TreeView.Styles>
 									<Style Selector="TreeViewItem">

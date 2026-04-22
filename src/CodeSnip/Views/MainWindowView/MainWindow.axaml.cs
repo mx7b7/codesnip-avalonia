@@ -24,9 +24,7 @@ public interface IOverlayViewModel
 public partial class MainWindow : ControlsEx.Window.Window
 {
     private readonly TextEditor? _textEditor;
-    private int _lastSnippetId = -1;
-    private string _oldLangCode = string.Empty;
-
+    
     private MainWindowViewModel ViewModel => (MainWindowViewModel)DataContext!;
 
     public MainWindow()
@@ -63,43 +61,6 @@ public partial class MainWindow : ControlsEx.Window.Window
                 rightOverlay.CloseOverlayAsync = vm.CloseRightOverlayAsync;
             }
         };
-    }
-
-    private async void TreeView_SelectionChanged(object? sender, SelectionChangedEventArgs e)
-    {
-        if (e.AddedItems.Count == 0)
-            return;
-
-        var selected = e.AddedItems[0];
-
-        switch (selected)
-        {
-            case SnippetView.Snippet snippet:
-                if (snippet.Id == _lastSnippetId)
-                    return;
-
-                await ViewModel.ChangeSelectedSnippetAsync(snippet);
-
-                _lastSnippetId = snippet.Id;
-                var langCode = snippet.Category?.Language?.Code ?? string.Empty;
-                if (!_oldLangCode.Equals(langCode, StringComparison.Ordinal))
-                {
-                    HighlightingService.ApplyHighlighting(_textEditor!, langCode);
-                    _oldLangCode = langCode;
-                }
-                _textEditor?.Document.UndoStack.ClearAll();
-                break;
-
-            case LanguageCategoryView.Category category:
-                ViewModel.SelectedCategory = category;
-                break;
-
-            case LanguageCategoryView.Language lang:
-                ViewModel.SelectedCategory = lang.Categories.FirstOrDefault();
-                break;
-
-        }
-
     }
 
     private void Window_Closing(object? sender, WindowClosingEventArgs e)
