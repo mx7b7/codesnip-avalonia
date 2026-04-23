@@ -77,6 +77,9 @@ public class DatabaseService
 
             transaction.Commit();
         }
+
+        // 2. ALWAYS run migrations (for both new and existing DB)
+        MigrateDatabase();
     }
 
     /// <summary>
@@ -95,6 +98,8 @@ public class DatabaseService
     L.ID AS LanguageID,
     L.Code AS LanguageCode,
     L.Name AS LanguageName,
+    L.SupportsXshd AS LanguageSupportsXshd,
+    L.SupportsTextMate AS LanguageSupportsTextMate,
 
     C.ID AS CategoryID,
     C.LanguageId AS CategoryLanguageId,
@@ -105,7 +110,9 @@ public class DatabaseService
     S.Title AS SnippetTitle,
     -- S.Code AS SnippetCode, -- Lazy load this
     S.Description AS SnippetDescription,
-    S.Tag AS SnippetTag
+    S.Tag AS SnippetTag,
+    S.DateCreated AS SnippetDateCreated,
+    S.DateModified AS SnippetDateModified
 FROM Languages L
 LEFT JOIN Categories C ON C.LanguageId = L.ID
 LEFT JOIN Snippets S ON S.CategoryId = C.ID
@@ -126,6 +133,8 @@ ORDER BY L.Name, C.Name, S.Title";
                         Id = langId,
                         Code = (string)row.LanguageCode,
                         Name = (string)row.LanguageName,
+                        SupportsXshd = (int)row.LanguageSupportsXshd == 1,
+                        SupportsTextMate = (int)row.LanguageSupportsTextMate == 1,
                         Categories = new ObservableCollection<Category>() // Collection initialization
                     };
                     lookup.Add(langId, language);
@@ -159,6 +168,8 @@ ORDER BY L.Name, C.Name, S.Title";
                             Code = string.Empty, // Initially empty
                             Description = (string)row.SnippetDescription,
                             Tag = (string)row.SnippetTag,
+                            DateCreated = (string)row.SnippetDateCreated,
+                            DateModified = (string)row.SnippetDateModified,
                             Category = category
                         };
                         category.Snippets.Add(snippet);
@@ -251,6 +262,8 @@ ORDER BY L.Name, C.Name, S.Title";
             L.ID AS LanguageID,
             L.Code AS LanguageCode,
             L.Name AS LanguageName,
+            L.SupportsXshd AS LanguageSupportsXshd,
+            L.SupportsTextMate AS LanguageSupportsTextMate,
             C.ID AS CategoryID,
             C.Name AS CategoryName,
             C.LanguageId AS CategoryLanguageId
@@ -273,6 +286,8 @@ ORDER BY L.Name, C.Name, S.Title";
                     Id = langId,
                     Code = (string)row.LanguageCode,
                     Name = (string)row.LanguageName,
+                    SupportsXshd = (int)row.LanguageSupportsXshd == 1,
+                    SupportsTextMate = (int)row.LanguageSupportsTextMate == 1,
                     Categories = new ObservableCollection<Category>()
                 };
                 lookup.Add(langId, language);
@@ -306,14 +321,14 @@ ORDER BY L.Name, C.Name, S.Title";
         if (language.Id == 0)
         {
             var id = conn.ExecuteScalar<int>(
-                "INSERT INTO Languages (Code, Name) VALUES (@Code, @Name); SELECT last_insert_rowid();",
+                "INSERT INTO Languages (Code, Name, SupportsXshd, SupportsTextMate) VALUES (@Code, @Name, @SupportsXshd, @SupportsTextMate); SELECT last_insert_rowid();",
                 language);
             language.Id = id;
         }
         else
         {
             conn.Execute(
-                "UPDATE Languages SET Code = @Code, Name = @Name WHERE ID = @Id",
+                "UPDATE Languages SET Code = @Code, Name = @Name, SupportsXshd = @SupportsXshd, SupportsTextMate = @SupportsTextMate WHERE ID = @Id",
                 language);
         }
         return language;
@@ -528,11 +543,80 @@ ORDER BY L.Name, C.Name, S.Title";
         }
     }
 
+    public void MigrateDatabase()
+    {
+        using var conn = CreateConnection();
+
+        // 1) Create Meta table if it doesn't exist and get current DB version
+        bool metaExists = conn.ExecuteScalar<int>(
+            "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='Meta'") > 0;
+
+        if (!metaExists)
+        {
+            conn.Execute("CREATE TABLE Meta (Key TEXT PRIMARY KEY, Value TEXT)");
+            conn.Execute("INSERT INTO Meta (Key, Value) VALUES ('DbVersion', '0')");
+        }
+
+        int version = conn.ExecuteScalar<int>("SELECT Value FROM Meta WHERE Key='DbVersion'");
+
+        // 2) MIGRATION 1
+        if (version < 1)
+        {
+            HighlightingService.InitializeTextMateExtensions(); // must be initialized before HighlightingService.SupportsTextMate is called
+            conn.Execute("ALTER TABLE Languages ADD COLUMN SupportsXshd INTEGER NOT NULL DEFAULT 0");
+            conn.Execute("ALTER TABLE Languages ADD COLUMN SupportsTextMate INTEGER NOT NULL DEFAULT 0");
+            conn.Execute("ALTER TABLE Snippets ADD COLUMN DateCreated TEXT");
+            conn.Execute("ALTER TABLE Snippets ADD COLUMN DateModified TEXT");
+            conn.Execute(@"
+                CREATE TRIGGER insert_snippet_dates AFTER INSERT ON Snippets
+                BEGIN
+                    UPDATE Snippets
+                    SET DateCreated = DATETIME('now'),
+                        DateModified = DATETIME('now')
+                    WHERE ID = NEW.ID;
+                END;
+            ");
+            conn.Execute(@"
+                CREATE TRIGGER update_snippet_modified AFTER UPDATE ON Snippets
+                BEGIN
+                    UPDATE Snippets SET DateModified = DATETIME('now') WHERE ID = NEW.ID;
+                END;
+             ");
+            // Populate SupportsXshd + SupportsTextMate for existing languages
+            var languages = conn.Query<(int Id, string Code)>("SELECT ID, Code FROM Languages");
+
+            foreach (var lang in languages)
+            {
+                string code = lang.Code?.Trim().ToLowerInvariant() ?? "";
+
+                bool xshd = HighlightingService.SyntaxDefinitionExists(code);
+                bool tm = HighlightingService.SupportsTextMate(code);
+
+                conn.Execute(
+                    "UPDATE Languages SET SupportsXshd = @xshd, SupportsTextMate = @tm WHERE ID = @id",
+                    new { xshd = xshd ? 1 : 0, tm = tm ? 1 : 0, id = lang.Id });
+            }
+
+            conn.Execute("UPDATE Meta SET Value = 1 WHERE Key='DbVersion'");
+            version = 1;
+        }
+        // Future migrations would go here, following the same pattern:
+        // if (version < 2) ...
+    }
+
+
     private const string ddl = @"
+CREATE TABLE IF NOT EXISTS Meta (
+    Key TEXT PRIMARY KEY,
+    Value TEXT
+);
+
 CREATE TABLE IF NOT EXISTS Languages (
     ID INTEGER PRIMARY KEY AUTOINCREMENT,
     Code TEXT NOT NULL UNIQUE,
-    Name TEXT
+    Name TEXT,
+    SupportsXshd INTEGER NOT NULL DEFAULT 0,
+    SupportsTextMate INTEGER NOT NULL DEFAULT 0
 );
 CREATE TABLE IF NOT EXISTS Categories (
     ID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -547,46 +631,100 @@ CREATE TABLE IF NOT EXISTS Snippets (
     Code TEXT,
     Description TEXT,
     Tag TEXT,
+    DateCreated TEXT,
+    DateModified TEXT,
     FOREIGN KEY (CategoryId) REFERENCES Categories(ID) ON DELETE RESTRICT ON UPDATE CASCADE
 );
+CREATE TRIGGER insert_snippet_dates AFTER INSERT ON Snippets
+BEGIN
+    UPDATE Snippets
+    SET DateCreated = DATETIME('now'),
+        DateModified = DATETIME('now')
+    WHERE ID = NEW.ID;
+END;
+
+CREATE TRIGGER update_snippet_modified AFTER UPDATE ON Snippets
+BEGIN
+    UPDATE Snippets SET DateModified = DATETIME('now') WHERE ID = NEW.ID;
+END;
+
+INSERT OR IGNORE INTO Meta (Key, Value) VALUES ('DbVersion', '1');
 						
-INSERT INTO Languages (ID, Code, Name) VALUES
-(1, 'as', 'ActionScript3'),
-(2, 'aspx', 'ASP/XHTML'),
-(3, 'atg', 'Coco'),
-(4, 'bat', 'BAT'),
-(5, 'boo', 'Boo'),
-(6, 'cpp', 'C++'),
-(7, 'cs', 'C#'),
-(8, 'css', 'CSS'),
-(9, 'd', 'D'),
-(10, 'fs', 'F#'),
-(11, 'fx', 'HLSL'),
-(12, 'html', 'HTML'),
-(13, 'ini', 'INI'),
-(14, 'java', 'Java'),
-(15, 'js', 'JavaScript'),
-(16, 'json', 'Json'),
-(17, 'md', 'MarkDown'),
-(18, 'nut', 'Squirrel'),
-(19, 'pas', 'Pascal'),
-(20, 'php', 'PHP'),
-(21, 'plsql', 'PLSQL'),
-(22, 'ps1', 'PowerShell'),
-(23, 'py', 'Python'),
-(24, 'rb', 'Ruby'),
-(25, 'rs', 'Rust'),
-(26, 'sql', 'SQL'),
-(27, 'tex', 'TeX'),
-(28, 'vb', 'VB.NET'),
-(29, 'vtl', 'VTL'),
-(30, 'xml', 'XML'),
-(31, 'lua', 'Lua'),
-(32, 'asm', 'Asm'),
-(33, 'il', 'IL'),
-(34, 'go', 'Go'),
-(35, 'zig', 'Zig'),
-(36, 'sh', 'Bash');
+INSERT INTO Languages (ID, Code, Name, SupportsXshd, SupportsTextMate) VALUES
+(1, 'as', 'ActionScript3',1 , 0),
+(2, 'aspx', 'ASP/XHTML', 1, 0),
+(3, 'atg', 'Coco', 1, 0),
+(4, 'bat', 'BAT', 1, 1),
+(5, 'boo', 'Boo', 1, 0),
+(6, 'cpp', 'C++', 1, 1),
+(7, 'cs', 'C#', 1, 1),
+(8, 'css', 'CSS', 1, 1),
+(9, 'd', 'D', 1, 0),
+(10, 'fs', 'F#', 1, 1),
+(11, 'fx', 'HLSL', 1, 1),
+(12, 'html', 'HTML', 1, 1),
+(13, 'ini', 'INI', 1, 1),
+(14, 'java', 'Java', 1, 1),
+(15, 'js', 'JavaScript', 1, 1),
+(16, 'json', 'Json', 1, 1),
+(17, 'md', 'MarkDown', 1, 1),
+(18, 'nut', 'Squirrel', 1, 0),
+(19, 'pas', 'Pascal', 1, 1),
+(20, 'php', 'PHP', 1, 1),
+(21, 'plsql', 'PLSQL', 1, 0),
+(22, 'ps1', 'PowerShell', 1, 1),
+(23, 'py', 'Python', 1, 1),
+(24, 'rb', 'Ruby', 1, 1),
+(25, 'rs', 'Rust', 1, 1),
+(26, 'sql', 'SQL', 1, 1),
+(27, 'tex', 'TeX', 1, 0),
+(28, 'vb', 'VB.NET', 1, 1),
+(29, 'vtl', 'VTL', 1, 0),
+(30, 'xml', 'XML', 1, 1),
+(31, 'lua', 'Lua', 1, 1),
+(32, 'asm', 'Asm', 1, 0),
+(33, 'il', 'IL', 1, 0),
+(34, 'go', 'Go', 1, 1),
+(35, 'zig', 'Zig', 1, 0),
+(36, 'sh', 'Bash', 1, 1),
+-- new from textmate grammars
+(37, 'asciidoc', 'AsciiDoc', 0, 1),
+(38, 'clojure', 'Clojure', 0, 1),
+(39, 'coffee', 'CoffeeScript', 0, 1),
+(40, 'cu', 'CUDA C++', 0, 1),
+(41, 'dart', 'Dart', 0, 1),
+(42, 'diff', 'Diff', 0, 1),
+(43, 'dockerfile', 'Docker', 0, 1),
+(44, 'gitignore', 'Ignore', 0, 1),
+(45, 'groovy', 'Groovy', 0, 1),
+(46, 'handlebars', 'Handlebars', 0, 1),
+(47, 'properties', 'Properties', 0, 1),
+(48, 'jsx', 'JavaScript React', 0, 1),
+(49, 'jsonc', 'JSON with Comments', 0, 1),
+(50, 'jl', 'Julia', 0, 1),
+(51, 'ltx', 'LaTeX', 0, 1),
+(52, 'bib', 'BibTeX', 0, 1),
+(53, 'less', 'Less', 0, 1),
+(54, 'log', 'Log', 0, 1),
+(55, 'mk', 'Makefile', 0, 1),
+(56, 'm', 'Objective-C', 0, 1),
+(57, 'mm', 'Objective-C++', 0, 1),
+(58, 'pl', 'Perl', 0, 1),
+(59, 'pl6', 'Perl 6', 0, 1),
+(60, 'jade', 'Jade', 0, 1),
+(61, 'r', 'R', 0, 1),
+(62, 'razor', 'Razor', 0, 1),
+(63, 'scss', 'SCSS', 0, 1),
+(64, 'shader', 'ShaderLab', 0, 1),
+(65, 'swift', 'Swift', 0, 1),
+(66, 'ts', 'TypeScript', 0, 1),
+(67, 'tsx', 'TypeScript React', 0, 1),
+(68, 'typ', 'Typst', 0, 1),
+(69, 'typc', 'Typst (Code Mode)', 0, 1),
+(70, 'xsl', 'XSL', 0, 1),
+(71, 'yaml', 'YAML', 0, 1);
+-- All new languages should be added here
+
 
 INSERT INTO Categories (LanguageId, Name) VALUES
 -- C++

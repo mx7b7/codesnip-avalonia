@@ -39,5 +39,11 @@ namespace CodeSnip.Views.SnippetView
         [ObservableProperty]
         private bool isCodeLoaded = false;
 
+        [ObservableProperty]
+        private string dateCreated = string.Empty;
+
+        [ObservableProperty]
+        private string dateModified = string.Empty;
+
     }
 }

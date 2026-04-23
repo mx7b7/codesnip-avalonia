@@ -69,6 +69,8 @@ public partial class LanguageCategoryViewModel : ObservableValidator, IDisposabl
         _databaseService = dbService;
         LoadLanguages();
         ValidateAllProperties();
+        // must be initialized before HighlightingService.SupportsTextMate is called
+        HighlightingService.InitializeTextMateExtensions();
     }
 
     public static ValidationResult? ValidateDuplicateExtension(string? value, ValidationContext context)
@@ -231,14 +233,40 @@ public partial class LanguageCategoryViewModel : ObservableValidator, IDisposabl
             if (IsAddingLanguage)
             {
                 // Check for syntax highlighting file
-                if (!HighlightingService.SyntaxDefinitionExists(NewLanguageCode))
-                    if (!await HandleMissingHighlightingAsync()) return;
+                bool xshdExists = HighlightingService.SyntaxDefinitionExists(NewLanguageCode);
+                bool supportsXshd = xshdExists;
+
+                if (!xshdExists)
+                {
+                    var choice = await AskForXshdCreationAsync();
+                    if (choice == null) // Cancel
+                    {
+                        ToggleAddLanguage();
+                        return;
+                    }
+
+                    if (choice == true)
+                    {
+                        await GenerateXSHD(NewLanguageCode, NewLanguageName);
+                        supportsXshd = true;
+                    }
+                    else
+                    {
+                        supportsXshd = false;
+                    }
+                }
+
+                // 2) Check TextMate support based on extension list
+                // bool supportsTextMate = TextMateExtensions.Contains(NewLanguageCode, StringComparer.Ordinal); // Static list check
+                bool supportsTextMate = HighlightingService.SupportsTextMate(NewLanguageCode); // Dynamic check TextMateSharp.Grammars lib
 
                 // INSERT
                 var newLang = new Language
                 {
                     Code = NewLanguageCode,
-                    Name = NewLanguageName
+                    Name = NewLanguageName,
+                    SupportsXshd = supportsXshd,
+                    SupportsTextMate = supportsTextMate
                 };
 
                 newLang = _databaseService.SaveLanguage(newLang);
@@ -251,6 +279,8 @@ public partial class LanguageCategoryViewModel : ObservableValidator, IDisposabl
                 // UPDATE
                 SelectedLanguage.Code = NewLanguageCode;
                 SelectedLanguage.Name = NewLanguageName;
+                SelectedLanguage.SupportsTextMate = TextMateExtensions.Contains(NewLanguageCode, StringComparer.Ordinal);
+                SelectedLanguage.SupportsXshd = HighlightingService.SyntaxDefinitionExists(NewLanguageCode);
                 _databaseService.SaveLanguage(SelectedLanguage);
             }
             ResortLanguages();
@@ -583,6 +613,23 @@ public partial class LanguageCategoryViewModel : ObservableValidator, IDisposabl
         return true;
     }
 
+    private async Task<bool?> AskForXshdCreationAsync()
+    {
+        var message = $"No syntax highlighting definition (.xshd) found for '{NewLanguageCode}'.\n\n" +
+                      $"Do you want to generate XSHD template?\n\n" +
+                      "(Yes = create template, No = continue without XSHD, Cancel = abort)";
+
+        var result = await MessageBoxService.Instance.AskYesNoCancelAsync("Missing Syntax Highlighting", message);
+
+        return result switch
+        {
+            ButtonResult.Yes => true,
+            ButtonResult.No => false,
+            _ => null
+        };
+    }
+
+
     [RelayCommand]
     private async Task Close()
     {
@@ -595,4 +642,305 @@ public partial class LanguageCategoryViewModel : ObservableValidator, IDisposabl
     {
         RequestCloseAsync = null;
     }
+
+    private static readonly string[] TextMateExtensions = [
+    "log",
+    "adoc",
+    "ascx",
+    "asp",
+    "aspx",
+    "atom",
+    "axaml",
+    "axml",
+    "babelrc",
+    "bas",
+    "bash",
+    "bash_aliases",
+    "bash_login",
+    "bash_logout",
+    "bash_profile",
+    "bashrc",
+    "bat",
+    "bbx",
+    "bib",
+    "bowerrc",
+    "bpmn",
+    "brs",
+    "c",
+    "c++",
+    "cake",
+    "cbx",
+    "cc",
+    "cfg",
+    "cginc",
+    "cjs",
+    "clojure",
+    "cls",
+    "clj",
+    "cljc",
+    "cljs",
+    "cljx",
+    "cmd",
+    "coffee",
+    "compute",
+    "conf",
+    "containerfile",
+    "cpp",
+    "cpt",
+    "cpy",
+    "cs",
+    "csh",
+    "cshrc",
+    "cshtml",
+    "csl",
+    "cson",
+    "csproj",
+    "csproj.user",
+    "css",
+    "css.map",
+    "csx",
+    "ctp",
+    "ctx",
+    "cu",
+    "cuh",
+    "cxx",
+    "dart",
+    "diff",
+    "directory",
+    "dita",
+    "ditamap",
+    "dockerfile",
+    "dsql",
+    "dtd",
+    "dtml",
+    "ebuild",
+    "editorconfig",
+    "edn",
+    "ejs",
+    "ent",
+    "erb",
+    "es6",
+    "eslintrc",
+    "eslintrc.json",
+    "eyaml",
+    "eyml",
+    "fs",
+    "fsi",
+    "fsproj",
+    "fsscript",
+    "fsx",
+    "fx",
+    "fxh",
+    "fxml",
+    "gemspec",
+    "geojson",
+    "gitattributes",
+    "gitconfig",
+    "gitignore",
+    "gitignore_global",
+    "gitmodules",
+    "go",
+    "gradle",
+    "groovy",
+    "gvy",
+    "gyp",
+    "gypi",
+    "h",
+    "h.in",
+    "h++",
+    "handlebars",
+    "har",
+    "hbs",
+    "hh",
+    "hintrc",
+    "hjs",
+    "hlsl",
+    "hlsli",
+    "hpp",
+    "hpp.in",
+    "htm",
+    "html",
+    "hxx",
+    "i",
+    "iced",
+    "ii",
+    "iml",
+    "ini",
+    "inl",
+    "ino",
+    "ipp",
+    "ipy",
+    "ipynb",
+    "isml",
+    "ixx",
+    "jade",
+    "jav",
+    "java",
+    "jenkinsfile",
+    "jl",
+    "jmx",
+    "js",
+    "js.map",
+    "jscsrc",
+    "jsfmtrc",
+    "jshintrc",
+    "jshtm",
+    "jslintrc",
+    "json",
+    "jsonc",
+    "jsonld",
+    "jsp",
+    "jsx",
+    "ksh",
+    "launch",
+    "less",
+    "log",
+    "ltx",
+    "lua",
+    "m",
+    "mak",
+    "markdn",
+    "markdown",
+    "md",
+    "mdoc",
+    "mdown",
+    "mdtext",
+    "mdtxt",
+    "mdwn",
+    "menu",
+    "mjs",
+    "mk",
+    "mkd",
+    "mm",
+    "mod",
+    "mxml",
+    "nf",
+    "nqp",
+    "nuspec",
+    "opml",
+    "owl",
+    "p6",
+    "pac",
+    "pas",
+    "patch",
+    "php",
+    "php4",
+    "php5",
+    "phtml",
+    "pl",
+    "pl6",
+    "pm",
+    "pm6",
+    "pod",
+    "podspec",
+    "pp",
+    "profile",
+    "proj",
+    "properties",
+    "props",
+    "ps1",
+    "psd1",
+    "psgi",
+    "psh",
+    "psm1",
+    "psrc",
+    "pssc",
+    "pt",
+    "publishsettings",
+    "pubxml",
+    "pubxml.user",
+    "pug",
+    "py",
+    "pyi",
+    "pyt",
+    "pyw",
+    "r",
+    "rake",
+    "razor",
+    "rb",
+    "rbi",
+    "rbx",
+    "rbxlx",
+    "rbxmx",
+    "rdf",
+    "rej",
+    "rhistory",
+    "rhtml",
+    "rjs",
+    "rng",
+    "rprofile",
+    "rpy",
+    "rs",
+    "rss",
+    "rt",
+    "ru",
+    "scss",
+    "sh",
+    "shader",
+    "shproj",
+    "shtml",
+    "sql",
+    "storyboard",
+    "sty",
+    "svg",
+    "swcrc",
+    "swift",
+    "t",
+    "targets",
+    "tcshrc",
+    "tex",
+    "tld",
+    "tmx",
+    "tpp",
+    "ts",
+    "ts.map",
+    "tsx",
+    "txx",
+    "typ",
+    "typc",
+    "vb",
+    "vbproj",
+    "vbproj.user",
+    "vbs",
+    "vcxproj",
+    "vcxproj.filters",
+    "volt",
+    "vsh",
+    "webmanifest",
+    "workbook",
+    "wsdl",
+    "wxi",
+    "wxl",
+    "wxs",
+    "xaml",
+    "xbl",
+    "xht",
+    "xhtml",
+    "xib",
+    "xlf",
+    "xliff",
+    "xml",
+    "xoml",
+    "xpdl",
+    "xprofile",
+    "xsd",
+    "xsession",
+    "xsessionrc",
+    "xsl",
+    "xslt",
+    "xul",
+    "yaml",
+    "yash_profile",
+    "yashrc",
+    "yml",
+    "zlogin",
+    "zlogout",
+    "zprofile",
+    "zsh",
+    "zsh-theme",
+    "zshenv",
+    "zshrc"
+];
+
+
 }

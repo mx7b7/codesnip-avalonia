@@ -14,6 +14,12 @@ namespace CodeSnip.Views.LanguageCategoryView
         [ObservableProperty]
         private string? name;
 
+        [ObservableProperty]
+        private bool supportsXshd;
+
+        [ObservableProperty]
+        private bool supportsTextMate;
+
         public ObservableCollection<Category> Categories { get; set; } = new();
 
         [ObservableProperty]

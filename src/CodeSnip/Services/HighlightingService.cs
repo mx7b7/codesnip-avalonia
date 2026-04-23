@@ -9,8 +9,10 @@ using AvaloniaEdit.Highlighting.Xshd;
 using AvaloniaEdit.TextMate;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using TextMateSharp.Grammars;
 
@@ -26,6 +28,7 @@ namespace CodeSnip.Services
         private static TextMate.Installation? _textMateInstallation;
         private static RegistryOptions? _registryOptions = new(ThemeName.AtomOneDark);
         private static Language? _oldLanguage;
+        private static HashSet<string> _textMateExtensions = new(StringComparer.Ordinal);
 
 
         /// <summary>
@@ -438,6 +441,28 @@ namespace CodeSnip.Services
         {
             return _textMateInstallation != null;
         }
+
+        public static void InitializeTextMateExtensions()
+        {
+            if (_registryOptions == null)
+                _registryOptions = new RegistryOptions(ThemeName.AtomOneDark);
+
+            var langs = _registryOptions.GetAvailableLanguages();
+
+            _textMateExtensions = langs
+                .SelectMany(l => l.Extensions ?? [])
+                .Select(ext => ext.TrimStart('.').ToLowerInvariant())
+                .Distinct()
+                .ToHashSet(StringComparer.Ordinal);
+        }
+
+        public static bool SupportsTextMate(string code)
+        {
+            code = code.TrimStart('.').ToLowerInvariant();
+            return _textMateExtensions.Contains(code);
+        }
+
+
 
     }
 }
