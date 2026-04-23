@@ -164,6 +164,7 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         ReplaceCurrentLineRenderer();
+        textEditor.TextArea.SelectionBrush = new SolidColorBrush(SelectedAccentColor, 0.30);
     }
 
     private void ReplaceCurrentLineRenderer()
@@ -501,6 +502,8 @@ public partial class MainWindowViewModel : ObservableObject
     {
         settingsService.AccentColor = value.ToString();
         settingsService.ApplyAccentColor();
+
+        Editor?.TextArea.SelectionBrush = new SolidColorBrush(value, 0.30);
     }
 
     [RelayCommand]
@@ -1020,7 +1023,7 @@ public partial class MainWindowViewModel : ObservableObject
                 // settingsService.ApplyAccentColor(); //Re - apply accent color because Avalonia 12 resets resources
 
                 if (Editor != null)
-                   {
+                {
                     if (settingsService.SyntaxEngine == SyntaxEngine.TextMate)
                     {
                         if (next == ThemeVariant.Dark)
