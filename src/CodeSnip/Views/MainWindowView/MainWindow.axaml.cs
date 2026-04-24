@@ -2,7 +2,6 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using AvaloniaEdit;
-using AvaloniaEdit.Editing;
 using CodeSnip.Helpers;
 using CodeSnip.Services;
 using System;
@@ -584,74 +583,6 @@ public partial class MainWindow : ControlsEx.Window.Window
         catch
         {
             NotificationService.Instance.Show("Export Error", $"Failed to export file");
-        }
-    }
-
-    private async void ExportToPng_Click(object sender, RoutedEventArgs e)
-    {
-        if (ViewModel.SelectedSnippet == null)
-        {
-            NotificationService.Instance.Show("No Snippet Selected", "Select a snippet first to determine the filename.");
-            return;
-        }
-
-        string code;
-        bool isSelection = false;
-        string displayTitle = ViewModel.SelectedSnippet.Title;
-        string fileNameTitle = ViewModel.SelectedSnippet.Title;
-
-        if (textEditor.TextArea.Selection is RectangleSelection selection && !selection.IsEmpty)
-        {
-            code = selection.GetText();
-            isSelection = true;
-            displayTitle = "";
-        }
-        else
-        {
-            code = textEditor.Text;
-        }
-
-        int lineCount = code.Split(["\r\n", "\r", "\n"], StringSplitOptions.None).Length;
-
-        if (lineCount > 250)
-        {
-            string message = isSelection
-            ? $"Selection has {lineCount} lines. The maximum allowed for image export is 250."
-            : $"Snippet has {lineCount} lines. The maximum is 250.\n\nPlease use Rectangle Selection (Alt + Mouse Drag) to select a smaller part.";
-
-            await MessageBoxService.Instance.OkAsync("Snippet Too Large", message, MsBox.Avalonia.Enums.Icon.Warning);
-            return;
-        }
-
-        try
-        {
-            string invalidChars = new(Path.GetInvalidFileNameChars());
-            foreach (char c in invalidChars) fileNameTitle = fileNameTitle.Replace(c.ToString(), "_");
-            // Replace one or more whitespace characters with a single underscore
-            fileNameTitle = Regex.Replace(fileNameTitle, @"\s+", "_");
-
-            var bitmap = await ImageExporter.ExportToImageAsync(
-                                            code,
-                                            displayTitle,
-                                            textEditor.SyntaxHighlighting,
-                                            textEditor.FontFamily,
-                                            textEditor.FontSize,
-                                            textEditor.ShowLineNumbers
-                                        ) ?? throw new Exception("Image exporter returned null.");
-
-            string exportsDir = Path.Combine(AppContext.BaseDirectory, "Exports");
-            Directory.CreateDirectory(exportsDir);
-
-            string filePath = Path.Combine(exportsDir, $"{fileNameTitle}.png");
-
-            using var fs = File.Create(filePath);
-            bitmap?.Save(fs);
-
-            NotificationService.Instance.Show("Export Success", $"Image exported successfully as '{fileNameTitle}.png' in Exports directory!");
-        }
-        catch (Exception ex)
-        {
-            await MessageBoxService.Instance.OkAsync("Error", $"Failed to export as image: {ex.Message}", MsBox.Avalonia.Enums.Icon.Error);
         }
     }
 

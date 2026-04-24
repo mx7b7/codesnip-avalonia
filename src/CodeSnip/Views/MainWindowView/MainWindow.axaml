@@ -575,7 +575,7 @@
 											  Width="16" Height="16" />
 										</MenuItem.Icon>
 									</MenuItem>
-									<MenuItem Header="Image" Click="ExportToPng_Click">
+									<MenuItem Header="Image" Command="{Binding ExportToPngCommand}">
 										<MenuItem.Icon>
 											<PathIcon Data="{StaticResource ImageSave}" Foreground="{DynamicResource ThemeAccentBrush}"
 											  Width="16" Height="16" />

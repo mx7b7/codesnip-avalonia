@@ -5,6 +5,7 @@ using Avalonia.Media;
 using Avalonia.Media.Immutable;
 using Avalonia.Styling;
 using AvaloniaEdit;
+using AvaloniaEdit.Editing;
 using AvaloniaEdit.Indentation;
 using AvaloniaEdit.Indentation.CSharp;
 using CodeSnip.Helpers;
@@ -23,7 +24,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace CodeSnip.Views.MainWindowView;
@@ -1157,7 +1160,84 @@ public partial class MainWindowViewModel : ObservableObject
         }
     }
 
+    [RelayCommand]
+    private async Task ExportToPng()
+    {
+        if (SelectedSnippet == null)
+        {
+            NotificationService.Instance.Show("No Snippet Selected", "Select a snippet first to determine the filename.");
+            return;
+        }
 
+        if (Editor == null) return;
+
+        if (settingsService.SyntaxEngine == SyntaxEngine.TextMate)
+        {
+            NotificationService.Instance.Show("Not Supported", "Exporting as image is not supported when using the TextMate engine.");
+            return;
+        }
+
+        string code;
+        bool isSelection = false;
+        string displayTitle = SelectedSnippet.Title;
+        string fileNameTitle = SelectedSnippet.Title;
+
+        if (Editor.TextArea.Selection is RectangleSelection selection && !selection.IsEmpty)
+        {
+            code = selection.GetText();
+            isSelection = true;
+            displayTitle = "";
+        }
+        else
+        {
+            code = Editor.Text;
+        }
+
+        int lineCount = code.Split(["\r\n", "\r", "\n"], StringSplitOptions.None).Length;
+
+        if (lineCount > 250)
+        {
+            string message = isSelection
+            ? $"Selection has {lineCount} lines. The maximum allowed for image export is 250."
+            : $"Snippet has {lineCount} lines. The maximum is 250.\n\nPlease use Rectangle Selection (Alt + Mouse Drag) to select a smaller part.";
+
+            await MessageBoxService.Instance.OkAsync("Snippet Too Large", message, Icon.Warning);
+            return;
+        }
+
+        try
+        {
+            string invalidChars = new(Path.GetInvalidFileNameChars());
+            foreach (char c in invalidChars) fileNameTitle = fileNameTitle.Replace(c.ToString(), "_");
+            // Replace one or more whitespace characters with a single underscore
+            fileNameTitle = Regex.Replace(fileNameTitle, @"\s+", "_");
+
+            var bitmap = await ImageExporter.ExportToImageAsync(
+                                            code,
+                                            displayTitle,
+                                            Editor.SyntaxHighlighting,
+                                            Editor.FontFamily,
+                                            Editor.FontSize,
+                                            Editor.ShowLineNumbers
+                                        ) ?? throw new Exception("Image exporter returned null.");
+
+            string exportsDir = Path.Combine(AppContext.BaseDirectory, "Exports");
+            Directory.CreateDirectory(exportsDir);
+
+            string filePath = Path.Combine(exportsDir, $"{fileNameTitle}.png");
+
+            using var fs = File.Create(filePath);
+            bitmap?.Save(fs);
+
+            NotificationService.Instance.Show("Export Success", $"Image exported successfully as '{fileNameTitle}.png' in Exports directory!");
+        }
+        catch (Exception ex)
+        {
+            await MessageBoxService.Instance.OkAsync("Error", $"Failed to export as image: {ex.Message}", Icon.Error);
+        }
+    }
+
+    
     #endregion
 
     // CLOSE LEFT PANEL
