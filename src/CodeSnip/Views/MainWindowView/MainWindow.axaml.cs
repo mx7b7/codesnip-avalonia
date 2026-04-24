@@ -1,7 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using AvaloniaEdit;
 using CodeSnip.Helpers;
 using CodeSnip.Services;
 using System;
@@ -22,17 +21,11 @@ public interface IOverlayViewModel
 
 public partial class MainWindow : ControlsEx.Window.Window
 {
-    private readonly TextEditor? _textEditor;
-    
     private MainWindowViewModel ViewModel => (MainWindowViewModel)DataContext!;
 
     public MainWindow()
     {
         InitializeComponent();
-
-        _textEditor = this.FindControl<TextEditor>("textEditor");
-        if (_textEditor == null)
-            return;
 
         DataContextChanged += OnDataContextChanged;
         NotificationService.Instance.Initialize(this);
@@ -44,8 +37,8 @@ public partial class MainWindow : ControlsEx.Window.Window
         if (DataContext is not MainWindowViewModel vm)
             return;
 
-        vm.Editor = _textEditor;
-        vm.InitializeEditor(_textEditor!);
+        vm.Editor = textEditor;
+        vm.InitializeEditor(textEditor);
 
         vm.PropertyChanged += (_, args) =>
         {
@@ -85,12 +78,12 @@ public partial class MainWindow : ControlsEx.Window.Window
 
             if (supported.Contains(code, StringComparer.OrdinalIgnoreCase))
             {
-                string originalCode = _textEditor!.Text;
+                string originalCode = textEditor.Text;
                 string filename = $"example.{code}";
                 var (isSuccess, formattedClang, errorClang) = await FormattingService.TryFormatCodeWithClangAsync(originalCode, assumeFilename: filename);
                 if (isSuccess)
                 {
-                    _textEditor.Document.Text = formattedClang;
+                    textEditor.Document.Text = formattedClang;
                 }
                 else
                 {
@@ -105,7 +98,7 @@ public partial class MainWindow : ControlsEx.Window.Window
         string? code = ViewModel.SelectedSnippet?.Category?.Language?.Code;
         if (code is not null)
         {
-            var originalCode = _textEditor!.Text;
+            var originalCode = textEditor.Text;
 
             (bool isSuccess, string? formatted, string? error) = code switch
             {
@@ -116,7 +109,7 @@ public partial class MainWindow : ControlsEx.Window.Window
 
             if (isSuccess)
             {
-                _textEditor.Document.Text = formatted;
+                textEditor.Document.Text = formatted;
             }
             else if (error != null && error.Contains("command available", StringComparison.OrdinalIgnoreCase))
             {
@@ -148,11 +141,11 @@ public partial class MainWindow : ControlsEx.Window.Window
             if (supported.Contains(code, StringComparer.OrdinalIgnoreCase))
             {
                 string filename = $"example.{code}";
-                string originalCode = _textEditor!.Text;
+                string originalCode = textEditor.Text;
                 var (isSuccess, formatted, error) = await FormattingService.TryFormatCodeWithPrettierAsync(originalCode, assumeFilename: filename);
                 if (isSuccess)
                 {
-                    _textEditor.Document.Text = formatted;
+                    textEditor.Document.Text = formatted;
                 }
                 else
                 {
@@ -167,11 +160,11 @@ public partial class MainWindow : ControlsEx.Window.Window
         string? code = ViewModel.SelectedSnippet?.Category?.Language?.Code;
         if (code is not null and "fs")
         {
-            string originalCode = _textEditor!.Text;
+            string originalCode = textEditor.Text;
             var (isSuccess, formatted, error) = await FormattingService.TryFormatCodeWithFantomasAsync(originalCode);
             if (isSuccess)
             {
-                _textEditor.Document.Text = formatted;
+                textEditor.Document.Text = formatted;
             }
             else if (error != null && error.Contains("Could not execute", StringComparison.OrdinalIgnoreCase))
             {
