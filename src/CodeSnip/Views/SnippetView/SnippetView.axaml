@@ -79,6 +79,10 @@
 						<!-- Tags label -->
 						<RowDefinition Height="Auto"/>
 						<!-- Tags textbox -->
+						<RowDefinition Height="Auto"/>
+						<!-- Date Created label -->
+						<RowDefinition Height="Auto"/>
+						<!-- Date Modified label -->
 					</Grid.RowDefinitions>
 					<TextBlock Text="Title:" FontWeight="Bold" Grid.Row="0" Margin="0,10,0,2"/>
 					<TextBox Grid.Row="1" Watermark="Enter title" Text="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -86,9 +90,11 @@
 					<TextBox Grid.Row="3" AcceptsReturn="True" TextWrapping="Wrap" Text="{Binding SelectedSnippet.Description, Mode=TwoWay}" Height="200"/>
 					<TextBlock Text="Tags:" FontWeight="Bold" Grid.Row="4" Margin="0,10,0,2"/>
 					<TextBox Grid.Row="5" ToolTip.Tip="Tags can be separated by space, period, comma, colon, semicolon, hyphen" Text="{Binding SelectedSnippet.Tag, Mode=TwoWay}" />
+					<TextBlock Grid.Row="6"  Text="{Binding DateCreated}" Margin="0,10,0,2"/>
+					<TextBlock Grid.Row="7" Text="{Binding DateModified}" Margin="0,10,0,2"/>
 				</Grid>
 				<!-- BLOK 3: Buttons -->
-				<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="20" Margin="0,20,0,0" VerticalAlignment="Top">
+				<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="20" Margin="0,10,0,0" VerticalAlignment="Top">
 					<Button  IsDefault="True" Content="Save" Width="70" Command="{Binding SaveCommand}" HorizontalContentAlignment="Center"/>
 					<Button  Content="Close" Width="70" Command="{Binding CancelCommand}" HorizontalContentAlignment="Center"/>
 				</StackPanel>
