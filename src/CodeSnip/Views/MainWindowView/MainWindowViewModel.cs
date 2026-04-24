@@ -165,31 +165,15 @@ public partial class MainWindowViewModel : ObservableObject
             }
             textEditor.SyntaxHighlighting = null;
         }
-
+        textEditor.TextArea.TextView.CurrentLineBackground = new ImmutableSolidColorBrush(Colors.Transparent);
         ReplaceCurrentLineRenderer();
         textEditor.TextArea.SelectionBrush = new SolidColorBrush(SelectedAccentColor, 0.30);
     }
 
     private void ReplaceCurrentLineRenderer()
     {
-        if (Editor?.TextArea?.TextView == null) return;
-
-        var textView = Editor.TextArea.TextView;
-
-        var isDarkTheme = Editor.ActualThemeVariant == ThemeVariant.Dark;
-
-        IBrush borderBrush = isDarkTheme
-            ? _darkThemeHighlighterBrush
-            : _lightThemeHighlighterBrush;
-
-        var renderersToRemove = textView.BackgroundRenderers
-            .Where(r => r is CurrentLineHighlighter || r.GetType().Name == "CurrentLineHighlightRenderer")
-            .ToList();
-
-        foreach (var renderer in renderersToRemove)
-            textView.BackgroundRenderers.Remove(renderer);
-
-        textView.BackgroundRenderers.Add(new CurrentLineHighlighter(Editor, null, borderBrush));
+        var isDarkTheme = Editor?.ActualThemeVariant == ThemeVariant.Dark;
+        Editor?.TextArea.TextView.CurrentLineBorder = new Pen(isDarkTheme ? _darkThemeHighlighterBrush : _lightThemeHighlighterBrush);
     }
 
     public Geometry? OpenCloseIcon
@@ -1237,7 +1221,7 @@ public partial class MainWindowViewModel : ObservableObject
         }
     }
 
-    
+
     #endregion
 
     // CLOSE LEFT PANEL
