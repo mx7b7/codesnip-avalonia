@@ -219,27 +219,27 @@
 
 								<TreeView.DataTemplates>
 									<TreeDataTemplate x:DataType="langcat:Language" ItemsSource="{Binding Categories}">
-										<StackPanel Orientation="Horizontal" Spacing="5">
+										<StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
 											<PathIcon Data="{StaticResource LanguageIcon}" Width="20" Height="20"
-													  VerticalAlignment="Center" Foreground="{DynamicResource HighlightBrush}" />
+													  Foreground="{DynamicResource HighlightBrush}" />
 											<TextBlock Text="{Binding Name}"
 													   FontWeight="SemiBold" FontSize="14"/>
 										</StackPanel>
 									</TreeDataTemplate>
 
 									<TreeDataTemplate x:DataType="langcat:Category" ItemsSource="{Binding Snippets}">
-										<StackPanel Orientation="Horizontal" Spacing="5">
+										<StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
 											<PathIcon Data="{StaticResource CategoryIcon}" Width="20" Height="20"
-													  VerticalAlignment="Center" Foreground="{DynamicResource HighlightBrush}"/>
+													  Foreground="{DynamicResource HighlightBrush}"/>
 											<TextBlock Text="{Binding Name}"
 													   FontWeight="SemiBold" FontSize="14"/>
 										</StackPanel>
 									</TreeDataTemplate>
 
 									<DataTemplate x:DataType="snippet:Snippet" >
-										<StackPanel Orientation="Horizontal" Spacing="5">
+										<StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
 											<PathIcon Data="{StaticResource SnippetIcon}" Width="16" Height="16"
-													  VerticalAlignment="Center" Foreground="{DynamicResource HighlightBrush}"/>
+													  Foreground="{DynamicResource HighlightBrush}"/>
 											<TextBlock Text="{Binding Title}"
 													   FontWeight="Regular"
 													   FontSize="14"/>
