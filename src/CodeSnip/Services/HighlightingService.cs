@@ -244,20 +244,6 @@ namespace CodeSnip.Services
             return false;
         }
 
-        private static bool ResourceExists(string relativePath)
-        {
-            try
-            {
-                var uri = new Uri($"avares://CodesnipAvalonia/{relativePath.Replace('\\', '/')}");
-                return AssetLoader.Exists(uri);
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-
         /// <summary>
         /// Removes a specific highlighting definition from the cache. This is useful when a custom
         /// definition file has been updated and needs to be reloaded.
@@ -356,6 +342,19 @@ namespace CodeSnip.Services
             }
         }
 
+        private static void LoadLocalTextMateGrammars()
+        {
+            try
+            {
+                if (_registryOptions != null)
+                {
+                    var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Highlighting", "Grammars");
+                    _registryOptions.LoadFromLocalDir(path);
+                }
+            }
+            catch {/* do nothing */}
+        }
+
         public static void InstallTextMate(TextEditor editor, ThemeName themeName)
         {
             if (editor is null)
@@ -365,6 +364,8 @@ namespace CodeSnip.Services
             {
                 _registryOptions = new RegistryOptions(themeName);
                 _textMateInstallation = editor.InstallTextMate(_registryOptions);
+
+                LoadLocalTextMateGrammars();
             }
             catch (Exception ex)
             {
