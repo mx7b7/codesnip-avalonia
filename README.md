@@ -73,9 +73,9 @@ This project is a cross-platform port of the original **[CodeSnip (WPF) applicat
 
 | Engine | Status | Language Coverage |
 |--------|--------|-------------------|
-| **XSHD (AvaloniaEdit)** | Built‑in | 36+ bundled definitions (light/dark variants included); unlimited via custom `.xshd` files |
-| **TextMateSharp** | Supported | 60+ bundled grammars included in the TextMateSharp.Grammars library  |
-| **User‑Provided Definitions** | Supported | Unlimited — users can add custom XSHD manually |
+| **XSHD (AvaloniaEdit)** | Built‑in | 36+ bundled definitions (light/dark variants) • **Unlimited** via custom `.xshd` files |
+| **TextMateSharp** | Supported | 60+ bundled grammars from TextMateSharp.Grammars • **Unlimited** via local `.tmLanguage.json` files  |
+| **User‑Provided Definitions** | Fully Supported | **Unlimited** — users can add custom XSHD or TextMate grammars manually |
 
 ---
 
