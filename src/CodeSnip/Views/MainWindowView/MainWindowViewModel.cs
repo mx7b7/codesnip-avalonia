@@ -199,6 +199,27 @@ public partial class MainWindowViewModel : ObservableObject
         PopulateLanguagesCollection(languages);
     }
 
+    private static void EnsureDirectoryStructure()
+    {
+        string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+
+        string[] requiredDirs =
+        {
+        Path.Combine(baseDir, "Tools"),
+        Path.Combine(baseDir, "Tools", "Interpreters"),
+        Path.Combine(baseDir, "Highlighting"),
+        Path.Combine(baseDir, "Highlighting", "Dark"),
+        Path.Combine(baseDir, "Highlighting", "Light"),
+        Path.Combine(baseDir, "Highlighting", "Grammars")
+    };
+
+        foreach (var dir in requiredDirs)
+        {
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+        }
+    }
+
     public async Task InitializeAsync()
     {
         await Task.Run(() => _databaseService.InitializeDatabaseIfNeeded());
@@ -227,6 +248,7 @@ public partial class MainWindowViewModel : ObservableObject
                 await UpdateDatabaseHealthStatusAsync();
             }
         }
+        EnsureDirectoryStructure();
     }
 
     public async Task UpdateDatabaseHealthStatusAsync()
