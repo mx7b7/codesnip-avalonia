@@ -153,10 +153,23 @@ public partial class LanguageCategoryViewModel : ObservableValidator, IDisposabl
     private void LoadLanguages()
     {
         var langs = _databaseService.GetLanguagesWithCategories().OrderBy(l => l.Name).ToList();
+
         Languages = new ObservableCollection<Language>(langs);
 
         if (Languages.Any())
         {
+            // Sync XSHD support status with actual files for all languages
+            foreach (var lang in Languages)
+            {
+                // Return true if both Light/Dark XSHD files exist for the language, otherwise false
+                bool xshdExists = HighlightingService.SyntaxDefinitionExists(lang.Code!);
+                if (lang.SupportsXshd != xshdExists)
+                {
+                    lang.SupportsXshd = xshdExists;
+                    _databaseService.SaveLanguage(lang);  // Sync DB
+                }
+            }
+
             SelectedLanguage = Languages.First();
             SelectedLanguageForCategory = Languages.First();
         }
@@ -528,6 +541,8 @@ public partial class LanguageCategoryViewModel : ObservableValidator, IDisposabl
             bool success = HighlightingService.GenerateBasicXshdFile(SelectedLanguage.Code!, SelectedLanguage.Name!);
             if (success)
             {
+                SelectedLanguage.SupportsXshd = true;
+                _databaseService.SaveLanguage(SelectedLanguage);
                 NotificationService.Instance.Show("XSHD Created", $"A basic syntax highlighting definition for '{SelectedLanguage.Name}' ({SelectedLanguage.Code}.xshd) has been created.", NotificationType.Success);
             }
             else
