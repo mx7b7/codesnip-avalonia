@@ -26,7 +26,7 @@ namespace CodeSnip.Services
         /// </summary>
         private static readonly ConcurrentDictionary<string, IHighlightingDefinition> _highlightCache = new();
         private static TextMate.Installation? _textMateInstallation;
-        private static RegistryOptions? _registryOptions = new(ThemeName.AtomOneDark);
+        private static RegistryOptions? _registryOptions = new(ThemeName.Dark);
         private static Language? _oldLanguage;
         private static HashSet<string> _textMateExtensions = new(StringComparer.Ordinal);
 
@@ -446,7 +446,7 @@ namespace CodeSnip.Services
         public static void InitializeTextMateExtensions()
         {
             if (_registryOptions == null)
-                _registryOptions = new RegistryOptions(ThemeName.AtomOneDark);
+                _registryOptions = new RegistryOptions(ThemeName.Dark);
 
             var langs = _registryOptions.GetAvailableLanguages();
 

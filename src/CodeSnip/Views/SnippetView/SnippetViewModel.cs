@@ -48,9 +48,7 @@ public partial class SnippetViewModel : ObservableValidator, IOverlayViewModel
     private string? _title = string.Empty;
 
     public string? HeaderText { get; private set; }
-    public string? DateCreated { get; private set; }
-    public string? DateModified { get; private set; }
-
+   
     public SnippetViewModel(
         bool isEditMode,
         Snippet? snippet,
@@ -73,8 +71,6 @@ public partial class SnippetViewModel : ObservableValidator, IOverlayViewModel
 
         InitializeSelections();
         HeaderText = IsEditMode ? $"Edit {SelectedSnippet?.Title ?? ""}" : "Create New Snippet";
-        DateCreated = $"Created: {SelectedSnippet?.DateCreated ?? "Value not available"}";
-        DateModified = $"Modified: {SelectedSnippet?.DateModified ?? "Value not available"}";
         ValidateAllProperties();
     }
 

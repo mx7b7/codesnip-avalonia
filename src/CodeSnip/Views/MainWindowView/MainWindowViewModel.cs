@@ -725,7 +725,7 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
-        var confirm = await MessageBoxService.Instance.AskYesNoAsync("Delete Confirmation", $"Are you sure you want to delete the snippet '{SelectedSnippet.Title}'?");
+        var confirm = await MessageBoxService.Instance.AskYesNoAsync("Delete Confirmation", $"Are you sure you want to delete the snippet '{SelectedSnippet.Title}'?\n");
 
         if (!confirm)
             return;

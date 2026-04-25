@@ -292,7 +292,7 @@
 													   FontWeight="Medium"
 													   Foreground="{DynamicResource ThemeBorderMidBrush}"
 													   VerticalAlignment="Center"
-													   Margin="5 0 0 0"/>
+													   Margin="5,0"/>
 										</StackPanel>
 									</Border>
 								</Expander.Header>
@@ -306,19 +306,25 @@
 										<!-- Tag Label -->
 										<RowDefinition Height="Auto"/>
 										<!-- Tag TextBox -->
+										<RowDefinition Height="Auto"/>
+										<!-- Date Created label -->
+										<RowDefinition Height="Auto"/>
+										<!-- Date Modified label -->
 									</Grid.RowDefinitions>
 									<!-- Description label -->
-									<TextBlock Text="Description:" Margin="0,5,0,5" Grid.Row="0" />
+									<TextBlock Text="Description:" Margin="0,5" Grid.Row="0" />
 									<!-- Description TextBox that stretches-->
 									<TextBox x:Name="txtDescription" Grid.Row="1" TextWrapping="Wrap"
 											 IsReadOnly="True" VerticalContentAlignment="Top"
 											 Height="150"
 											 Text="{Binding SelectedSnippet.Description}" />
 									<!-- Tag label -->
-									<TextBlock Text="Tags:" Margin="0,5,0,5" Grid.Row="2" />
+									<TextBlock Text="Tags:" Margin="0,5" Grid.Row="2" />
 									<!-- Tag TextBox -->
 									<TextBox x:Name="txtTag" Grid.Row="3" Text="{Binding SelectedSnippet.Tag}"
 											 IsReadOnly="True"  BorderThickness="0.5" />
+									<TextBlock Grid.Row="4"  Text="{Binding SelectedSnippet.DateCreated, StringFormat='Created:  {0}'}" Margin="0,5,0,2"/>
+									<TextBlock Grid.Row="5" Text="{Binding SelectedSnippet.DateModified, StringFormat='Modified: {0}'}" Margin="0,0,0,2"/>
 								</Grid>
 							</Expander>
 						</Grid>
