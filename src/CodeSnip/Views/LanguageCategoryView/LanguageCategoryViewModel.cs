@@ -67,10 +67,10 @@ public partial class LanguageCategoryViewModel : ObservableValidator, IDisposabl
     public LanguageCategoryViewModel(DatabaseService dbService)
     {
         _databaseService = dbService;
-        LoadLanguages();
-        ValidateAllProperties();
         // must be initialized before HighlightingService.SupportsTextMate is called
         HighlightingService.InitializeTextMateExtensions();
+        LoadLanguages();
+        ValidateAllProperties();
     }
 
     public static ValidationResult? ValidateDuplicateExtension(string? value, ValidationContext context)
@@ -158,16 +158,28 @@ public partial class LanguageCategoryViewModel : ObservableValidator, IDisposabl
 
         if (Languages.Any())
         {
-            // Sync XSHD support status with actual files for all languages
+            // Sync XSHD and TextMate support status with actual files for all languages
             foreach (var lang in Languages)
             {
-                // Return true if both Light/Dark XSHD files exist for the language, otherwise false
                 bool xshdExists = HighlightingService.SyntaxDefinitionExists(lang.Code!);
+                bool textMateExists = HighlightingService.SupportsTextMate(lang.Code!);
+
+                bool changed = false;
+
                 if (lang.SupportsXshd != xshdExists)
                 {
                     lang.SupportsXshd = xshdExists;
-                    _databaseService.SaveLanguage(lang);  // Sync DB
+                    changed = true;
                 }
+
+                if (lang.SupportsTextMate != textMateExists)
+                {
+                    lang.SupportsTextMate = textMateExists;
+                    changed = true;
+                }
+
+                if (changed)
+                    _databaseService.SaveLanguage(lang);
             }
 
             SelectedLanguage = Languages.First();
