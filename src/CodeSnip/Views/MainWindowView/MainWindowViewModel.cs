@@ -536,7 +536,9 @@ public partial class MainWindowViewModel : ObservableObject
             _oldLangCode = langCode;
         }
         _lastSnippetId = snippet.Id;
-        Editor?.Document.UndoStack.ClearAll();
+        Editor!.TextArea.Caret.Offset = 0;
+        Editor.ScrollToHome();
+        Editor.Document.UndoStack.ClearAll();
     }
 
     partial void OnSelectedNodeChanged(object? value)
