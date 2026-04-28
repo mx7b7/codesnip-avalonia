@@ -21,6 +21,7 @@ public class DatabaseService
 {
     private readonly string _dbPath = "snippets.sqlite";
     private static readonly Dictionary<int, List<InitialSnippet>> initialSnippets = [];
+    private const int CURRENT_DB_VERSION = 1;
 
     /// <summary>
     /// Creates and returns a new SQLite database connection.
@@ -36,7 +37,7 @@ public class DatabaseService
     /// and seeds it with default languages, categories, and a few example snippets.
     /// </summary>
     /// <param name="dbSchema">The DDL and DML script to execute for database creation and seeding.</param>
-    public void InitializeDatabaseIfNeeded(string dbSchema = ddl)
+    public void InitializeDatabaseIfNeeded(string dbSchema = DDL)
     {
         if (!File.Exists(_dbPath))
         {
@@ -77,9 +78,13 @@ public class DatabaseService
 
             transaction.Commit();
         }
+        int version = GetDatabaseVersion();
 
-        // 2. ALWAYS run migrations (for both new and existing DB)
-        MigrateDatabase();
+        if (version < CURRENT_DB_VERSION)
+        {
+            BackupDatabase();
+            MigrateDatabase(version);
+        }
     }
 
     /// <summary>
@@ -543,31 +548,21 @@ ORDER BY L.Name, C.Name, S.Title";
         }
     }
 
-    public void MigrateDatabase()
+    public void MigrateDatabase(int version)
     {
         using var conn = CreateConnection();
-
-        // 1) Create Meta table if it doesn't exist and get current DB version
-        bool metaExists = conn.ExecuteScalar<int>(
-            "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='Meta'") > 0;
-
-        if (!metaExists)
+        conn.Open();
+        using var transaction = conn.BeginTransaction();
+        try
         {
-            conn.Execute("CREATE TABLE Meta (Key TEXT PRIMARY KEY, Value TEXT)");
-            conn.Execute("INSERT INTO Meta (Key, Value) VALUES ('DbVersion', '0')");
-        }
-
-        int version = conn.ExecuteScalar<int>("SELECT Value FROM Meta WHERE Key='DbVersion'");
-
-        // 2) MIGRATION 1
-        if (version < 1)
-        {
-            HighlightingService.InitializeTextMateExtensions(); // must be initialized before HighlightingService.SupportsTextMate is called
-            conn.Execute("ALTER TABLE Languages ADD COLUMN SupportsXshd INTEGER NOT NULL DEFAULT 0");
-            conn.Execute("ALTER TABLE Languages ADD COLUMN SupportsTextMate INTEGER NOT NULL DEFAULT 0");
-            conn.Execute("ALTER TABLE Snippets ADD COLUMN DateCreated TEXT");
-            conn.Execute("ALTER TABLE Snippets ADD COLUMN DateModified TEXT");
-            conn.Execute(@"
+            if (version < 1)
+            {
+                HighlightingService.InitializeTextMateExtensions(); // must be initialized before HighlightingService.SupportsTextMate is called
+                conn.Execute("ALTER TABLE Languages ADD COLUMN SupportsXshd INTEGER NOT NULL DEFAULT 0", transaction: transaction);
+                conn.Execute("ALTER TABLE Languages ADD COLUMN SupportsTextMate INTEGER NOT NULL DEFAULT 0", transaction: transaction);
+                conn.Execute("ALTER TABLE Snippets ADD COLUMN DateCreated TEXT", transaction: transaction);
+                conn.Execute("ALTER TABLE Snippets ADD COLUMN DateModified TEXT", transaction: transaction);
+                conn.Execute(@"
                 CREATE TRIGGER insert_snippet_dates AFTER INSERT ON Snippets
                 BEGIN
                     UPDATE Snippets
@@ -575,37 +570,82 @@ ORDER BY L.Name, C.Name, S.Title";
                         DateModified = DATETIME('now')
                     WHERE ID = NEW.ID;
                 END;
-            ");
-            conn.Execute(@"
-                CREATE TRIGGER update_snippet_modified AFTER UPDATE ON Snippets
+            ", transaction: transaction);
+                conn.Execute(@"
+                CREATE TRIGGER update_snippet_modified
+                AFTER UPDATE ON Snippets
+                FOR EACH ROW
+                WHEN NEW.DateModified = OLD.DateModified
                 BEGIN
-                    UPDATE Snippets SET DateModified = DATETIME('now') WHERE ID = NEW.ID;
+                    UPDATE Snippets 
+                    SET DateModified = DATETIME('now') 
+                    WHERE ID = NEW.ID;
                 END;
-             ");
-            // Populate SupportsXshd + SupportsTextMate for existing languages
-            var languages = conn.Query<(int Id, string Code)>("SELECT ID, Code FROM Languages");
+             ", transaction: transaction);
+                // Populate SupportsXshd + SupportsTextMate for existing languages
+                var languages = conn.Query<(int Id, string Code)>("SELECT ID, Code FROM Languages", transaction: transaction);
 
-            foreach (var lang in languages)
-            {
-                string code = lang.Code?.Trim().ToLowerInvariant() ?? "";
+                foreach (var (Id, Code) in languages)
+                {
+                    string code = Code?.Trim().ToLowerInvariant() ?? "";
 
-                bool xshd = HighlightingService.SyntaxDefinitionExists(code);
-                bool tm = HighlightingService.SupportsTextMate(code);
+                    bool xshd = HighlightingService.SyntaxDefinitionExists(code);
+                    bool tm = HighlightingService.SupportsTextMate(code);
 
-                conn.Execute(
-                    "UPDATE Languages SET SupportsXshd = @xshd, SupportsTextMate = @tm WHERE ID = @id",
-                    new { xshd = xshd ? 1 : 0, tm = tm ? 1 : 0, id = lang.Id });
+                    conn.Execute(
+                        "UPDATE Languages SET SupportsXshd = @xshd, SupportsTextMate = @tm WHERE ID = @id",
+                        new { xshd = xshd ? 1 : 0, tm = tm ? 1 : 0, id = Id }, transaction: transaction);
+                }
+
+                conn.Execute("UPDATE Meta SET Value = 1 WHERE Key='DbVersion'", transaction: transaction);
+                version = 1;
+                transaction.Commit();
             }
-
-            conn.Execute("UPDATE Meta SET Value = 1 WHERE Key='DbVersion'");
-            version = 1;
+            // Future migrations would go here:
+            // if (version < 2) ...
         }
-        // Future migrations would go here, following the same pattern:
-        // if (version < 2) ...
+        catch
+        {
+            transaction.Rollback();
+            throw;
+        }
     }
 
+    private int GetDatabaseVersion()
+    {
+        using var conn = CreateConnection();
+        bool metaExists = conn.ExecuteScalar<int>(
+             "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='Meta'") > 0;
+        if (!metaExists)
+        {
+            conn.Execute("CREATE TABLE Meta (Key TEXT PRIMARY KEY, Value TEXT)");
+            conn.Execute("INSERT INTO Meta (Key, Value) VALUES ('DbVersion', '0')");
+            return 0;
+        }
+        int version = conn.ExecuteScalar<int>("SELECT Value FROM Meta WHERE Key='DbVersion'");
+        return version;
+    }
 
-    private const string ddl = @"
+    private void BackupDatabase()
+    {
+        string backupFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Backups");
+        Directory.CreateDirectory(backupFolder);
+
+        var fileName = Path.GetFileNameWithoutExtension(_dbPath);
+        var timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
+
+        var backupPath = Path.Combine(backupFolder, $"{fileName}_backup_{timestamp}.sqlite");
+
+        using var source = new SQLiteConnection($"Data Source={_dbPath};foreign keys=true;");
+        using var destination = new SQLiteConnection($"Data Source={backupPath};foreign keys=true;");
+
+        source.Open();
+        destination.Open();
+
+        source.BackupDatabase(destination, "main", "main", -1, null, 0);
+    }
+
+    private const string DDL = @"
 CREATE TABLE IF NOT EXISTS Meta (
     Key TEXT PRIMARY KEY,
     Value TEXT
@@ -643,9 +683,14 @@ BEGIN
     WHERE ID = NEW.ID;
 END;
 
-CREATE TRIGGER update_snippet_modified AFTER UPDATE ON Snippets
+CREATE TRIGGER update_snippet_modified
+AFTER UPDATE ON Snippets
+FOR EACH ROW
+WHEN NEW.DateModified = OLD.DateModified
 BEGIN
-    UPDATE Snippets SET DateModified = DATETIME('now') WHERE ID = NEW.ID;
+    UPDATE Snippets 
+    SET DateModified = DATETIME('now') 
+    WHERE ID = NEW.ID;
 END;
 
 INSERT OR IGNORE INTO Meta (Key, Value) VALUES ('DbVersion', '1');
