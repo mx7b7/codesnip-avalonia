@@ -1,0 +1,36 @@
+{
+  "name": "zig",
+  "displayName": "%displayName%",
+   "description": "%description%",
+  "version": "0.6.18",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://codeberg.org/ziglang/vscode-zig"
+  },
+  "engines": {
+    "vscode": "*"
+  },
+  "contributes": {
+    "languages": [
+      {
+        "id": "zig",
+        "extensions": [
+          ".zig",
+          ".zon"
+        ],
+        "aliases": [
+          "Zig"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "zig",
+        "scopeName": "source.zig",
+        "path": "./syntaxes/zig.tmLanguage.json"
+      }
+    ]
+  }
+}

@@ -1,0 +1,38 @@
+{
+	"name": "d",
+	"displayName": "%displayName%",
+    "description": "%description%",
+	"version": "0.23.2",
+	"publisher": "webfreak",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Pure-D/code-d.git"
+	},
+	"license": "MIT",
+	"engines": {
+		"vscode": "*"
+	},
+	"contributes": {
+		"languages": [
+			{
+				"id": "d",
+				"extensions": [
+					".d",
+					".di"
+				],
+				"aliases": [
+					"D",
+					"Dlang"
+				],
+				"configuration": "./language-configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "d",
+				"scopeName": "source.d",
+				"path": "./syntaxes/d.tmLanguage.json"
+			}
+		]
+	}
+}
