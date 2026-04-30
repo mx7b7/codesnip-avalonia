@@ -193,7 +193,8 @@
 										HorizontalAlignment="Center"
 										VerticalAlignment="Center"
 										MinWidth="20"
-										MinHeight="20">
+										MinHeight="20"
+										Focusable="False">
 									<Path Data="{StaticResource ArrowDown}" Width="16" Height="16"
 										Fill="{DynamicResource HighlightBrush}" Stretch="Uniform" VerticalAlignment="Center">
 										<Path.RenderTransform>
