@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Controls.Notifications;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using CodeSnip.Helpers;
@@ -53,6 +54,14 @@ public partial class MainWindow : ControlsEx.Window.Window
                 rightOverlay.CloseOverlayAsync = vm.CloseRightOverlayAsync;
             }
         };
+    }
+
+    private void Window_Opened(object? sender, EventArgs e)
+    {
+        if (ViewModel != null && ViewModel.Languages.Count == 0)
+        {
+            NotificationService.Instance.Show("Welcome to CodeSnip!", "It looks like you don't have any languages yet. Start by adding a language and category, then create your first snippet!", NotificationType.Information, 10);
+        }
     }
 
     private void Window_Closing(object? sender, WindowClosingEventArgs e)

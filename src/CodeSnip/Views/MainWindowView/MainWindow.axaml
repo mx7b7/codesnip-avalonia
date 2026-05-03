@@ -26,6 +26,7 @@
         MinHeight="600"
         WindowStartupLocation="CenterScreen"
 		BorderBrush="{DynamicResource HighlightBrush}"
+		Opened="Window_Opened"
 		Closing="Window_Closing" >
 	<codesnip:Window.LogoContent>
 		<PathIcon

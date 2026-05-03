@@ -233,9 +233,8 @@ public partial class MainWindowViewModel : ObservableObject
 
             var languageList = languages.ToList();
 
-            if (languageList.Count == 0 && _databaseService.GetSnippets().Any()) // Check if loading failed
+            if (languageList.Count == 0) // If database is empty, skip populating the collection.
             {
-                await MessageBoxService.Instance.OkAsync("Error", "Database Load Error \nCould not load snippets.\nThe database file might be corrupted.", Icon.Error);
                 return;
             }
             else
