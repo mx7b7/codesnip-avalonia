@@ -23,7 +23,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -134,19 +133,15 @@ public partial class MainWindowViewModel : ObservableObject
         // Editor settings
         EditorOptions.AllowScrollBelowDocument = settingsService.ScrollBelowDocument;
         EditorOptions.EnableEmailHyperlinks = settingsService.EnableEmailLinks;
-        EditorOptions.EnableHyperlinks = settingsService.EnableHyperinks;
+        EditorOptions.EnableHyperlinks = settingsService.EnableHyperlinks;
         EditorOptions.ConvertTabsToSpaces = settingsService.TabToSpaces;
         EditorOptions.HighlightCurrentLine = settingsService.HighlightLine;
         EditorOptions.IndentationSize = settingsService.IntendationSize;
+        EditorOptions.EnableRectangularSelection = settingsService.SyntaxEngine != SyntaxEngine.TextMate && settingsService.EnableRectangularSelection;
         ShowLineNumbers = settingsService.ShowLineNumbers;
         EditorFontFamily = new FontFamily(settingsService.EditorFontFamily);
         EditorFontSize = settingsService.EditorFontSize;
-        // FIX: AvaloniaEdit.Rendering.VisualLinesInvalidException
-        // Disabled rectangle selection due to a critical bug in AvaloniaEdit:
-        // Selecting text up to the right edge of the editor causes a VisualLinesInvalidException
-        // which crashes the application. This occurs in versions 11.4.x and 12.0 RC1.
-        EditorOptions.EnableRectangularSelection = false;
-        //---------------------------------------------------------------------------------------
+
     }
 
     public void InitializeEditor(TextEditor textEditor)
@@ -167,7 +162,7 @@ public partial class MainWindowViewModel : ObservableObject
         }
         textEditor.TextArea.TextView.CurrentLineBackground = new ImmutableSolidColorBrush(Colors.Transparent);
         ReplaceCurrentLineRenderer();
-        textEditor.TextArea.SelectionBrush = new SolidColorBrush(SelectedAccentColor, 0.30);
+        textEditor.TextArea.SelectionBrush = new SolidColorBrush(SelectedAccentColor, 0.40);
     }
 
     private void ReplaceCurrentLineRenderer()
@@ -965,12 +960,13 @@ public partial class MainWindowViewModel : ObservableObject
             settingsService.ScrollBelowDocument = vm.ScrollBelowDocument;
             settingsService.HighlightLine = vm.HighlightLine;
             settingsService.EnableEmailLinks = vm.EmailLinks;
-            settingsService.EnableHyperinks = vm.HyperLinks;
+            settingsService.EnableHyperlinks = vm.HyperLinks;
             settingsService.TabToSpaces = vm.TabToSpaces;
             settingsService.IntendationSize = vm.IntendationSize;
             settingsService.ShowLineNumbers = vm.ShowLineNumbers;
             settingsService.EditorFontFamily = vm.EditorFontFamily;
             settingsService.EditorFontSize = vm.EditorFontSize;
+            settingsService.EnableRectangularSelection = vm.RectangularSelection;
             // Main Window
             settingsService.LoadSnippetsOnStartup = vm.LoadSnippetsOnStartup;
             settingsService.ShowEmptyLanguages = vm.ShowEmptyLanguages;
@@ -987,6 +983,7 @@ public partial class MainWindowViewModel : ObservableObject
             ShowLineNumbers = vm.ShowLineNumbers;
             EditorFontFamily = new FontFamily(vm.EditorFontFamily);
             EditorFontSize = vm.EditorFontSize;
+            EditorOptions.EnableRectangularSelection = settingsService.SyntaxEngine != SyntaxEngine.TextMate && vm.RectangularSelection;
             // Main Window
             ShowEmptyLanguages = vm.ShowEmptyLanguages;
             ShowEmptyCategories = vm.ShowEmptyCategories;
@@ -1132,7 +1129,7 @@ public partial class MainWindowViewModel : ObservableObject
             {
                 CommentService.ToggleCommentByExtension(editor, code, useMultiLine: false);
             }
-            catch (Exception ex) { Debug.WriteLine(ex.Message); }
+            catch { }
         }
     }
 

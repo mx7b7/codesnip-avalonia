@@ -134,13 +134,14 @@
 											  SelectedItem="{Binding SelectedDarkTheme, Mode=TwoWay}"/>
 									<Button Content="Apply Syntax Engine" Command="{Binding ApplySyntaxEngineCommand}" Margin="0,5"/>
 									<Separator BorderBrush="{DynamicResource ThemeControlHighlightMidBrush}" BorderThickness="1" Margin="0,0,0,5"/>
-									
-									<CheckBox Content="Scroll below document" IsChecked="{Binding ScrollBelowDocument, Mode=TwoWay}" />
+
 									<CheckBox Content="Tabs to spaces" IsChecked="{Binding TabToSpaces, Mode=TwoWay}" />
-									<CheckBox Content="Enable email hyperlinks" IsChecked="{Binding EmailLinks, Mode=TwoWay}" />
-									<CheckBox Content="Enable hyperlinks" IsChecked="{Binding HyperLinks, Mode=TwoWay}" />
-									<CheckBox Content="Highlight current line" IsChecked="{Binding HighlightLine, Mode=TwoWay}" />
 									<CheckBox Content="Show line numbers" IsChecked="{Binding ShowLineNumbers, Mode=TwoWay}" />
+									<CheckBox Content="Highlight current line" IsChecked="{Binding HighlightLine, Mode=TwoWay}" />
+									<CheckBox Content="Scroll below document" IsChecked="{Binding ScrollBelowDocument, Mode=TwoWay}" />
+									<CheckBox Content="Enable hyperlinks" IsChecked="{Binding HyperLinks, Mode=TwoWay}" />
+									<CheckBox Content="Enable email hyperlinks" IsChecked="{Binding EmailLinks, Mode=TwoWay}" />
+									<CheckBox Content="Enable rectangular selection"  IsChecked="{Binding RectangularSelection, Mode=TwoWay}"/>
 									<TextBlock Text="Indentation size:" FontWeight="Bold" />
 									<NumericUpDown Maximum="10" Minimum="1" Increment="1" ParsingNumberStyle="Integer"
 												   KeyDown="NumericUpDown_KeyDown" Value="{Binding IntendationSize, Mode=TwoWay}" />

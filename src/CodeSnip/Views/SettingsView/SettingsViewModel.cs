@@ -47,6 +47,8 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
 
     [ObservableProperty] private bool _emailLinks;
 
+    [ObservableProperty] private bool _rectangularSelection;
+
     [ObservableProperty] private bool _hyperLinks;
 
     [ObservableProperty] private bool _highlightLine;
@@ -110,7 +112,8 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
         ScrollBelowDocument = _settingsService.ScrollBelowDocument;
         TabToSpaces = _settingsService.TabToSpaces;
         EmailLinks = _settingsService.EnableEmailLinks;
-        HyperLinks = _settingsService.EnableHyperinks;
+        HyperLinks = _settingsService.EnableHyperlinks;
+        RectangularSelection = _settingsService.EnableRectangularSelection;
         HighlightLine = _settingsService.HighlightLine;
         IntendationSize = _settingsService.IntendationSize;
         ShowLineNumbers = _settingsService.ShowLineNumbers;

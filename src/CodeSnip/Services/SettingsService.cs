@@ -73,11 +73,18 @@ public class SettingsService
         set => _settings.Editor.EnableEmailLinks = value;
     }
 
-    public bool EnableHyperinks
+    public bool EnableHyperlinks
     {
-        get => _settings.Editor.EnableHyperinks;
-        set => _settings.Editor.EnableHyperinks = value;
+        get => _settings.Editor.EnableHyperlinks;
+        set => _settings.Editor.EnableHyperlinks = value;
     }
+
+    public bool EnableRectangularSelection
+    {
+        get => _settings.Editor.EnableRectangularSelection;
+        set => _settings.Editor.EnableRectangularSelection = value;
+    }
+
     public bool HighlightLine
     {
         get => _settings.Editor.HighlightLine;

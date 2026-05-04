@@ -18,8 +18,8 @@ public class MainWindowSettings
     public double SplitViewPanelLength { get; set; } = 300;
     public bool ShowEmptyLanguages { get; set; } = false;
     public bool ShowEmptyCategories { get; set; } = false;
-    public double WindowWidth { get; set; } = 1200;
-    public double WindowHeight { get; set; } = 720;
+    public double WindowWidth { get; set; } = 1280;
+    public double WindowHeight { get; set; } = 760;
     public WindowState WindowState { get; set; } = WindowState.Normal;
 }
 
@@ -28,7 +28,7 @@ public class EditorSettings
     public bool ScrollBelowDocument { get; set; } = false;
     public bool TabToSpaces { get; set; } = true;
     public bool EnableEmailLinks { get; set; } = false;
-    public bool EnableHyperinks { get; set; } = false;
+    public bool EnableHyperlinks { get; set; } = false;
     public bool HighlightLine { get; set; } = true;
     public bool ShowLineNumbers { get; set; } = true;
     public int IntendationSize { get; set; } = 4;
@@ -37,6 +37,7 @@ public class EditorSettings
     public SyntaxEngine SyntaxEngine { get; set; } = SyntaxEngine.XSHD;
     public ThemeName DefaultLightTheme { get; set; } = ThemeName.LightPlus;
     public ThemeName DefaultDarkTheme { get; set; } = ThemeName.DarkPlus;
+    public bool EnableRectangularSelection { get; set; } = false;
 
     public EditorSettings()
     {
