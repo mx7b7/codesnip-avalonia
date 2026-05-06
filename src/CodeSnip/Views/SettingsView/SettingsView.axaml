@@ -56,7 +56,7 @@
 		<TabControl Grid.Row="1" TabStripPlacement="Left" Margin="10,0">
 			<!-- Appearance -->
 			<TabItem Header="Appearance">
-				<ScrollViewer Classes="ScrollViewerThin" Margin="10" VerticalScrollBarVisibility="Auto">
+				<ScrollViewer Margin="2" VerticalScrollBarVisibility="Auto">
 					<StackPanel>
 						<!-- Theme -->
 						<Border CornerRadius="5" BorderBrush="{DynamicResource ThemeControlHighlightMidBrush}"
@@ -87,7 +87,7 @@
 			</TabItem>
 			<!-- MAIN WINDOW -->
 			<TabItem Header="Window">
-				<ScrollViewer Classes="ScrollViewerThin" Margin="10">
+				<ScrollViewer Margin="2">
 					<StackPanel>
 						<Border CornerRadius="5" BorderBrush="{DynamicResource ThemeControlHighlightMidBrush}" BorderThickness="1" Padding="10">
 							<StackPanel Spacing="5" Margin="0 0 0 12">
@@ -110,7 +110,7 @@
 			</TabItem>
 			<!-- Editor -->
 			<TabItem Header="Editor">
-				<ScrollViewer Classes="ScrollViewerThin" Margin="10">
+				<ScrollViewer Margin="2">
 					<StackPanel>
 						<Border CornerRadius="5" BorderBrush="{DynamicResource ThemeControlHighlightMidBrush}" BorderThickness="1" Padding="10">
 							<StackPanel>
@@ -158,7 +158,7 @@
 			</TabItem>
 			<!-- Database -->
 			<TabItem Header="Database">
-				<ScrollViewer Classes="ScrollViewerThin" Margin="10">
+				<ScrollViewer Margin="2">
 					<StackPanel>
 						<Border CornerRadius="5" BorderBrush="{DynamicResource ThemeControlHighlightMidBrush}" BorderThickness="1" Padding="10">
 							<StackPanel Spacing="20" Margin="0 0 0 12">

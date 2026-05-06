@@ -27,6 +27,7 @@
 				<ResourceInclude Source="/Themes/ColorOverrides.axaml"/>
 				<ResourceInclude Source="/Themes/TreeView.axaml"/>
 				<ResourceInclude Source="/Themes/TreeViewItem.axaml"/>
+				<ResourceInclude Source="/Themes/ScrollViewer.axaml"/>
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Application.Resources>

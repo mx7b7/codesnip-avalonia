@@ -180,6 +180,12 @@
 								AllowScrollBelowDocument="False">
 							</AvaloniaEdit:TextEditorOptions>
 						</AvaloniaEdit:TextEditor.Options>
+						<AvaloniaEdit:TextEditor.Styles>
+							<Style Selector="ScrollViewer">
+								<Setter Property="AllowAutoHide" Value="False" />
+								<Setter Property="Classes.InsetContent" Value="True" />
+							</Style>
+						</AvaloniaEdit:TextEditor.Styles>
 					</AvaloniaEdit:TextEditor>
 				</TabItem>
 			</TabControl>

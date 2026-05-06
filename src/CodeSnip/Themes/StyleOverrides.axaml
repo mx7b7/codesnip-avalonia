@@ -1,55 +1,23 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-
+	<Style Selector="TreeView, ListBox">
+		<Setter Property="ScrollViewer.AllowAutoHide" Value="False" />
+	</Style>
+	<!-- ....................................................................................... -->
+	<!-- Alternative: set Theme={StaticResource StaticScrollViewer} in the TreeView ControlTheme -->
+	<Style Selector="TreeView /template/ ScrollViewer">
+		<Setter Property="Classes.InsetContent" Value="True" />
+	</Style>
+	<Style Selector="ListBox /template/ ScrollViewer">
+		<Setter Property="Classes.InsetContent" Value="True" />
+	</Style>
+	<Style Selector="TextBox /template/ ScrollViewer">
+		<Setter Property="Classes.InsetContent" Value="True" />
+	</Style>
 	<!-- ......................ProgressBar Thin Style for Code Runner..................... -->
 	<Style Selector="ProgressBar:horizontal.thin">
 		<Setter Property="MinHeight" Value="4" />
-	</Style>
-	<!-- ..............RepeatButton temporary for thin scrollbar....................... -->
-	<Style Selector="RepeatButton.repeat">
-		<Setter Property="Padding" Value="0" />
-	</Style>
-	<!-- ........................TreeView ScrollBar......................................-->
-	<Style Selector="TreeView ScrollBar:vertical">
-		<Setter Property="Width" Value="6"/>
-	</Style>
-	<Style Selector="TreeView ScrollBar:vertical /template/ Thumb#thumb">
-		<Setter Property="MinHeight" Value="24"/>
-		<Setter Property="Width" Value="5"/>
-	</Style>
-
-	<Style Selector="TreeView ScrollBar:horizontal">
-		<Setter Property="Height" Value="6"/>
-	</Style>
-	<Style Selector="TreeView ScrollBar:horizontal /template/ Thumb#thumb">
-		<Setter Property="MinWidth" Value="24"/>
-		<Setter Property="Height" Value="4"/>
-	</Style>
-	<!--- ............................ListBox ScrollBar................................... -->
-	<Style Selector="ListBox ScrollBar:vertical">
-		<Setter Property="Width" Value="6"/>
-	</Style>
-	<Style Selector="ListBox ScrollBar:vertical /template/ Thumb#thumb">
-		<Setter Property="MinHeight" Value="24"/>
-		<Setter Property="Width" Value="5"/>
-	</Style>
-
-	<Style Selector="ListBox ScrollBar:horizontal">
-		<Setter Property="Width" Value="6"/>
-	</Style>
-	<Style Selector="ListBox ScrollBar:horizontal /template/ Thumb#thumb">
-		<Setter Property="MinWidth" Value="24"/>
-		<Setter Property="Height" Value="4"/>
-	</Style>
-	<!--- ............................ComboBox ScrollBar................................... -->
-	<Style Selector="ComboBox ScrollBar:vertical">
-		<Setter Property="Width" Value="6"/>
-	</Style>
-	<Style Selector="ComboBox ScrollBar:vertical /template/ Thumb#thumb">
-		<Setter Property="MinHeight" Value="24"/>
-		<Setter Property="Width" Value="5"/>
-		<Setter Property="Background" Value="{DynamicResource ThemeControlHighBrush}"/>
 	</Style>
 	<!-- ................IconButton Style .......................................... -->
 	<Style Selector="Button.IconButton">
@@ -92,21 +60,6 @@
 		<Setter Property="Opacity" Value="0.5"/>
 		<Setter Property="Background" Value="Transparent"/>
 		<Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentBrush}" />
-	</Style>
-	<!--......................ScrollViewerThin Style............................................-->
-	<Style Selector="ScrollViewer.ScrollViewerThin ScrollBar:vertical">
-		<Setter Property="Width" Value="6"/>
-	</Style>
-	<Style Selector="ScrollViewer.ScrollViewerThin ScrollBar:vertical /template/ Thumb#thumb">
-		<Setter Property="MinHeight" Value="24"/>
-		<Setter Property="Width" Value="5"/>
-	</Style>
-	<Style Selector="ScrollViewer.ScrollViewerThin ScrollBar:horizontal">
-		<Setter Property="Width" Value="6"/>
-	</Style>
-	<Style Selector="ScrollViewer.ScrollViewerThin ScrollBar:horizontal /template/ Thumb#thumb">
-		<Setter Property="MinWidth" Value="24"/>
-		<Setter Property="Height" Value="5"/>
 	</Style>
 	<!--....................................SearchTextBox...........................................-->
 	<Style Selector="TextBox.SearchTextBox:pointerover /template/ Border#border">

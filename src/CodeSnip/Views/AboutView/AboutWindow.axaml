@@ -47,8 +47,7 @@
 			</TabItem>
 
 			<TabItem Header="Dependencies &amp; Tools">
-				<ScrollViewer Classes="ScrollViewerThin"
-							  Margin="10"
+				<ScrollViewer Margin="2"
 							  VerticalScrollBarVisibility="Auto"
 							  HorizontalScrollBarVisibility="Auto">
 					<StackPanel>
