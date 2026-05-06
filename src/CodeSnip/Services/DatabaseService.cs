@@ -121,7 +121,10 @@ public class DatabaseService
 FROM Languages L
 LEFT JOIN Categories C ON C.LanguageId = L.ID
 LEFT JOIN Snippets S ON S.CategoryId = C.ID
-ORDER BY L.Name, C.Name, S.Title";
+ORDER BY
+    L.Name COLLATE NOCASE,
+    C.Name COLLATE NOCASE,
+    S.Title COLLATE NOCASE;";
 
             var lookup = new Dictionary<int, Language>();
             //var result = conn.Query(sql).ToList();
