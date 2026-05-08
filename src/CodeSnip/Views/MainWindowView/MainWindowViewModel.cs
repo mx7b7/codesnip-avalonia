@@ -9,6 +9,7 @@ using AvaloniaEdit.Editing;
 using AvaloniaEdit.Indentation;
 using AvaloniaEdit.Indentation.CSharp;
 using CodeSnip.Helpers;
+using CodeSnip.Interfaces;
 using CodeSnip.Resources;
 using CodeSnip.Services;
 using CodeSnip.Views.CodeRunnerView;

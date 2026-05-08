@@ -18,6 +18,7 @@
 		xmlns:behaviors="using:CodeSnip.Helpers"
 		xmlns:res="using:CodeSnip.Resources"
 		xmlns:controls="using:Avalonia.Controls"
+		xmlns:treemodel ="using:CodeSnip.Interfaces"
         x:DataType="vm:MainWindowViewModel"
 		EnableTrafficLightPositioning="True"
 		TrafficLightOffset="5,8"
@@ -218,10 +219,10 @@
 								      SelectedItem="{Binding SelectedNode}" Classes.InsetContent="True">
 
 								<TreeView.Styles>
-									<Style Selector="TreeViewItem">
-										<Setter Property="IsExpanded"  Value="{ReflectionBinding Path=IsExpanded, Mode=TwoWay}"/>
-										<Setter Property="IsSelected" Value="{ReflectionBinding Path=IsSelected, Mode=TwoWay}"/>
-										<Setter Property="IsVisible" Value="{ReflectionBinding Path=IsVisible, Mode=TwoWay}"/>
+									<Style Selector="TreeViewItem" x:DataType="treemodel:ITreeNode">
+										<Setter Property="IsExpanded"  Value="{Binding IsExpanded, Mode=TwoWay}"/>
+										<Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
+										<Setter Property="IsVisible" Value="{Binding IsVisible, Mode=TwoWay}"/>
 									</Style>
 								</TreeView.Styles>
 
@@ -242,7 +243,7 @@
 										<StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
 											<Viewbox Width="18" Height="18">
 												<Path Data="{x:Static res:Icons.CategoryIcon}"
-													  Fill="{DynamicResource HighlightBrush}" 
+													  Fill="{DynamicResource HighlightBrush}"
 													  Stretch="Uniform"/>
 											</Viewbox>
 											<TextBlock Text="{Binding Name}"
@@ -253,10 +254,10 @@
 									<DataTemplate x:DataType="snippet:Snippet" >
 										<StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
 											<Viewbox Width="16" Height="16">
-											<Path Data="{x:Static res:Icons.SnippetIcon}"
-												  Fill="{DynamicResource HighlightBrush}" 
-												  Stretch="Uniform"/>
-												</Viewbox>
+												<Path Data="{x:Static res:Icons.SnippetIcon}"
+													  Fill="{DynamicResource HighlightBrush}"
+													  Stretch="Uniform"/>
+											</Viewbox>
 											<TextBlock Text="{Binding Title}"
 													   FontWeight="Regular"
 													   FontSize="14"/>

@@ -1,9 +1,10 @@
-﻿using CodeSnip.Views.LanguageCategoryView;
+﻿using CodeSnip.Interfaces;
+using CodeSnip.Views.LanguageCategoryView;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace CodeSnip.Views.SnippetView
 {
-    public partial class Snippet : ObservableObject
+    public partial class Snippet : ObservableObject, ITreeNode
     {
         [ObservableProperty]
         private int id = 0;

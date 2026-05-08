@@ -3,6 +3,7 @@ using Avalonia.Controls.Notifications;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using CodeSnip.Helpers;
+using CodeSnip.Interfaces;
 using CodeSnip.Services;
 using System;
 using System.IO;
@@ -10,15 +11,9 @@ using System.Linq;
 using System.Net;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 
 namespace CodeSnip.Views.MainWindowView;
-
-public interface IOverlayViewModel
-{
-    Func<Task>? CloseOverlayAsync { get; set; }
-}
 
 public partial class MainWindow : ControlsEx.Window.Window
 {

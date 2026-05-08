@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
+using CodeSnip.Interfaces;
 using CodeSnip.Services;
 using CodeSnip.Views.LanguageCategoryView;
 using CodeSnip.Views.MainWindowView;

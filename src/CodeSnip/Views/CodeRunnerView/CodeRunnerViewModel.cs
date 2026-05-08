@@ -1,6 +1,6 @@
 ﻿using Avalonia.Threading;
+using CodeSnip.Interfaces;
 using CodeSnip.Services;
-using CodeSnip.Views.MainWindowView;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;

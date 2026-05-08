@@ -1,15 +1,15 @@
-﻿using CodeSnip.Services;
-using CodeSnip.Views.MainWindowView;
+﻿using Avalonia.Controls.Notifications;
+using CodeSnip.Interfaces;
+using CodeSnip.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MsBox.Avalonia.Enums;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
-using Avalonia.Controls.Notifications;
-using MsBox.Avalonia.Enums;
 
 namespace CodeSnip.Views.CompilerSettingsView;
 
