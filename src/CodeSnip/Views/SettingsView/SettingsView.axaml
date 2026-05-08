@@ -7,6 +7,7 @@
 			 xmlns:controls="using:Avalonia.Controls"
 			 xmlns:Converters="using:Avalonia.Controls.Converters"
 			 xmlns:local="using:CodeSnip"
+			 xmlns:res="using:CodeSnip.Resources"
 			 Background="{DynamicResource ThemeBackgroundBrush}">
 	<UserControl.Resources>
 		<Converters:EnumToBoolConverter x:Key="EnumToBoolConverter"/>
@@ -28,7 +29,7 @@
 					ToolTip.Tip="Close"
 					Command="{Binding CloseCommand}"
 					HorizontalAlignment="Left">
-				<Path Data="{StaticResource ArrowRightBoldBox}"
+				<Path Data="{x:Static res:Icons.ArrowRightBoldBox}"
 					  Width="28"
 					  Height="28"
 					  Fill="{DynamicResource ThemeAccentBrush}"
@@ -46,7 +47,7 @@
 					ToolTip.Tip="Reset all settings to default values"
 					Command="{Binding ResetSettingsCommand}"
 					HorizontalAlignment="Right">
-				<Path Data="{StaticResource ResetSettings}"
+				<Path Data="{x:Static res:Icons.ResetSettings}"
 					  Width="28"
 					  Height="28"
 					  Fill="{DynamicResource ThemeAccentBrush}"

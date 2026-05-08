@@ -9,6 +9,7 @@ using AvaloniaEdit.Editing;
 using AvaloniaEdit.Indentation;
 using AvaloniaEdit.Indentation.CSharp;
 using CodeSnip.Helpers;
+using CodeSnip.Resources;
 using CodeSnip.Services;
 using CodeSnip.Views.CodeRunnerView;
 using CodeSnip.Views.CompilerSettingsView;
@@ -111,8 +112,8 @@ public partial class MainWindowViewModel : ObservableObject
 
     public MainWindowViewModel()
     {
-        _panelOpenIcon = Application.Current?.FindResource("PanelLeftOpen") as Geometry;
-        _panelCloseIcon = Application.Current?.FindResource("PanelLeftClose") as Geometry;
+        _panelOpenIcon = Icons.PanelLeftOpen;
+        _panelCloseIcon = Icons.PanelLeftClose;
 
         LoadSettingsIntoViewModel();
 

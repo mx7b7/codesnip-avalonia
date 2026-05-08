@@ -9,7 +9,8 @@ Copyright (c) 2026 mx7b7 (https://github.com/mx7b7)
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=netstandard"
-                    xmlns:codesnip="clr-namespace:CodeSnip.ControlsEx.Window">
+                    xmlns:codesnip="clr-namespace:CodeSnip.ControlsEx.Window"
+					xmlns:i="clr-namespace:CodeSnip.Resources">
 	
 
 	<ControlTheme TargetType="Button" x:Key="WindowButtonStyle">
@@ -130,7 +131,7 @@ Copyright (c) 2026 mx7b7 (https://github.com/mx7b7)
                                                                     Margin="0,0,0,1"
                                                                     Name="PART_MinimizeButton"
                                                                     Theme="{StaticResource WindowButtonStyle}">
-																	<PathIcon Data="{x:Static codesnip:Icons.WindowMinimize}" 
+																	<PathIcon Data="{x:Static i:Icons.WindowMinimize}" 
 																			  Name="MinimizeIcon" />
 																</Button>
 																<Button
@@ -145,7 +146,7 @@ Copyright (c) 2026 mx7b7 (https://github.com/mx7b7)
 																		</MultiBinding>
 																	</Button.IsEnabled>
 																	<PathIcon
-                                                                        Data="{x:Static codesnip:Icons.WindowMaximize}"
+                                                                        Data="{x:Static i:Icons.WindowMaximize}"
                                                                         IsHitTestVisible="False"
                                                                         Name="MaximizeIcon" />
 																</Button>
@@ -155,7 +156,7 @@ Copyright (c) 2026 mx7b7 (https://github.com/mx7b7)
                                                                     Name="PART_CloseButton"
                                                                     Theme="{StaticResource WindowButtonStyle}">
 																	<PathIcon
-                                                                        Data="{x:Static codesnip:Icons.WindowClose}"
+                                                                        Data="{x:Static i:Icons.WindowClose}"
                                                                         Foreground="{CompiledBinding Foreground,
                                                                                                      ElementName=PART_CloseButton}"
                                                                         Name="CloseIcon" />
@@ -214,10 +215,10 @@ Copyright (c) 2026 mx7b7 (https://github.com/mx7b7)
 			<Setter Property="Margin" Value="10,0,0,7" />
 		</Style>
 		<Style Selector="^[WindowState=Maximized] /template/ PathIcon#MaximizeIcon">
-			<Setter Property="Data" Value="{x:Static codesnip:Icons.WindowRestore}" />
+			<Setter Property="Data" Value="{x:Static i:Icons.WindowRestore}" />
 		</Style>
 		<Style Selector="^[WindowState=Normal] /template/ PathIcon#MaximizeIcon">
-			<Setter Property="Data" Value="{x:Static codesnip:Icons.WindowMaximize}" />
+			<Setter Property="Data" Value="{x:Static i:Icons.WindowMaximize}" />
 		</Style>
 		<Style Selector="^[IsTitleBarVisible=True]">
 			<Style Selector="^[TitleBarAnimationEnabled=True]">

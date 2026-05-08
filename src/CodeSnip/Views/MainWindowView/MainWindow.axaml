@@ -16,8 +16,11 @@
 		xmlns:editing="using:AvaloniaEdit.Editing"
 		xmlns:i="using:Avalonia.Xaml.Interactivity"
 		xmlns:behaviors="using:CodeSnip.Helpers"
+		xmlns:res="using:CodeSnip.Resources"
 		xmlns:controls="using:Avalonia.Controls"
         x:DataType="vm:MainWindowViewModel"
+		EnableTrafficLightPositioning="True"
+		TrafficLightOffset="5,8"
         Title ="{Binding WindowTitle}"
 		Width="{Binding WindowWidth,Mode=TwoWay}"
         Height="{Binding WindowHeight,Mode=TwoWay}"
@@ -30,7 +33,7 @@
 		Closing="Window_Closing" >
 	<codesnip:Window.LogoContent>
 		<PathIcon
-            Data="{StaticResource AppIcon}"
+            Data="{x:Static res:Icons.AppIcon}"
             Height="24"
             Margin="5 0 0 0"
             Width="24"
@@ -42,14 +45,14 @@
 				Classes="IconButton"
 			    Command="{Binding ToggleThemeCommand}"
 			    ToolTip.Tip="Switch Theme">
-				<PathIcon Data="{StaticResource ThemeLightDark}"
+				<PathIcon Data="{x:Static res:Icons.ThemeLightDark}"
 						  Width="20" Height="20"
 						  Foreground="{DynamicResource HighlightBrush}"/>
 			</Button>
 			<Button
 				Classes="IconButton"
 			    ToolTip.Tip="Pick Accent">
-				<PathIcon Data="{StaticResource ColorPaletteiOS}"
+				<PathIcon Data="{x:Static res:Icons.ColorPaletteiOS}"
 						  Width="20" Height="20"
 						  Foreground="{DynamicResource HighlightBrush}"/>
 				<Button.Flyout>
@@ -67,7 +70,7 @@
 				Classes="IconButton"
 			    Click="About_Click"
 			    ToolTip.Tip="About">
-				<PathIcon Data="{StaticResource InfoCircle}"
+				<PathIcon Data="{x:Static res:Icons.InfoCircle}"
 						  Width="20" Height="20"
 						  Foreground="{DynamicResource HighlightBrush}"/>
 			</Button>
@@ -196,7 +199,7 @@
 										MinWidth="20"
 										MinHeight="20"
 										Focusable="False">
-									<Path Data="{StaticResource ArrowDown}" Width="16" Height="16"
+									<Path Data="{x:Static res:Icons.ArrowDown}" Width="16" Height="16"
 										Fill="{DynamicResource HighlightBrush}" Stretch="Uniform" VerticalAlignment="Center">
 										<Path.RenderTransform>
 											<ScaleTransform ScaleY="-1"/>
@@ -225,8 +228,11 @@
 								<TreeView.DataTemplates>
 									<TreeDataTemplate x:DataType="langcat:Language" ItemsSource="{Binding Categories}">
 										<StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
-											<PathIcon Data="{StaticResource LanguageIcon}" Width="20" Height="20"
-													  Foreground="{DynamicResource HighlightBrush}" />
+											<Viewbox Width="20" Height="20">
+												<Path Data="{x:Static res:Icons.LanguageIconFill}"
+													  Fill="{DynamicResource HighlightBrush}"
+													  Stretch="Uniform"/>
+											</Viewbox>
 											<TextBlock Text="{Binding Name}"
 													   FontWeight="SemiBold" FontSize="14"/>
 										</StackPanel>
@@ -234,8 +240,11 @@
 
 									<TreeDataTemplate x:DataType="langcat:Category" ItemsSource="{Binding Snippets}">
 										<StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
-											<PathIcon Data="{StaticResource CategoryIcon}" Width="20" Height="20"
-													  Foreground="{DynamicResource HighlightBrush}"/>
+											<Viewbox Width="18" Height="18">
+												<Path Data="{x:Static res:Icons.CategoryIcon}"
+													  Fill="{DynamicResource HighlightBrush}" 
+													  Stretch="Uniform"/>
+											</Viewbox>
 											<TextBlock Text="{Binding Name}"
 													   FontWeight="SemiBold" FontSize="14"/>
 										</StackPanel>
@@ -243,8 +252,11 @@
 
 									<DataTemplate x:DataType="snippet:Snippet" >
 										<StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
-											<PathIcon Data="{StaticResource SnippetIcon}" Width="16" Height="16"
-													  Foreground="{DynamicResource HighlightBrush}"/>
+											<Viewbox Width="16" Height="16">
+											<Path Data="{x:Static res:Icons.SnippetIcon}"
+												  Fill="{DynamicResource HighlightBrush}" 
+												  Stretch="Uniform"/>
+												</Viewbox>
 											<TextBlock Text="{Binding Title}"
 													   FontWeight="Regular"
 													   FontSize="14"/>
@@ -255,26 +267,26 @@
 									<MenuFlyout>
 										<MenuItem Header="Add Snippet" Command="{Binding AddSnippetCommand}">
 											<MenuItem.Icon>
-												<PathIcon Data="{StaticResource FileAdd}" Width="16" Height="16"
+												<PathIcon Data="{x:Static res:Icons.FileAdd}" Width="16" Height="16"
 														  Foreground="{DynamicResource ThemeAccentBrush}"/>
 											</MenuItem.Icon>
 										</MenuItem>
 										<MenuItem Header="Edit Snippet" Command="{Binding EditSnippetCommand}">
 											<MenuItem.Icon>
-												<PathIcon Data="{StaticResource FileEdit}" Width="16" Height="16"
+												<PathIcon Data="{x:Static res:Icons.FileEdit}" Width="16" Height="16"
 														  Foreground="{DynamicResource ThemeAccentBrush}"/>
 											</MenuItem.Icon>
 										</MenuItem>
 										<MenuItem Header="Delete Snippet" Command="{Binding DeleteSnippetCommand}">
 											<MenuItem.Icon>
-												<PathIcon Data="{StaticResource Trash}" Width="16" Height="16"
+												<PathIcon Data="{x:Static res:Icons.Trash}" Width="16" Height="16"
 														  Foreground="{DynamicResource ThemeAccentBrush}"/>
 											</MenuItem.Icon>
 										</MenuItem>
 										<Separator />
 										<MenuItem Header="Edit LangCat" Command="{Binding EditLanguageCategoryCommand}">
 											<MenuItem.Icon>
-												<PathIcon Data="{StaticResource CategoryEdit}" Width="16" Height="16"
+												<PathIcon Data="{x:Static res:Icons.CategoryEdit}" Width="16" Height="16"
 														  Foreground="{DynamicResource ThemeAccentBrush}">
 													<PathIcon.RenderTransform>
 														<ScaleTransform ScaleY="-1"/>
@@ -348,23 +360,23 @@
 						</Button>
 						<Button Classes="IconButton" Command="{Binding SaveCodeCommand}"
 								ToolTip.Tip="Save snippet&#xA;Ctrl+S">
-							<Path Data="{StaticResource Save}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
+							<Path Data="{x:Static res:Icons.Save}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding AddSnippetCommand}"
 								ToolTip.Tip="Add snippet&#xA;Ctrl+Shift+A">
-							<Path Data="{StaticResource FileAdd}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
+							<Path Data="{x:Static res:Icons.FileAdd}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding EditSnippetCommand}"
 								ToolTip.Tip="Edit snippet&#xA;Ctrl+Shift+E">
-							<Path Data="{StaticResource FileEdit}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
+							<Path Data="{x:Static res:Icons.FileEdit}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding DeleteSnippetCommand}"
 								ToolTip.Tip="Delete snippet&#xA;Ctrl+Shift+D">
-							<Path Data="{StaticResource Trash}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
+							<Path Data="{x:Static res:Icons.Trash}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding EditLanguageCategoryCommand}"
 								ToolTip.Tip="Language/Category edit&#xA;Ctrl+Shift+L">
-							<Path Data="{StaticResource CategoryEdit}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform">
+							<Path Data="{x:Static res:Icons.CategoryEdit}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform">
 								<Path.RenderTransform>
 									<ScaleTransform ScaleY="-1"/>
 								</Path.RenderTransform>
@@ -372,52 +384,52 @@
 						</Button>
 						<Button Classes="IconButton" ToolTip.Tip="Load snippets" IsEnabled="{Binding IsLoadSnippetEnabled}"
 								Command="{Binding LoadSnippetsDatabaseCommand}">
-							<Path Data="{StaticResource DatabaseRefresh}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
+							<Path Data="{x:Static res:Icons.DatabaseRefresh}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
 						</Button>
 						<Border Width="1" Height="24"  VerticalAlignment="Center" Background="{DynamicResource ThemeControlHighBrush}"/>
 						<Button Classes="IconButton" Command="{Binding OpenCodeRunnerViewCommand}"
 								ToolTip.Tip="Run&#xA;Ctrl+Shift+R">
-							<Path Data="{StaticResource DebugStart}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
+							<Path Data="{x:Static res:Icons.DebugStart}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding OpenCompilerSettingsCommand}"
 								ToolTip.Tip="Compiler Explorer settings">
-							<Path Data="{StaticResource CompilerExplorer}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
+							<Path Data="{x:Static res:Icons.CompilerExplorer}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
 						</Button>
 						<Border Width="1" Height="24"  VerticalAlignment="Center" Background="{DynamicResource ThemeControlHighBrush}"/>
 						<Button Classes="IconButton" Command="{Binding IncreaseFontSizeCommand}"
 								ToolTip.Tip="Zoom In&#xA;Ctrl++">
-							<Path Data="{StaticResource ZoomIn}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
+							<Path Data="{x:Static res:Icons.ZoomIn}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding DecreaseFontSizeCommand}"
 								ToolTip.Tip="Zoom Out&#xA;Ctrl+-">
-							<Path Data="{StaticResource ZoomOut}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
+							<Path Data="{x:Static res:Icons.ZoomOut}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding ResetFontSizeCommand}"
 								ToolTip.Tip="Reset Zoom&#xA;Ctrl+0">
-							<Path Data="{StaticResource ZoomOutMap}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform">
+							<Path Data="{x:Static res:Icons.ZoomOutMap}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform">
 								<Path.RenderTransform>
 									<ScaleTransform ScaleY="-1"/>
 								</Path.RenderTransform>
 							</Path>
 						</Button>
 						<ToggleButton Classes="ToggleIconButton"  ToolTip.Tip="Disable Intendation" IsChecked="{Binding DisableIndentation, Mode=TwoWay}">
-							<Path Data="{StaticResource FormatIndentDecrease}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
+							<Path Data="{x:Static res:Icons.FormatIndentDecrease}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
 						</ToggleButton>
 						<ToggleButton Classes="ToggleIconButton" ToolTip.Tip="Word Wrap" IsChecked="{Binding #textEditor.WordWrap}">
 							<ToggleButton.Content>
-								<Path Fill="{DynamicResource HighlightBrush}" Data="{StaticResource WrapText}" Width="24" Height="24" Stretch="UniformToFill"/>
+								<Path Fill="{DynamicResource HighlightBrush}" Data="{x:Static res:Icons.WrapText}" Width="24" Height="24" Stretch="UniformToFill"/>
 							</ToggleButton.Content>
 						</ToggleButton>
 						<Button Classes="IconButton" Click="FormatAll_Click"
 								ToolTip.Tip="Format code">
-							<Path Data="{StaticResource FormatText}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
+							<Path Data="{x:Static res:Icons.FormatText}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
 						</Button>
 						<Border Width="1" Height="24"  VerticalAlignment="Center" Background="{DynamicResource ThemeControlHighBrush}"/>
 						<Button Classes="IconButton" Command="{Binding OpenHighlightingEditorCommand}" ToolTip.Tip="Highlighting Editor&#xA;Ctrl+Shift+H" >
-							<Path Data="{StaticResource ColorPaletteiOS}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
+							<Path Data="{x:Static res:Icons.ColorPaletteiOS}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
 						</Button>
 						<Button Classes="IconButton"  Command="{Binding OpenSettingsCommand}"  ToolTip.Tip="Settings&#xA;Ctrl+Shift+P" >
-							<Path Data="{StaticResource GearBold}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
+							<Path Data="{x:Static res:Icons.GearBold}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
 						</Button>
 					</StackPanel>
 					<Border DockPanel.Dock="Bottom"
@@ -437,7 +449,7 @@
 									Width="28"
 									Height="28"
 									IsVisible="{Binding IsDatabaseAlertActive}">
-								<PathIcon Data="{StaticResource DatabaseAlert}"
+								<PathIcon Data="{x:Static res:Icons.DatabaseAlert}"
 										  Width="20" Height="20"
 										  Foreground="{DynamicResource ErrorBrush}"/>
 								<Button.Flyout>
@@ -456,7 +468,7 @@
 													Padding="12,6"
 													HorizontalContentAlignment="Center">
 												<StackPanel Orientation="Horizontal" Spacing="6">
-													<PathIcon Data="{StaticResource RefreshIcon}" Width="14" Height="14"/>
+													<PathIcon Data="{x:Static res:Icons.Reload}" Width="14" Height="14"/>
 													<TextBlock Text="Run VACUUM" FontWeight="Medium"/>
 												</StackPanel>
 											</Button>
@@ -466,312 +478,312 @@
 							</Button>
 						</DockPanel>
 					</Border>
-						<AvaloniaEdit:TextEditor
-									   Name="textEditor"
-									   FontSize="{Binding EditorFontSize}"
-									   FontFamily="{Binding EditorFontFamily, Mode=TwoWay}"
-									   ShowLineNumbers="{Binding ShowLineNumbers}"
-									   HorizontalScrollBarVisibility="Auto"
-									   VerticalScrollBarVisibility="Auto"
-									   Padding="2,5,2,5"
-									   LineNumbersMargin="5,0,5,0">
-							<i:Interaction.Behaviors>
-								<behaviors:AvaloniaEditTextBindingBehavior
-									BoundText="{Binding EditorText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-							</i:Interaction.Behaviors>
-							<AvaloniaEdit:TextEditor.ContextFlyout>
-								<MenuFlyout>
-									<MenuItem Header="Undo"
-											  InputGesture="Ctrl+Z"
-											  Command="{Binding UndoCommand}"
-											  CommandParameter="{Binding #textEditor}">
+					<AvaloniaEdit:TextEditor
+								   Name="textEditor"
+								   FontSize="{Binding EditorFontSize}"
+								   FontFamily="{Binding EditorFontFamily, Mode=TwoWay}"
+								   ShowLineNumbers="{Binding ShowLineNumbers}"
+								   HorizontalScrollBarVisibility="Auto"
+								   VerticalScrollBarVisibility="Auto"
+								   Padding="2,5,2,5"
+								   LineNumbersMargin="5,0,5,0">
+						<i:Interaction.Behaviors>
+							<behaviors:AvaloniaEditTextBindingBehavior
+								BoundText="{Binding EditorText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+						</i:Interaction.Behaviors>
+						<AvaloniaEdit:TextEditor.ContextFlyout>
+							<MenuFlyout>
+								<MenuItem Header="Undo"
+										  InputGesture="Ctrl+Z"
+										  Command="{Binding UndoCommand}"
+										  CommandParameter="{Binding #textEditor}">
+									<MenuItem.Icon>
+										<PathIcon Data="{x:Static res:Icons.UndoMD}" Width="16" Height="16"
+												  Foreground="{DynamicResource ThemeAccentBrush}"/>
+									</MenuItem.Icon>
+								</MenuItem>
+								<MenuItem Header="Redo"
+										  InputGesture="Ctrl+Y"
+										  Command="{Binding RedoCommand}"
+										  CommandParameter="{Binding #textEditor}">
+									<MenuItem.Icon>
+										<PathIcon Data="{x:Static res:Icons.RedoMD}" Width="16" Height="16"
+												  Foreground="{DynamicResource ThemeAccentBrush}"/>
+									</MenuItem.Icon>
+								</MenuItem>
+								<Separator />
+								<MenuItem Header="Cut"
+										  InputGesture="Ctrl+X"
+										  Command="{Binding CutCommand}"
+										  CommandParameter="{Binding #textEditor}">
+									<MenuItem.Icon>
+										<PathIcon Data="{x:Static res:Icons.CutMD}" Width="16" Height="16"
+												  Foreground="{DynamicResource ThemeAccentBrush}"/>
+									</MenuItem.Icon>
+								</MenuItem>
+								<MenuItem Header="Copy"
+										  InputGesture="Ctrl+C"
+										  Command="{Binding CopyCommand}"
+										  CommandParameter="{Binding #textEditor}">
+									<MenuItem.Icon>
+										<PathIcon Data="{x:Static res:Icons.CopyMD}" Width="16" Height="16"
+												  Foreground="{DynamicResource ThemeAccentBrush}"/>
+									</MenuItem.Icon>
+								</MenuItem>
+								<MenuItem Header="Paste"
+										  InputGesture="Ctrl+V"
+										  Command="{Binding PasteCommand}"
+										  CommandParameter="{Binding #textEditor}">
+									<MenuItem.Icon>
+										<PathIcon Data="{x:Static res:Icons.Paste}" Width="16" Height="16"
+												  Foreground="{DynamicResource ThemeAccentBrush}"/>
+									</MenuItem.Icon>
+								</MenuItem>
+								<Separator/>
+								<MenuItem Header="Select All"
+										  InputGesture="Ctrl+A"
+										  Command="{Binding SelectAllCommand}"
+										  CommandParameter="{Binding #textEditor}">
+									<MenuItem.Icon>
+										<PathIcon Data="{x:Static res:Icons.SelectAll}" Width="16" Height="16"
+												  Foreground="{DynamicResource ThemeAccentBrush}"/>
+									</MenuItem.Icon>
+								</MenuItem>
+								<Separator/>
+								<MenuItem Header="Copy As">
+									<MenuItem.Icon>
+										<PathIcon Data="{x:Static res:Icons.ContentCopy}" Foreground="{DynamicResource ThemeAccentBrush}"
+										  Width="16" Height="16" />
+									</MenuItem.Icon>
+									<MenuItem Header="Markdown" Click="CopyAsMarkdown_Click">
 										<MenuItem.Icon>
-											<PathIcon Data="{StaticResource UndoMD}" Width="16" Height="16"
-													  Foreground="{DynamicResource ThemeAccentBrush}"/>
+											<PathIcon Data="{x:Static res:Icons.MarkdownFill}" Foreground="{DynamicResource ThemeAccentBrush}"
+											  Width="16" Height="16"/>
 										</MenuItem.Icon>
 									</MenuItem>
-									<MenuItem Header="Redo"
-											  InputGesture="Ctrl+Y"
-											  Command="{Binding RedoCommand}"
-											  CommandParameter="{Binding #textEditor}">
+									<MenuItem Header="HTML code" Click="CopyAsHtml_Click">
 										<MenuItem.Icon>
-											<PathIcon Data="{StaticResource RedoMD}" Width="16" Height="16"
-													  Foreground="{DynamicResource ThemeAccentBrush}"/>
+											<PathIcon Data="{x:Static res:Icons.FileHtml}" Foreground="{DynamicResource ThemeAccentBrush}"
+											  Width="16" Height="16"/>
 										</MenuItem.Icon>
 									</MenuItem>
-									<Separator />
-									<MenuItem Header="Cut"
-											  InputGesture="Ctrl+X"
-											  Command="{Binding CutCommand}"
-											  CommandParameter="{Binding #textEditor}">
+									<MenuItem Header="BBCode" Click="CopyAsBBCode_Click">
 										<MenuItem.Icon>
-											<PathIcon Data="{StaticResource CutMD}" Width="16" Height="16"
-													  Foreground="{DynamicResource ThemeAccentBrush}"/>
-										</MenuItem.Icon>
-									</MenuItem>
-									<MenuItem Header="Copy"
-											  InputGesture="Ctrl+C"
-											  Command="{Binding CopyCommand}"
-											  CommandParameter="{Binding #textEditor}">
-										<MenuItem.Icon>
-											<PathIcon Data="{StaticResource CopyMD}" Width="16" Height="16"
-													  Foreground="{DynamicResource ThemeAccentBrush}"/>
-										</MenuItem.Icon>
-									</MenuItem>
-									<MenuItem Header="Paste"
-											  InputGesture="Ctrl+V"
-											  Command="{Binding PasteCommand}"
-											  CommandParameter="{Binding #textEditor}">
-										<MenuItem.Icon>
-											<PathIcon Data="{StaticResource Paste}" Width="16" Height="16"
-													  Foreground="{DynamicResource ThemeAccentBrush}"/>
-										</MenuItem.Icon>
-									</MenuItem>
-									<Separator/>
-									<MenuItem Header="Select All"
-											  InputGesture="Ctrl+A"
-											  Command="{Binding SelectAllCommand}"
-											  CommandParameter="{Binding #textEditor}">
-										<MenuItem.Icon>
-											<PathIcon Data="{StaticResource SelectAll}" Width="16" Height="16"
-													  Foreground="{DynamicResource ThemeAccentBrush}"/>
-										</MenuItem.Icon>
-									</MenuItem>
-									<Separator/>
-									<MenuItem Header="Copy As">
-										<MenuItem.Icon>
-											<PathIcon Data="{StaticResource ContentCopy}" Foreground="{DynamicResource ThemeAccentBrush}"
+											<PathIcon Data="{x:Static res:Icons.CodeBrackets}"  Foreground="{DynamicResource ThemeAccentBrush}"
 											  Width="16" Height="16" />
 										</MenuItem.Icon>
-										<MenuItem Header="Markdown" Click="CopyAsMarkdown_Click">
-											<MenuItem.Icon>
-												<PathIcon Data="{StaticResource MarkdownFill}" Foreground="{DynamicResource ThemeAccentBrush}"
-												  Width="16" Height="16"/>
-											</MenuItem.Icon>
-										</MenuItem>
-										<MenuItem Header="HTML code" Click="CopyAsHtml_Click">
-											<MenuItem.Icon>
-												<PathIcon Data="{StaticResource FileHtml}" Foreground="{DynamicResource ThemeAccentBrush}"
-												  Width="16" Height="16"/>
-											</MenuItem.Icon>
-										</MenuItem>
-										<MenuItem Header="BBCode" Click="CopyAsBBCode_Click">
-											<MenuItem.Icon>
-												<PathIcon Data="{StaticResource CodeBrackets}"  Foreground="{DynamicResource ThemeAccentBrush}"
-												  Width="16" Height="16" />
-											</MenuItem.Icon>
-										</MenuItem>
-										<MenuItem Header="JSON String" Click="CopyAsJsonString_Click">
-											<MenuItem.Icon>
-												<PathIcon Data="{StaticResource Json}"  Foreground="{DynamicResource ThemeAccentBrush}"
-												  Width="16" Height="16" />
-											</MenuItem.Icon>
-										</MenuItem>
-										<MenuItem Header="Base64 String" Click="CopyAsBase64String_Click">
-											<MenuItem.Icon>
-												<PathIcon Data="{StaticResource Base64_TMP}"  Foreground="{DynamicResource ThemeAccentBrush}"
-												  Width="16" Height="16" />
-											</MenuItem.Icon>
-										</MenuItem>
 									</MenuItem>
-									<Separator />
-									<MenuItem Header="Export to">
+									<MenuItem Header="JSON String" Click="CopyAsJsonString_Click">
 										<MenuItem.Icon>
-											<PathIcon Data="{StaticResource Export}" Foreground="{DynamicResource ThemeAccentBrush}"
+											<PathIcon Data="{x:Static res:Icons.Json}"  Foreground="{DynamicResource ThemeAccentBrush}"
 											  Width="16" Height="16" />
 										</MenuItem.Icon>
-										<MenuItem Header="File" Click="ExportToFile_Click">
-											<MenuItem.Icon>
-												<PathIcon Data="{StaticResource FileExport}" Foreground="{DynamicResource ThemeAccentBrush}"
-												  Width="16" Height="16" />
-											</MenuItem.Icon>
-										</MenuItem>
-										<MenuItem Header="Image" Command="{Binding ExportToPngCommand}">
-											<MenuItem.Icon>
-												<PathIcon Data="{StaticResource ImageSave}" Foreground="{DynamicResource ThemeAccentBrush}"
-												  Width="16" Height="16" />
-											</MenuItem.Icon>
-										</MenuItem>
 									</MenuItem>
-									<Separator />
-									<MenuItem Header="Comment">
+									<MenuItem Header="Base64 String" Click="CopyAsBase64String_Click">
 										<MenuItem.Icon>
-											<PathIcon Data="{StaticResource CommentTextBold}" Width="16" Height="16"
+											<PathIcon Data="{x:Static res:Icons.Base64_TMP}"  Foreground="{DynamicResource ThemeAccentBrush}"
+											  Width="16" Height="16" />
+										</MenuItem.Icon>
+									</MenuItem>
+								</MenuItem>
+								<Separator />
+								<MenuItem Header="Export to">
+									<MenuItem.Icon>
+										<PathIcon Data="{x:Static res:Icons.Export}" Foreground="{DynamicResource ThemeAccentBrush}"
+										  Width="16" Height="16" />
+									</MenuItem.Icon>
+									<MenuItem Header="File" Click="ExportToFile_Click">
+										<MenuItem.Icon>
+											<PathIcon Data="{x:Static res:Icons.FileExport}" Foreground="{DynamicResource ThemeAccentBrush}"
+											  Width="16" Height="16" />
+										</MenuItem.Icon>
+									</MenuItem>
+									<MenuItem Header="Image" Command="{Binding ExportToPngCommand}">
+										<MenuItem.Icon>
+											<PathIcon Data="{x:Static res:Icons.ImageSave}" Foreground="{DynamicResource ThemeAccentBrush}"
+											  Width="16" Height="16" />
+										</MenuItem.Icon>
+									</MenuItem>
+								</MenuItem>
+								<Separator />
+								<MenuItem Header="Comment">
+									<MenuItem.Icon>
+										<PathIcon Data="{x:Static res:Icons.CommentTextBold}" Width="16" Height="16"
+												  Foreground="{DynamicResource ThemeAccentBrush}"/>
+									</MenuItem.Icon>
+									<MenuItem Header="Toggle SingleLine" InputGesture="Ctrl+K" Command="{Binding ToggleSingleLineCommentCommand}"  >
+										<MenuItem.Icon>
+											<PathIcon Data="{x:Static res:Icons.CommentTextThin}" Width="16" Height="16"
 													  Foreground="{DynamicResource ThemeAccentBrush}"/>
 										</MenuItem.Icon>
-										<MenuItem Header="Toggle SingleLine" InputGesture="Ctrl+K" Command="{Binding ToggleSingleLineCommentCommand}"  >
-											<MenuItem.Icon>
-												<PathIcon Data="{StaticResource CommentTextThin}" Width="16" Height="16"
-														  Foreground="{DynamicResource ThemeAccentBrush}"/>
-											</MenuItem.Icon>
-										</MenuItem>
-										<MenuItem Header="Toggle MultiLine" InputGesture="Ctrl+Shift+K" Command="{Binding ToggleMultiLineCommentCommand}">
-											<MenuItem.Icon>
-												<PathIcon Data="{StaticResource CommentTextThin}" Width="16" Height="16"
-														  Foreground="{DynamicResource ThemeAccentBrush}"/>
-											</MenuItem.Icon>
-										</MenuItem>
-										<MenuItem Header="Toggle Selection" InputGesture="Ctrl+Shift+I" Command="{Binding ToggleCommentSelectionCommand}">
-											<MenuItem.Icon>
-												<PathIcon Data="{StaticResource CommentTextThin}" Width="16" Height="16"
-														  Foreground="{DynamicResource ThemeAccentBrush}"/>
-											</MenuItem.Icon>
-										</MenuItem>
 									</MenuItem>
-									<Separator />
-									<MenuItem Header="Format with">
+									<MenuItem Header="Toggle MultiLine" InputGesture="Ctrl+Shift+K" Command="{Binding ToggleMultiLineCommentCommand}">
 										<MenuItem.Icon>
-											<PathIcon Data="{StaticResource FormatText}" Width="16" Height="16"
+											<PathIcon Data="{x:Static res:Icons.CommentTextThin}" Width="16" Height="16"
 													  Foreground="{DynamicResource ThemeAccentBrush}"/>
 										</MenuItem.Icon>
-										<MenuItem Header="black" Click="FormatBlack_Click"
-												IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
+									</MenuItem>
+									<MenuItem Header="Toggle Selection" InputGesture="Ctrl+Shift+I" Command="{Binding ToggleCommentSelectionCommand}">
+										<MenuItem.Icon>
+											<PathIcon Data="{x:Static res:Icons.CommentTextThin}" Width="16" Height="16"
+													  Foreground="{DynamicResource ThemeAccentBrush}"/>
+										</MenuItem.Icon>
+									</MenuItem>
+								</MenuItem>
+								<Separator />
+								<MenuItem Header="Format with">
+									<MenuItem.Icon>
+										<PathIcon Data="{x:Static res:Icons.FormatText}" Width="16" Height="16"
+												  Foreground="{DynamicResource ThemeAccentBrush}"/>
+									</MenuItem.Icon>
+									<MenuItem Header="black" Click="FormatBlack_Click"
+											IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
 										Converter={StaticResource LanguageToBoolConverter},
 										ConverterParameter='py'}">
-											<MenuItem.Icon>
-												<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"
-														  Foreground="{DynamicResource ThemeAccentBrush}"/>
-											</MenuItem.Icon>
-										</MenuItem>
-										<MenuItem Header="autopep8" Click="FormatAutopep8_Click"
-												IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
+										<MenuItem.Icon>
+											<PathIcon Data="{x:Static res:Icons.Indent}" Width="16" Height="16"
+													  Foreground="{DynamicResource ThemeAccentBrush}"/>
+										</MenuItem.Icon>
+									</MenuItem>
+									<MenuItem Header="autopep8" Click="FormatAutopep8_Click"
+											IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
 										Converter={StaticResource LanguageToBoolConverter},
 										ConverterParameter='py'}">
-											<MenuItem.Icon>
-												<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"
-														  Foreground="{DynamicResource ThemeAccentBrush}"/>
-											</MenuItem.Icon>
-										</MenuItem>
-										<MenuItem Header="clang-format"	Click="FormatClang_Click"
-												 IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
+										<MenuItem.Icon>
+											<PathIcon Data="{x:Static res:Icons.Indent}" Width="16" Height="16"
+													  Foreground="{DynamicResource ThemeAccentBrush}"/>
+										</MenuItem.Icon>
+									</MenuItem>
+									<MenuItem Header="clang-format"	Click="FormatClang_Click"
+											 IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
 													Converter={StaticResource LanguageToBoolConverter},
 													ConverterParameter='c,cpp,cs,java,js,d,h,mjs,ts,json,m,mm,proto,protodevel,td,txtpb,textpb,textproto,asciipb,sv,svh,v,vh'}">
-											<MenuItem.Icon>
-												<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"
-														  Foreground="{DynamicResource ThemeAccentBrush}"/>
-											</MenuItem.Icon>
-										</MenuItem>
-										<MenuItem Header="csharpier" Click="FormatCSharpier_Click"
-												IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
+										<MenuItem.Icon>
+											<PathIcon Data="{x:Static res:Icons.Indent}" Width="16" Height="16"
+													  Foreground="{DynamicResource ThemeAccentBrush}"/>
+										</MenuItem.Icon>
+									</MenuItem>
+									<MenuItem Header="csharpier" Click="FormatCSharpier_Click"
+											IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
 										Converter={StaticResource LanguageToBoolConverter},
 										ConverterParameter='cs,xml'}">
-											<MenuItem.Icon>
-												<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"
-														  Foreground="{DynamicResource ThemeAccentBrush}"/>
-											</MenuItem.Icon>
-										</MenuItem>
-										<MenuItem Header="dfmt" Click="FormatDfmt_Click"
-												IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
+										<MenuItem.Icon>
+											<PathIcon Data="{x:Static res:Icons.Indent}" Width="16" Height="16"
+													  Foreground="{DynamicResource ThemeAccentBrush}"/>
+										</MenuItem.Icon>
+									</MenuItem>
+									<MenuItem Header="dfmt" Click="FormatDfmt_Click"
+											IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
 										Converter={StaticResource LanguageToBoolConverter},
 										ConverterParameter='d'}">
-											<MenuItem.Icon>
-												<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"
-														  Foreground="{DynamicResource ThemeAccentBrush}"/>
-											</MenuItem.Icon>
-										</MenuItem>
-										<MenuItem Header="fantomas" Click="FormatFantomas_Click"
-												IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
+										<MenuItem.Icon>
+											<PathIcon Data="{x:Static res:Icons.Indent}" Width="16" Height="16"
+													  Foreground="{DynamicResource ThemeAccentBrush}"/>
+										</MenuItem.Icon>
+									</MenuItem>
+									<MenuItem Header="fantomas" Click="FormatFantomas_Click"
+											IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
 										Converter={StaticResource LanguageToBoolConverter},
 										ConverterParameter='fs,fsx'}">
-											<MenuItem.Icon>
-												<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"
-														  Foreground="{DynamicResource ThemeAccentBrush}"/>
-											</MenuItem.Icon>
-										</MenuItem>
-										<MenuItem Header="gofmt" Click="FormatGofmt_Click"
-												IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
+										<MenuItem.Icon>
+											<PathIcon Data="{x:Static res:Icons.Indent}" Width="16" Height="16"
+													  Foreground="{DynamicResource ThemeAccentBrush}"/>
+										</MenuItem.Icon>
+									</MenuItem>
+									<MenuItem Header="gofmt" Click="FormatGofmt_Click"
+											IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
 										Converter={StaticResource LanguageToBoolConverter},
 										ConverterParameter='go'}">
-											<MenuItem.Icon>
-												<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"
-														  Foreground="{DynamicResource ThemeAccentBrush}"/>
-											</MenuItem.Icon>
-										</MenuItem>
-										<MenuItem Header="pasfmt" Click="FormatPasfmt_Click"
-												IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
+										<MenuItem.Icon>
+											<PathIcon Data="{x:Static res:Icons.Indent}" Width="16" Height="16"
+													  Foreground="{DynamicResource ThemeAccentBrush}"/>
+										</MenuItem.Icon>
+									</MenuItem>
+									<MenuItem Header="pasfmt" Click="FormatPasfmt_Click"
+											IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
 										Converter={StaticResource LanguageToBoolConverter},
 										ConverterParameter='pas'}">
-											<MenuItem.Icon>
-												<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"
-														  Foreground="{DynamicResource ThemeAccentBrush}"/>
-											</MenuItem.Icon>
-										</MenuItem>
-										<MenuItem Header="prettier" Click="FormatPrettier_Click"
-												IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
+										<MenuItem.Icon>
+											<PathIcon Data="{x:Static res:Icons.Indent}" Width="16" Height="16"
+													  Foreground="{DynamicResource ThemeAccentBrush}"/>
+										</MenuItem.Icon>
+									</MenuItem>
+									<MenuItem Header="prettier" Click="FormatPrettier_Click"
+											IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
 										Converter={StaticResource LanguageToBoolConverter},
 										ConverterParameter='js,jsx,ts,tsx,css,scss,html,json,md,mdx,vue,yaml,yml'}">
-											<MenuItem.Icon>
-												<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"
-														  Foreground="{DynamicResource ThemeAccentBrush}"/>
-											</MenuItem.Icon>
-										</MenuItem>
-										<MenuItem Header="ruff" Click="FormatRuff_Click"
-												IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
+										<MenuItem.Icon>
+											<PathIcon Data="{x:Static res:Icons.Indent}" Width="16" Height="16"
+													  Foreground="{DynamicResource ThemeAccentBrush}"/>
+										</MenuItem.Icon>
+									</MenuItem>
+									<MenuItem Header="ruff" Click="FormatRuff_Click"
+											IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
 										Converter={StaticResource LanguageToBoolConverter},
 										ConverterParameter='py'}">
-											<MenuItem.Icon>
-												<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"
-														  Foreground="{DynamicResource ThemeAccentBrush}"/>
-											</MenuItem.Icon>
-										</MenuItem>
-										<MenuItem Header="rustfmt" Click="FormatRustfmt_Click"
-												IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
+										<MenuItem.Icon>
+											<PathIcon Data="{x:Static res:Icons.Indent}" Width="16" Height="16"
+													  Foreground="{DynamicResource ThemeAccentBrush}"/>
+										</MenuItem.Icon>
+									</MenuItem>
+									<MenuItem Header="rustfmt" Click="FormatRustfmt_Click"
+											IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
 										Converter={StaticResource LanguageToBoolConverter},
 										ConverterParameter='rs'}">
-											<MenuItem.Icon>
-												<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"
-														  Foreground="{DynamicResource ThemeAccentBrush}"/>
-											</MenuItem.Icon>
-										</MenuItem>
-										<MenuItem Header="stylua" Click="FormatStylua_Click"
-												IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
+										<MenuItem.Icon>
+											<PathIcon Data="{x:Static res:Icons.Indent}" Width="16" Height="16"
+													  Foreground="{DynamicResource ThemeAccentBrush}"/>
+										</MenuItem.Icon>
+									</MenuItem>
+									<MenuItem Header="stylua" Click="FormatStylua_Click"
+											IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
 										Converter={StaticResource LanguageToBoolConverter},
 										ConverterParameter='lua'}">
-											<MenuItem.Icon>
-												<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"
-														  Foreground="{DynamicResource ThemeAccentBrush}"/>
-											</MenuItem.Icon>
-										</MenuItem>
-										<MenuItem Header="shfmt" Click="FormatShfmt_Click"
-												IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
+										<MenuItem.Icon>
+											<PathIcon Data="{x:Static res:Icons.Indent}" Width="16" Height="16"
+													  Foreground="{DynamicResource ThemeAccentBrush}"/>
+										</MenuItem.Icon>
+									</MenuItem>
+									<MenuItem Header="shfmt" Click="FormatShfmt_Click"
+											IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
 										Converter={StaticResource LanguageToBoolConverter},
 										ConverterParameter='sh'}">
-											<MenuItem.Icon>
-												<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"
-														  Foreground="{DynamicResource ThemeAccentBrush}"/>
-											</MenuItem.Icon>
-										</MenuItem>
-										<MenuItem Header="sqlfmt" Click="FormatSqlfmt_Click"
-												IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
+										<MenuItem.Icon>
+											<PathIcon Data="{x:Static res:Icons.Indent}" Width="16" Height="16"
+													  Foreground="{DynamicResource ThemeAccentBrush}"/>
+										</MenuItem.Icon>
+									</MenuItem>
+									<MenuItem Header="sqlfmt" Click="FormatSqlfmt_Click"
+											IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
 										Converter={StaticResource LanguageToBoolConverter},
 										ConverterParameter='sql'}">
-											<MenuItem.Icon>
-												<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"
-														  Foreground="{DynamicResource ThemeAccentBrush}"/>
-											</MenuItem.Icon>
-										</MenuItem>
-										<MenuItem Header="zigfmt" Click="FormatZigfmt_Click"
-												IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
+										<MenuItem.Icon>
+											<PathIcon Data="{x:Static res:Icons.Indent}" Width="16" Height="16"
+													  Foreground="{DynamicResource ThemeAccentBrush}"/>
+										</MenuItem.Icon>
+									</MenuItem>
+									<MenuItem Header="zigfmt" Click="FormatZigfmt_Click"
+											IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
 										Converter={StaticResource LanguageToBoolConverter},
 										ConverterParameter='zig'}">
-											<MenuItem.Icon>
-												<PathIcon Data="{StaticResource Indent}" Width="16" Height="16"
-														  Foreground="{DynamicResource ThemeAccentBrush}"/>
-											</MenuItem.Icon>
-										</MenuItem>
+										<MenuItem.Icon>
+											<PathIcon Data="{x:Static res:Icons.Indent}" Width="16" Height="16"
+													  Foreground="{DynamicResource ThemeAccentBrush}"/>
+										</MenuItem.Icon>
 									</MenuItem>
-								</MenuFlyout>
-							</AvaloniaEdit:TextEditor.ContextFlyout>
-							<AvaloniaEdit:TextEditor.Styles>
-								<Style Selector="editing|LineNumberMargin">
-									<Setter Property="MinWidthInDigits" Value="3" />
-								</Style>
-								<Style Selector="ScrollViewer">
-									<Setter Property="AllowAutoHide" Value="False" />
-									<Setter Property="Classes.InsetContent" Value="True" />
-								</Style>
-							</AvaloniaEdit:TextEditor.Styles>
-						</AvaloniaEdit:TextEditor>
+								</MenuItem>
+							</MenuFlyout>
+						</AvaloniaEdit:TextEditor.ContextFlyout>
+						<AvaloniaEdit:TextEditor.Styles>
+							<Style Selector="editing|LineNumberMargin">
+								<Setter Property="MinWidthInDigits" Value="3" />
+							</Style>
+							<Style Selector="ScrollViewer">
+								<Setter Property="AllowAutoHide" Value="False" />
+								<Setter Property="Classes.InsetContent" Value="True" />
+							</Style>
+						</AvaloniaEdit:TextEditor.Styles>
+					</AvaloniaEdit:TextEditor>
 				</DockPanel>
 			</SplitView.Content>
 		</SplitView>

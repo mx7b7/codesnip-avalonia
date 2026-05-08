@@ -7,6 +7,7 @@
 			 xmlns:vm="clr-namespace:CodeSnip.Views.LanguageCategoryView"
 			 x:DataType="vm:LanguageCategoryViewModel"
 			 xmlns:helpers="clr-namespace:CodeSnip.Helpers"
+			 xmlns:res="using:CodeSnip.Resources"
 			 Background="{DynamicResource ThemeBackgroundBrush}">
 
 	<UserControl.Resources>
@@ -35,7 +36,7 @@
 					ToolTip.Tip="Close"
 					Command="{Binding CloseCommand}"
 					HorizontalAlignment="Right">
-				<Path Data="{StaticResource ArrowLeftBoldBox}"
+				<Path Data="{x:Static res:Icons.ArrowLeftBoldBox}"
 					  Width="28"
 					  Height="28"
 					  Fill="{DynamicResource ThemeAccentBrush}"
@@ -85,11 +86,11 @@
 					<Button Content="Delete" Command="{Binding DeleteLanguageCommand}" Width="80"/>
 					<Button Classes="IconButton" Command="{Binding ForceDeleteLanguageCommand}"
 							ToolTip.Tip="Deletes the language and ALL its categories and snippets">
-						<Path Data="{StaticResource DeleteAlert}" Fill="Red" Width="25" Height="25" Stretch="UniformToFill"/>
+						<Path Data="{x:Static res:Icons.DeleteAlert}" Fill="Red" Width="25" Height="25" Stretch="UniformToFill"/>
 					</Button>
 					<Button Classes="IconButton" Command="{Binding CreateXshdForLanguageCommand}"
 							ToolTip.Tip="{Binding NewLanguageCode, StringFormat='Create new or add missing {0}.xshd templates', FallbackValue='Create .xshd templates'}}">
-						<Path Data="{StaticResource FileXml}" Fill="{DynamicResource HighlightBrush}" Width="25" Height="25" Stretch="UniformToFill"/>
+						<Path Data="{x:Static res:Icons.FileXml}" Fill="{DynamicResource HighlightBrush}" Width="25" Height="25" Stretch="UniformToFill"/>
 					</Button>
 				</StackPanel>
 
@@ -119,7 +120,7 @@
 					<Button Content="Delete" Command="{Binding DeleteCategoryCommand}" Width="80"/>
 					<Button Classes="IconButton" Command="{Binding ForceDeleteCategoryCommand}"
 							ToolTip.Tip="Deletes the category and ALL its snippets">
-						<Path Data="{StaticResource DeleteAlert}" Fill="Red" Width="25" Height="25"  Stretch="UniformToFill"/>
+						<Path Data="{x:Static res:Icons.DeleteAlert}" Fill="Red" Width="25" Height="25"  Stretch="UniformToFill"/>
 					</Button>
 				</StackPanel>
 

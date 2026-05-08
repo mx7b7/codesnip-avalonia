@@ -6,6 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:CodeSnip.Views.SnippetView"
     x:DataType="vm:SnippetViewModel"
+	xmlns:res="using:CodeSnip.Resources"
 	Background="{DynamicResource ThemeBackgroundBrush}">
 
 	<Grid>
@@ -30,7 +31,7 @@
 					ToolTip.Tip="Close"
 					Command="{Binding CancelCommand}"
 					HorizontalAlignment="Right">
-				<Path Data="{StaticResource ArrowLeftBoldBox}"
+				<Path Data="{x:Static res:Icons.ArrowLeftBoldBox}"
 					  Width="28"
 					  Height="28"
 					  Fill="{DynamicResource ThemeAccentBrush}"

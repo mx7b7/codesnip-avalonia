@@ -9,6 +9,7 @@
 			 xmlns:behaviors="using:CodeSnip.Helpers"
 			 xmlns:AvaloniaEdit="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit"
 			 xmlns:helpers="clr-namespace:CodeSnip.Helpers"
+			 xmlns:res="using:CodeSnip.Resources"
 			 Background="{DynamicResource ThemeBackgroundBrush}">
 
 	<Grid>
@@ -18,7 +19,7 @@
 		</Grid.RowDefinitions>
 		<StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10">
 			<Button Classes="IconButton" Margin="0,0,10,0" ToolTip.Tip="Close" Command="{Binding CancelCommand}">
-				<Path Data="{StaticResource ArrowRightBoldBox}" Width="28" Height="28" Fill="{DynamicResource ThemeAccentBrush}" Stretch="UniformToFill"/>
+				<Path Data="{x:Static res:Icons.ArrowRightBoldBox}" Width="28" Height="28" Fill="{DynamicResource ThemeAccentBrush}" Stretch="UniformToFill"/>
 			</Button>
 			<TextBlock Text="{Binding HeaderText}" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center"/>
 		</StackPanel>
@@ -90,7 +91,7 @@
 						Command="{Binding KillRunningProcessCommand}"
 						Margin="10,0,0,0"
 						ToolTip.Tip="Kill running process">
-					<Path Data="{StaticResource TerminalX}"
+					<Path Data="{x:Static res:Icons.TerminalX}"
 						  Fill="{DynamicResource ThemeAccentBrush}"
 						  Stretch="UniformToFill"
 						  Width="25"
@@ -102,7 +103,7 @@
 						Grid.Column="3"
 						Margin="10,0,0,0"
 						ToolTip.Tip="Reload snipppet code">
-					<Path Data="{StaticResource Reload}"
+					<Path Data="{x:Static res:Icons.Reload}"
 						  Fill="{DynamicResource ThemeAccentBrush}"
 						  Stretch="UniformToFill"
 						  Width="25"
