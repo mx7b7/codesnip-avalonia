@@ -29,7 +29,7 @@
 					ToolTip.Tip="Close"
 					Command="{Binding CloseCommand}"
 					HorizontalAlignment="Left">
-				<Path Data="{x:Static res:Icons.ArrowRightBoldBox}"
+				<Path Data="{x:Static res:Icons.ArrowRightBoldCircleOutline}"
 					  Width="28"
 					  Height="28"
 					  Fill="{DynamicResource ThemeAccentBrush}"
@@ -48,8 +48,8 @@
 					Command="{Binding ResetSettingsCommand}"
 					HorizontalAlignment="Right">
 				<Path Data="{x:Static res:Icons.ResetSettings}"
-					  Width="28"
-					  Height="28"
+					  Width="24"
+					  Height="24"
 					  Fill="{DynamicResource ThemeAccentBrush}"
 					  Stretch="UniformToFill"/>
 			</Button>

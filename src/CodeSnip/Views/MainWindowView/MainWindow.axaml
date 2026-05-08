@@ -47,14 +47,14 @@
 			    Command="{Binding ToggleThemeCommand}"
 			    ToolTip.Tip="Switch Theme">
 				<PathIcon Data="{x:Static res:Icons.ThemeLightDark}"
-						  Width="20" Height="20"
+						  Width="18" Height="18"
 						  Foreground="{DynamicResource HighlightBrush}"/>
 			</Button>
 			<Button
 				Classes="IconButton"
 			    ToolTip.Tip="Pick Accent">
 				<PathIcon Data="{x:Static res:Icons.ColorPaletteiOS}"
-						  Width="20" Height="20"
+						  Width="18" Height="18"
 						  Foreground="{DynamicResource HighlightBrush}"/>
 				<Button.Flyout>
 					<Flyout>
@@ -72,7 +72,7 @@
 			    Click="About_Click"
 			    ToolTip.Tip="About">
 				<PathIcon Data="{x:Static res:Icons.InfoCircle}"
-						  Width="20" Height="20"
+						  Width="18" Height="18"
 						  Foreground="{DynamicResource HighlightBrush}"/>
 			</Button>
 		</StackPanel>
@@ -185,8 +185,8 @@
 								 BorderThickness="0 0 0 1"
 								 HorizontalAlignment="Stretch"
 								 Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
-								 FontSize="14"
-								 MinHeight="30">
+								 FontSize="13"
+								 MinHeight="28">
 							<TextBox.InnerRightContent>
 								<Button Classes="IconButton"
 										Cursor="Hand"
@@ -230,7 +230,7 @@
 									<TreeDataTemplate x:DataType="langcat:Language" ItemsSource="{Binding Categories}">
 										<StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
 											<Viewbox Width="20" Height="20">
-												<Path Data="{x:Static res:Icons.LanguageIconFill}"
+												<Path Data="{x:Static res:Icons.LanguageIcon}"
 													  Fill="{DynamicResource HighlightBrush}"
 													  Stretch="Uniform"/>
 											</Viewbox>
@@ -357,80 +357,122 @@
 						Spacing="5" Background="{DynamicResource ThemeBackgroundBrush}">
 						<Button Classes="IconButton" Command="{Binding TogglePanelCommand}"
 								ToolTip.Tip="Open/Close">
-							<Path Data="{Binding OpenCloseIcon}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
+							<Viewbox Width="22" Height="22">
+							<Path Data="{Binding OpenCloseIcon}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill"/>
+								</Viewbox>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding SaveCodeCommand}"
 								ToolTip.Tip="Save snippet&#xA;Ctrl+S">
-							<Path Data="{x:Static res:Icons.Save}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
+							<Viewbox Width="22" Height="22">
+							<Path Data="{x:Static res:Icons.Save}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill"/>
+								</Viewbox>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding AddSnippetCommand}"
 								ToolTip.Tip="Add snippet&#xA;Ctrl+Shift+A">
-							<Path Data="{x:Static res:Icons.FileAdd}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
+							<Viewbox Width="22" Height="22">
+							<Path Data="{x:Static res:Icons.FileAdd}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill"/>
+								</Viewbox>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding EditSnippetCommand}"
 								ToolTip.Tip="Edit snippet&#xA;Ctrl+Shift+E">
-							<Path Data="{x:Static res:Icons.FileEdit}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
+							<Viewbox Width="22" Height="22">
+							<Path Data="{x:Static res:Icons.FileEdit}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill"/>
+								</Viewbox>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding DeleteSnippetCommand}"
 								ToolTip.Tip="Delete snippet&#xA;Ctrl+Shift+D">
-							<Path Data="{x:Static res:Icons.Trash}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
+							<Viewbox Width="22" Height="22">
+								<Path Data="{x:Static res:Icons.TrashOutline}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill">
+									<Path.RenderTransform>
+										<ScaleTransform ScaleY="-1"/>
+									</Path.RenderTransform>
+								</Path>
+								</Viewbox>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding EditLanguageCategoryCommand}"
 								ToolTip.Tip="Language/Category edit&#xA;Ctrl+Shift+L">
-							<Path Data="{x:Static res:Icons.CategoryEdit}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform">
-								<Path.RenderTransform>
-									<ScaleTransform ScaleY="-1"/>
-								</Path.RenderTransform>
-							</Path>
+							<Viewbox Width="22" Height="22">
+							<Path Data="{x:Static res:Icons.TreeViewOutline}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill"/>
+								</Viewbox>
 						</Button>
 						<Button Classes="IconButton" ToolTip.Tip="Load snippets" IsEnabled="{Binding IsLoadSnippetEnabled}"
 								Command="{Binding LoadSnippetsDatabaseCommand}">
-							<Path Data="{x:Static res:Icons.DatabaseRefresh}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
+							<Viewbox Width="22" Height="22">
+							<Path Data="{x:Static res:Icons.DatabaseRefreshOutline}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill"/>
+								</Viewbox>
 						</Button>
-						<Border Width="1" Height="24"  VerticalAlignment="Center" Background="{DynamicResource ThemeControlHighBrush}"/>
+						<Border Width="1" Height="22"  VerticalAlignment="Center" Background="{DynamicResource ThemeControlHighBrush}"/>
 						<Button Classes="IconButton" Command="{Binding OpenCodeRunnerViewCommand}"
 								ToolTip.Tip="Run&#xA;Ctrl+Shift+R">
-							<Path Data="{x:Static res:Icons.DebugStart}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
+							<Viewbox Width="22" Height="22">
+							<Path Data="{x:Static res:Icons.DebugStart}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill"/>
+								</Viewbox>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding OpenCompilerSettingsCommand}"
 								ToolTip.Tip="Compiler Explorer settings">
-							<Path Data="{x:Static res:Icons.CompilerExplorer}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
+							<Viewbox Width="22" Height="22">
+							<Path Data="{x:Static res:Icons.CompilerExplorer}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill"/>
+								</Viewbox>
 						</Button>
-						<Border Width="1" Height="24"  VerticalAlignment="Center" Background="{DynamicResource ThemeControlHighBrush}"/>
+						<Border Width="1" Height="22"  VerticalAlignment="Center" Background="{DynamicResource ThemeControlHighBrush}"/>
 						<Button Classes="IconButton" Command="{Binding IncreaseFontSizeCommand}"
 								ToolTip.Tip="Zoom In&#xA;Ctrl++">
-							<Path Data="{x:Static res:Icons.ZoomIn}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
+							<Viewbox Width="22" Height="22">
+								<Path Data="{x:Static res:Icons.ZoomInOutline}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill">
+									<Path.RenderTransform>
+										<ScaleTransform ScaleY="-1"/>
+									</Path.RenderTransform>
+								</Path>
+								</Viewbox>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding DecreaseFontSizeCommand}"
 								ToolTip.Tip="Zoom Out&#xA;Ctrl+-">
-							<Path Data="{x:Static res:Icons.ZoomOut}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
-						</Button>
-						<Button Classes="IconButton" Command="{Binding ResetFontSizeCommand}"
-								ToolTip.Tip="Reset Zoom&#xA;Ctrl+0">
-							<Path Data="{x:Static res:Icons.ZoomOutMap}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform">
+							<Viewbox Width="22" Height="22">
+							<Path Data="{x:Static res:Icons.ZoomOutOutline}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill">
 								<Path.RenderTransform>
 									<ScaleTransform ScaleY="-1"/>
 								</Path.RenderTransform>
 							</Path>
+								</Viewbox>
+						</Button>
+						<Button Classes="IconButton" Command="{Binding ResetFontSizeCommand}"
+								ToolTip.Tip="Reset Zoom&#xA;Ctrl+0">
+							<Viewbox Width="22" Height="22">
+							<Path Data="{x:Static res:Icons.ZoomOutMap}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill">
+								<Path.RenderTransform>
+									<ScaleTransform ScaleY="-1"/>
+								</Path.RenderTransform>
+							</Path>
+								</Viewbox>
 						</Button>
 						<ToggleButton Classes="ToggleIconButton"  ToolTip.Tip="Disable Intendation" IsChecked="{Binding DisableIndentation, Mode=TwoWay}">
-							<Path Data="{x:Static res:Icons.FormatIndentDecrease}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
+							<Viewbox Width="22" Height="22">
+							<Path Data="{x:Static res:Icons.FormatIndentDecrease}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill"/>
+								</Viewbox>
 						</ToggleButton>
 						<ToggleButton Classes="ToggleIconButton" ToolTip.Tip="Word Wrap" IsChecked="{Binding #textEditor.WordWrap}">
 							<ToggleButton.Content>
-								<Path Fill="{DynamicResource HighlightBrush}" Data="{x:Static res:Icons.WrapText}" Width="24" Height="24" Stretch="UniformToFill"/>
+								<Viewbox Width="22" Height="22">
+								<Path Fill="{DynamicResource HighlightBrush}" Data="{x:Static res:Icons.WrapText}" Stretch="UniformToFill"/>
+									</Viewbox>
 							</ToggleButton.Content>
 						</ToggleButton>
 						<Button Classes="IconButton" Click="FormatAll_Click"
 								ToolTip.Tip="Format code">
-							<Path Data="{x:Static res:Icons.FormatText}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
+							<Viewbox Width="22" Height="22">
+								<Path Data="{x:Static res:Icons.FormatText}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill"/>
+							</Viewbox>
 						</Button>
-						<Border Width="1" Height="24"  VerticalAlignment="Center" Background="{DynamicResource ThemeControlHighBrush}"/>
+						<Border Width="1" Height="22"  VerticalAlignment="Center" Background="{DynamicResource ThemeControlHighBrush}"/>
 						<Button Classes="IconButton" Command="{Binding OpenHighlightingEditorCommand}" ToolTip.Tip="Highlighting Editor&#xA;Ctrl+Shift+H" >
-							<Path Data="{x:Static res:Icons.ColorPaletteiOS}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
+							<Viewbox Width="22" Height="22">
+								<Path Data="{x:Static res:Icons.PaletteOutline}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill"/>
+							</Viewbox>
 						</Button>
 						<Button Classes="IconButton"  Command="{Binding OpenSettingsCommand}"  ToolTip.Tip="Settings&#xA;Ctrl+Shift+P" >
-							<Path Data="{x:Static res:Icons.GearBold}" Width="24" Height="24" Fill="{DynamicResource HighlightBrush}" Stretch="Uniform"/>
+							<Viewbox Width="22" Height="22">
+								<Path Data="{x:Static res:Icons.GearBold}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill"/>
+							</Viewbox>
 						</Button>
 					</StackPanel>
 					<Border DockPanel.Dock="Bottom"

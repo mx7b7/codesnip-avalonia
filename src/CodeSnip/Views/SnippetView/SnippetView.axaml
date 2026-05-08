@@ -31,7 +31,7 @@
 					ToolTip.Tip="Close"
 					Command="{Binding CancelCommand}"
 					HorizontalAlignment="Right">
-				<Path Data="{x:Static res:Icons.ArrowLeftBoldBox}"
+				<Path Data="{x:Static res:Icons.ArrowLeftBoldCircleOutline}"
 					  Width="28"
 					  Height="28"
 					  Fill="{DynamicResource ThemeAccentBrush}"

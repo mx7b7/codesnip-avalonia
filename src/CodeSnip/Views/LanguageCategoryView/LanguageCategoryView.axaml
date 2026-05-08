@@ -36,7 +36,7 @@
 					ToolTip.Tip="Close"
 					Command="{Binding CloseCommand}"
 					HorizontalAlignment="Right">
-				<Path Data="{x:Static res:Icons.ArrowLeftBoldBox}"
+				<Path Data="{x:Static res:Icons.ArrowLeftBoldCircleOutline}"
 					  Width="28"
 					  Height="28"
 					  Fill="{DynamicResource ThemeAccentBrush}"
@@ -86,7 +86,7 @@
 					<Button Content="Delete" Command="{Binding DeleteLanguageCommand}" Width="80"/>
 					<Button Classes="IconButton" Command="{Binding ForceDeleteLanguageCommand}"
 							ToolTip.Tip="Deletes the language and ALL its categories and snippets">
-						<Path Data="{x:Static res:Icons.DeleteAlert}" Fill="Red" Width="25" Height="25" Stretch="UniformToFill"/>
+						<Path Data="{x:Static res:Icons.DeleteAlertOutline}" Fill="Red" Width="25" Height="25" Stretch="UniformToFill"/>
 					</Button>
 					<Button Classes="IconButton" Command="{Binding CreateXshdForLanguageCommand}"
 							ToolTip.Tip="{Binding NewLanguageCode, StringFormat='Create new or add missing {0}.xshd templates', FallbackValue='Create .xshd templates'}}">
@@ -120,7 +120,7 @@
 					<Button Content="Delete" Command="{Binding DeleteCategoryCommand}" Width="80"/>
 					<Button Classes="IconButton" Command="{Binding ForceDeleteCategoryCommand}"
 							ToolTip.Tip="Deletes the category and ALL its snippets">
-						<Path Data="{x:Static res:Icons.DeleteAlert}" Fill="Red" Width="25" Height="25"  Stretch="UniformToFill"/>
+						<Path Data="{x:Static res:Icons.DeleteAlertOutline}" Fill="Red" Width="25" Height="25"  Stretch="UniformToFill"/>
 					</Button>
 				</StackPanel>
 
