@@ -12,7 +12,7 @@
 				<Border
                     Width="400"
                     Height="400"
-                    Background="aqua" />
+                    Background="#252525" />
 			</ScrollViewer>
 		</StackPanel>
 	</Design.PreviewWith>
@@ -199,12 +199,12 @@
 		<Style Selector="^:horizontal /template/ Thumb#thumb">
 			<Setter Property="MinWidth" Value="24" />
 			<Setter Property="Height" Value="{DynamicResource ScrollBarThumbThickness}" />
-			<Setter Property="VerticalAlignment" Value="Bottom"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
 		</Style>
 		<Style Selector="^:vertical /template/ Thumb#thumb">
 			<Setter Property="MinHeight" Value="24" />
 			<Setter Property="Width" Value="{DynamicResource ScrollBarThumbThickness}" />
-			<Setter Property="HorizontalAlignment" Value="Right"/>
+			<Setter Property="HorizontalAlignment" Value="Center"/>
 		</Style>
 		<Style Selector="^ /template/ RepeatButton.repeat">
 			<Setter Property="Padding" Value="0" />
