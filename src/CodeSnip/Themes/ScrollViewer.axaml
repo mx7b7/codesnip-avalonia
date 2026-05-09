@@ -38,7 +38,7 @@
 		<Setter Property="Cursor" Value="Arrow" />
 		<Setter Property="ShowDelay" Value="0" />
 		<Style Selector="^:horizontal">
-			<Setter Property="Height" Value="{StaticResource ScrollBarThickness}" />
+			<Setter Property="Height" Value="{DynamicResource ScrollBarThickness}" />
 			<Setter Property="Template">
 				<ControlTemplate TargetType="ScrollBar">
 					<Border
@@ -49,7 +49,7 @@
                                 Name="PART_LineUpButton"
                                 Grid.Row="0"
                                 Grid.Column="0"
-                                MinWidth="{StaticResource ScrollBarThickness}"
+                                MinWidth="{DynamicResource ScrollBarThickness}"
                                 VerticalAlignment="Center"
                                 Focusable="False"
                                 AutomationProperties.Name="Column left"
@@ -105,7 +105,7 @@
 			</Setter>
 		</Style>
 		<Style Selector="^:vertical">
-			<Setter Property="Width" Value="{StaticResource ScrollBarThickness}" />
+			<Setter Property="Width" Value="{DynamicResource ScrollBarThickness}" />
 			<Setter Property="Template">
 				<ControlTemplate TargetType="ScrollBar">
 					<Border
@@ -115,7 +115,7 @@
 							<RepeatButton
                                 Name="PART_LineUpButton"
                                 Grid.Row="0"
-                                MinHeight="{StaticResource ScrollBarThickness}"
+                                MinHeight="{DynamicResource ScrollBarThickness}"
                                 VerticalAlignment="Center"
                                 HorizontalContentAlignment="Center"
                                 VerticalContentAlignment="Center"
@@ -237,10 +237,10 @@
 				<Setter Property="Height" Value="2" />
 			</Style>
 			<Style Selector="^:vertical">
-				<Setter	Property="Width" Value="{StaticResource ScrollBarThickness}" />
+				<Setter	Property="Width" Value="{DynamicResource ScrollBarThickness}" />
 			</Style>
 			<Style Selector="^:horizontal">
-				<Setter	Property="Height" Value="{StaticResource ScrollBarThickness}" />
+				<Setter	Property="Height" Value="{DynamicResource ScrollBarThickness}" />
 			</Style>
 		</Style>
 	</ControlTheme>

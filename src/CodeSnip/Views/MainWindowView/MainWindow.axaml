@@ -217,7 +217,7 @@
 									  Padding="0,0,0,10"
 									  ItemsSource="{Binding Languages}"
 								      SelectedItem="{Binding SelectedNode}" Classes.InsetContent="True">
-
+								
 								<TreeView.Styles>
 									<Style Selector="TreeViewItem" x:DataType="treemodel:ITreeNode">
 										<Setter Property="IsExpanded"  Value="{Binding IsExpanded, Mode=TwoWay}"/>
@@ -820,6 +820,12 @@
 						<AvaloniaEdit:TextEditor.Styles>
 							<Style Selector="editing|LineNumberMargin">
 								<Setter Property="MinWidthInDigits" Value="3" />
+							</Style>
+							<Style Selector="ScrollBar">
+								<Style.Resources>
+									<x:Double x:Key="ScrollBarThickness">12</x:Double>
+									<x:Double x:Key="ScrollBarThumbThickness">12</x:Double>
+								</Style.Resources>
 							</Style>
 							<Style Selector="ScrollViewer">
 								<Setter Property="AllowAutoHide" Value="False" />

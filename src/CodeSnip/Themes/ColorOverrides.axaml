@@ -88,6 +88,6 @@
 	<sys:Double x:Key="FontSizeMedium">14</sys:Double>
 	<sys:Double x:Key="FontSizeLarge">16</sys:Double>
 
-	<sys:Double x:Key="ScrollBarThickness">10</sys:Double>
-	<sys:Double x:Key="ScrollBarThumbThickness">10</sys:Double>
+	<sys:Double x:Key="ScrollBarThickness">8</sys:Double>
+	<sys:Double x:Key="ScrollBarThumbThickness">8</sys:Double>
 </ResourceDictionary>
