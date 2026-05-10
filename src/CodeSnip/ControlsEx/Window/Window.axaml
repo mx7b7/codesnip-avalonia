@@ -11,7 +11,7 @@ Copyright (c) 2026 mx7b7 (https://github.com/mx7b7)
                     xmlns:system="clr-namespace:System;assembly=netstandard"
                     xmlns:codesnip="clr-namespace:CodeSnip.ControlsEx.Window"
 					xmlns:i="clr-namespace:CodeSnip.Resources">
-	
+
 
 	<ControlTheme TargetType="Button" x:Key="WindowButtonStyle">
 		<Setter Property="VerticalContentAlignment" Value="Center" />
@@ -67,146 +67,152 @@ Copyright (c) 2026 mx7b7 (https://github.com/mx7b7)
 		<Setter Property="BorderBrush" Value="{DynamicResource BorderColor60}" />
 		<Setter Property="Template">
 			<ControlTemplate>
-				<Border
-                    Background="{TemplateBinding Background}"
-                    BorderBrush="{TemplateBinding BorderBrush}"
-                    BorderThickness="{TemplateBinding BorderThickness}"
-                    ClipToBounds="True"
-                    CornerRadius="{TemplateBinding RootCornerRadius}"
-                    Margin="{TemplateBinding Margin}">
-					<VisualLayerManager IsHitTestVisible="True">
-						<VisualLayerManager.ChromeOverlayLayer>
-							<ItemsControl ItemsSource="{CompiledBinding Hosts, RelativeSource={RelativeSource AncestorType={x:Type codesnip:Window}}}">
-								<ItemsControl.ItemsPanel>
-									<ItemsPanelTemplate>
-										<Panel />
-									</ItemsPanelTemplate>
-								</ItemsControl.ItemsPanel>
-							</ItemsControl>
-						</VisualLayerManager.ChromeOverlayLayer>
-						<Panel Name="PART_Root">
-							<DockPanel LastChildFill="True">
-								<Panel DockPanel.Dock="Top">
-									<Panel.Styles>
-										<Style Selector="codesnip|Window[ShowBottomBorder=True] /template/ Border#BottomBorder">
-											<Setter Property="BorderThickness" Value="0,0,0,1" />
-										</Style>
-										<Style Selector="codesnip|Window[ShowBottomBorder=False] /template/ Border#BottomBorder">
-											<Setter Property="BorderThickness" Value="0,0,0,0" />
-										</Style>
-									</Panel.Styles>
-									<StackPanel ClipToBounds="True">
-										<LayoutTransformControl Name="LayoutTransform" RenderTransformOrigin="0%,0%">
-											<Border ClipToBounds="True" CornerRadius="{TemplateBinding RootCornerRadius, Converter={x:Static codesnip:CornerRadiusConverters.TopOnly}}">
-												<Panel Margin="0,-1,0,0">
-													<Border IsVisible="{TemplateBinding ShowTitlebarBackground}" Name="PART_TitleBarBackground" />
-													<DockPanel LastChildFill="True">
-														<StackPanel
-                                                            DockPanel.Dock="Right"
-                                                            Orientation="Horizontal"
-                                                            Spacing="6">
-															<StackPanel.Styles>
-																<Style Selector="PathIcon">
-																	<Setter Property="Height" Value="10" />
-																	<Setter Property="Width" Value="10" />
-																</Style>
-															</StackPanel.Styles>
-															<ContentPresenter
-                                                                Content="{TemplateBinding RightWindowTitleBarContent}"
-                                                                IsVisible="{TemplateBinding RightWindowTitleBarContent,
+				<!-- TODO: Temporary fix for AvaloniaEdit right scrollbar hit-testing, remove border when migrate to v12 -->
+				<Border Name="PART_OutBorder" Background="Transparent"
+						Padding="5"
+						IsHitTestVisible="True">
+					<!--..................................................................................................-->
+					<Border
+						Background="{TemplateBinding Background}"
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="{TemplateBinding BorderThickness}"
+						ClipToBounds="True"
+						CornerRadius="{TemplateBinding RootCornerRadius}"
+						Margin="{TemplateBinding Margin}">
+						<VisualLayerManager IsHitTestVisible="True">
+							<VisualLayerManager.ChromeOverlayLayer>
+								<ItemsControl ItemsSource="{CompiledBinding Hosts, RelativeSource={RelativeSource AncestorType={x:Type codesnip:Window}}}">
+									<ItemsControl.ItemsPanel>
+										<ItemsPanelTemplate>
+											<Panel />
+										</ItemsPanelTemplate>
+									</ItemsControl.ItemsPanel>
+								</ItemsControl>
+							</VisualLayerManager.ChromeOverlayLayer>
+							<Panel Name="PART_Root">
+								<DockPanel LastChildFill="True">
+									<Panel DockPanel.Dock="Top">
+										<Panel.Styles>
+											<Style Selector="codesnip|Window[ShowBottomBorder=True] /template/ Border#BottomBorder">
+												<Setter Property="BorderThickness" Value="0,0,0,1" />
+											</Style>
+											<Style Selector="codesnip|Window[ShowBottomBorder=False] /template/ Border#BottomBorder">
+												<Setter Property="BorderThickness" Value="0,0,0,0" />
+											</Style>
+										</Panel.Styles>
+										<StackPanel ClipToBounds="True">
+											<LayoutTransformControl Name="LayoutTransform" RenderTransformOrigin="0%,0%">
+												<Border ClipToBounds="True" CornerRadius="{TemplateBinding RootCornerRadius, Converter={x:Static codesnip:CornerRadiusConverters.TopOnly}}">
+													<Panel Margin="0,-1,0,0">
+														<Border IsVisible="{TemplateBinding ShowTitlebarBackground}" Name="PART_TitleBarBackground" />
+														<DockPanel LastChildFill="True">
+															<StackPanel
+																DockPanel.Dock="Right"
+																Orientation="Horizontal"
+																Spacing="6">
+																<StackPanel.Styles>
+																	<Style Selector="PathIcon">
+																		<Setter Property="Height" Value="10" />
+																		<Setter Property="Width" Value="10" />
+																	</Style>
+																</StackPanel.Styles>
+																<ContentPresenter
+																	Content="{TemplateBinding RightWindowTitleBarContent}"
+																	IsVisible="{TemplateBinding RightWindowTitleBarContent,
                                                                                             Converter={x:Static ObjectConverters.IsNotNull}}"
-                                                                Margin="0,3,2,2"
-                                                                Name="RightButtons" />
-															<StackPanel Name="ButtonsPanel" Orientation="Horizontal">
-																<StackPanel.IsVisible>
-																	<OnPlatform
-                                                                        Linux="True"
-                                                                        Windows="True"
-                                                                        macOS="False"
-                                                                        x:TypeArguments="system:Boolean" />
-																</StackPanel.IsVisible>
-																<Button
-                                                                    IsEnabled="{TemplateBinding CanMinimize}"
-                                                                    IsVisible="{TemplateBinding CanMinimize}"
-                                                                    Margin="0,0,0,1"
-                                                                    Name="PART_MinimizeButton"
-                                                                    Theme="{StaticResource WindowButtonStyle}">
-																	<PathIcon Data="{x:Static i:Icons.WindowMinimize}" 
-																			  Name="MinimizeIcon" />
-																</Button>
-																<Button
-                                                                    IsVisible="{TemplateBinding CanMaximize}"
-                                                                    Margin="0,0,0,1"
-                                                                    Name="PART_MaximizeButton"
-                                                                    Theme="{StaticResource WindowButtonStyle}">
-																	<Button.IsEnabled>
-																		<MultiBinding Converter="{x:Static BoolConverters.And}">
-																			<Binding Path="$parent[codesnip:Window].CanResize" />
-																			<Binding Path="$parent[codesnip:Window].CanMaximize" />
-																		</MultiBinding>
-																	</Button.IsEnabled>
-																	<PathIcon
-                                                                        Data="{x:Static i:Icons.WindowMaximize}"
-                                                                        IsHitTestVisible="False"
-                                                                        Name="MaximizeIcon" />
-																</Button>
-																<Button
-                                                                    Classes="Close"
-                                                                    Margin="0,0,0,1"
-                                                                    Name="PART_CloseButton"
-                                                                    Theme="{StaticResource WindowButtonStyle}">
-																	<PathIcon
-                                                                        Data="{x:Static i:Icons.WindowClose}"
-                                                                        Foreground="{CompiledBinding Foreground,
+																	Margin="0,3,2,2"
+																	Name="RightButtons" />
+																<StackPanel Name="ButtonsPanel" Orientation="Horizontal">
+																	<StackPanel.IsVisible>
+																		<OnPlatform
+																			Linux="True"
+																			Windows="True"
+																			macOS="False"
+																			x:TypeArguments="system:Boolean" />
+																	</StackPanel.IsVisible>
+																	<Button
+																		IsEnabled="{TemplateBinding CanMinimize}"
+																		IsVisible="{TemplateBinding CanMinimize}"
+																		Margin="0,0,0,1"
+																		Name="PART_MinimizeButton"
+																		Theme="{StaticResource WindowButtonStyle}">
+																		<PathIcon Data="{x:Static i:Icons.WindowMinimize}"
+																				  Name="MinimizeIcon" />
+																	</Button>
+																	<Button
+																		IsVisible="{TemplateBinding CanMaximize}"
+																		Margin="0,0,0,1"
+																		Name="PART_MaximizeButton"
+																		Theme="{StaticResource WindowButtonStyle}">
+																		<Button.IsEnabled>
+																			<MultiBinding Converter="{x:Static BoolConverters.And}">
+																				<Binding Path="$parent[codesnip:Window].CanResize" />
+																				<Binding Path="$parent[codesnip:Window].CanMaximize" />
+																			</MultiBinding>
+																		</Button.IsEnabled>
+																		<PathIcon
+																			Data="{x:Static i:Icons.WindowMaximize}"
+																			IsHitTestVisible="False"
+																			Name="MaximizeIcon" />
+																	</Button>
+																	<Button
+																		Classes="Close"
+																		Margin="0,0,0,1"
+																		Name="PART_CloseButton"
+																		Theme="{StaticResource WindowButtonStyle}">
+																		<PathIcon
+																			Data="{x:Static i:Icons.WindowClose}"
+																			Foreground="{CompiledBinding Foreground,
                                                                                                      ElementName=PART_CloseButton}"
-                                                                        Name="CloseIcon" />
-																</Button>
+																			Name="CloseIcon" />
+																	</Button>
+																</StackPanel>
 															</StackPanel>
-														</StackPanel>
-														<StackPanel
-                                                            IsHitTestVisible="False"
-                                                            Name="AppTitlePanel"
-                                                            Orientation="Horizontal"
-                                                            Spacing="10"
-                                                            VerticalAlignment="Center"
-                                                            HorizontalAlignment="{OnPlatform Left, macOS=Center}">
-															<ContentPresenter
-                                                                Content="{TemplateBinding LogoContent}"
-                                                                HorizontalAlignment="Left"
-                                                                IsHitTestVisible="False" />
-															<TextBlock
-                                                                FontSize="{TemplateBinding TitleFontSize}"
-                                                                FontWeight="{TemplateBinding TitleFontWeight}"
-                                                                IsHitTestVisible="False"
-                                                                Text="{TemplateBinding Title}"
-                                                                VerticalAlignment="Center" />
-														</StackPanel>
-													</DockPanel>
-												</Panel>
-											</Border>
-										</LayoutTransformControl>
-										<Panel
-                                            Background="{DynamicResource TitleBarBackgroundColor}"
-                                            Height="32"
-                                            IsVisible="{TemplateBinding IsMenuVisible}">
-											<ContentPresenter
-                                                Content="{TemplateBinding MenuBarContent}"
-                                                Margin="8,0,8,4"
-                                                Name="MenuBar" />
-										</Panel>
-										<Border BorderBrush="{DynamicResource BorderColor30}" Name="BottomBorder" />
-									</StackPanel>
-								</Panel>
-								<ContentPresenter
-                                    Content="{TemplateBinding Content}"
-                                    ContentTemplate="{TemplateBinding ContentTemplate}"
-                                    CornerRadius="10"
-                                    HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                    IsHitTestVisible="True"
-                                    VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
-							</DockPanel>
-						</Panel>
-					</VisualLayerManager>
+															<StackPanel
+																IsHitTestVisible="False"
+																Name="AppTitlePanel"
+																Orientation="Horizontal"
+																Spacing="10"
+																VerticalAlignment="Center"
+																HorizontalAlignment="{OnPlatform Left, macOS=Center}">
+																<ContentPresenter
+																	Content="{TemplateBinding LogoContent}"
+																	HorizontalAlignment="Left"
+																	IsHitTestVisible="False" />
+																<TextBlock
+																	FontSize="{TemplateBinding TitleFontSize}"
+																	FontWeight="{TemplateBinding TitleFontWeight}"
+																	IsHitTestVisible="False"
+																	Text="{TemplateBinding Title}"
+																	VerticalAlignment="Center" />
+															</StackPanel>
+														</DockPanel>
+													</Panel>
+												</Border>
+											</LayoutTransformControl>
+											<Panel
+												Background="{DynamicResource TitleBarBackgroundColor}"
+												Height="32"
+												IsVisible="{TemplateBinding IsMenuVisible}">
+												<ContentPresenter
+													Content="{TemplateBinding MenuBarContent}"
+													Margin="8,0,8,4"
+													Name="MenuBar" />
+											</Panel>
+											<Border BorderBrush="{DynamicResource BorderColor30}" Name="BottomBorder" />
+										</StackPanel>
+									</Panel>
+									<ContentPresenter
+										Content="{TemplateBinding Content}"
+										ContentTemplate="{TemplateBinding ContentTemplate}"
+										CornerRadius="10"
+										HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+										IsHitTestVisible="True"
+										VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+								</DockPanel>
+							</Panel>
+						</VisualLayerManager>
+					</Border>
 				</Border>
 			</ControlTemplate>
 		</Setter>
@@ -217,6 +223,16 @@ Copyright (c) 2026 mx7b7 (https://github.com/mx7b7)
 		<Style Selector="^[WindowState=Maximized] /template/ PathIcon#MaximizeIcon">
 			<Setter Property="Data" Value="{x:Static i:Icons.WindowRestore}" />
 		</Style>
+
+		<!-- TODO: Temporary fix for AvaloniaEdit right scrollbar hit-testing, remove when migrate to v12 -->
+		<Style Selector="^[WindowState=Maximized] /template/ Border#PART_OutBorder">
+			<Setter Property="Padding" Value="0" />
+		</Style>
+		<Style Selector="^[WindowState=Normal] /template/ Border#PART_OutBorder">
+			<Setter Property="Padding" Value="5" />
+		</Style>
+		<!--...............................................................................................-->
+
 		<Style Selector="^[WindowState=Normal] /template/ PathIcon#MaximizeIcon">
 			<Setter Property="Data" Value="{x:Static i:Icons.WindowMaximize}" />
 		</Style>

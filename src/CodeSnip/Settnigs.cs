@@ -25,7 +25,14 @@ public class MainWindowSettings
 
 public class EditorSettings
 {
-    public bool ScrollBelowDocument { get; set; } = false;
+    // Default: ScrollBelowDocument enabled.
+    // Reason: Prevents a known AvaloniaEdit layout issue where clicking near the
+    // last visible line can trigger a layout invalidation loop and freeze the app.
+    // Error observed:
+    //   [Layout] Layout cycle detected. Item 'AvaloniaEdit.Rendering.TextView'
+    //   was enqueued '10' times.
+    // Adding extra scroll space below the document avoids this bottom-edge race condition.
+    public bool ScrollBelowDocument { get; set; } = true;
     public bool TabToSpaces { get; set; } = true;
     public bool EnableEmailLinks { get; set; } = false;
     public bool EnableHyperlinks { get; set; } = false;
@@ -37,6 +44,18 @@ public class EditorSettings
     public SyntaxEngine SyntaxEngine { get; set; } = SyntaxEngine.XSHD;
     public ThemeName DefaultLightTheme { get; set; } = ThemeName.LightPlus;
     public ThemeName DefaultDarkTheme { get; set; } = ThemeName.DarkPlus;
+
+    // Default: Rectangular selection disabled.
+    // Reason: AvaloniaEdit can throw VisualLinesInvalidException when performing
+    // a rectangular selection and the selection rectangle touches the right edge
+    // of the editor. This triggers an invalid VisualLines state
+    // inside TextView and may crash or freeze the application.
+    // Exception source:
+    // AvaloniaEdit.Rendering.VisualLinesInvalidException
+    // AvaloniaEdit.Rendering.TextView.get_VisualLines()
+    // AvaloniaEdit.Rendering.BackgroundGeometryBuilder.GetRectsForSegmentImpl(TextView textView, ISegment segment, Boolean extendToFullWidthAtLineEnd)+MoveNext()
+    // AvaloniaEdit.Rendering.BackgroundGeometryBuilder.AddSegment(TextView textView, ISegment segment)
+    // AvaloniaEdit.Editing.SelectionLayer.Render(DrawingContext drawingContext)...
     public bool EnableRectangularSelection { get; set; } = false;
 
     public EditorSettings()
