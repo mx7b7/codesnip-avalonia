@@ -644,7 +644,7 @@ public partial class MainWindowViewModel : ObservableObject
         if (string.IsNullOrEmpty(textToSearch))
             return false;
 
-        var words = textToSearch.Split([' ', ',', ';', ':', '-', '_', '.'], StringSplitOptions.RemoveEmptyEntries);
+        var words = textToSearch.Split([' ', '-', '_'], StringSplitOptions.RemoveEmptyEntries);
 
         return words.Any(word => word.StartsWith(filter, StringComparison.OrdinalIgnoreCase));
     }

@@ -86,13 +86,24 @@
 						<!-- Date Modified label -->
 					</Grid.RowDefinitions>
 					<TextBlock Text="Title:" FontWeight="Bold" Grid.Row="0" Margin="0,10,0,2"/>
-					<TextBox Grid.Row="1" Watermark="Enter title" Text="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+					<TextBox Grid.Row="1" 
+							  Text="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+							 Watermark="Enter title" />
 					<TextBlock Text="Description:" FontWeight="Bold" Grid.Row="2" Margin="0,10,0,2"/>
-					<TextBox Grid.Row="3" AcceptsReturn="True" TextWrapping="Wrap" Text="{Binding SelectedSnippet.Description, Mode=TwoWay}" Height="200"/>
+					<TextBox Grid.Row="3" 
+							 AcceptsReturn="True"
+							 Text="{Binding SelectedSnippet.Description, Mode=TwoWay}"
+							 Watermark="Enter description"
+							 TextWrapping="Wrap" 
+							 Height="200"/>
 					<TextBlock Text="Tags:" FontWeight="Bold" Grid.Row="4" Margin="0,10,0,2"/>
-					<TextBox Grid.Row="5" ToolTip.Tip="Tags can be separated by space, period, comma, colon, semicolon, hyphen" Text="{Binding SelectedSnippet.Tag, Mode=TwoWay}" />
+					<TextBox Grid.Row="5" 
+							 Text="{Binding SelectedSnippet.Tag, Mode=TwoWay}"
+							 Watermark="Enter tags"
+							 ToolTip.Tip="Tags can be separated by space, hyphen or underscore." />
 					<TextBlock Grid.Row="6" Text="{Binding SelectedSnippet.DateCreated, StringFormat='Created:  {0}'}" Margin="0,10"/>
-					<TextBlock Grid.Row="7" Text="{Binding SelectedSnippet.DateModified, StringFormat='Modified: {0}'}"/>
+					<TextBlock Grid.Row="7" 
+							   Text="{Binding SelectedSnippet.DateModified, StringFormat='Modified: {0}'}"/>
 				</Grid>
 				<!-- BLOK 3: Buttons -->
 				<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="20" Margin="0,10" VerticalAlignment="Top">
