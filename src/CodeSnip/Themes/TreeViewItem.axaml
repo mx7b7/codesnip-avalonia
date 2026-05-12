@@ -1,17 +1,15 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:helpers="clr-namespace:CodeSnip.Helpers">
-	<x:Double x:Key="TreeViewItemIndent">16</x:Double>
+	<x:Double x:Key="TreeViewItemIndent">24</x:Double>
 
 	<ControlTheme x:Key="SimpleTreeViewItemToggleButtonTheme"
 				  TargetType="ToggleButton">
 		<Setter Property="Cursor" Value="Hand" />
 		<Setter Property="Template">
 			<ControlTemplate>
-				<Border Width="16"
-						Height="16"
-						HorizontalAlignment="Center"
-						VerticalAlignment="Center"
+				<Border Width="24"
+						Height="24"
 						Background="Transparent">
 					<Path HorizontalAlignment="Center"
 						  VerticalAlignment="Center"
@@ -48,7 +46,7 @@
 							TemplatedControl.IsTemplateFocusTarget="True"
 							MinHeight="24">
 						<Grid Name="PART_Header"
-							  ColumnDefinitions="16, *">
+							  ColumnDefinitions="24, *">
 							<Grid.Margin>
 								<MultiBinding Converter="{x:Static helpers:TreeViewItemIndentConverter.Instance}">
 									<Binding Path="Level" RelativeSource="{RelativeSource TemplatedParent}" />
@@ -56,6 +54,7 @@
 								</MultiBinding>
 							</Grid.Margin>
 							<ToggleButton Name="PART_ExpandCollapseChevron"
+										  Grid.Column="0"
 										  Focusable="False"
 										  Background="Transparent"
 										  IsChecked="{TemplateBinding IsExpanded,
@@ -68,8 +67,7 @@
 											  HorizontalContentAlignment="{TemplateBinding HorizontalAlignment}"
 											  Content="{TemplateBinding Header}"
 											  ContentTemplate="{TemplateBinding HeaderTemplate}"
-											  Focusable="False" 
-											  Margin="4,0,0,0"/>
+											  Focusable="False" />
 						</Grid>
 					</Border>
 					<ItemsPresenter Name="PART_ItemsPresenter"
