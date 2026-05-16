@@ -217,7 +217,7 @@
 									  Padding="0,0,0,10"
 									  ItemsSource="{Binding Languages}"
 								      SelectedItem="{Binding SelectedNode}" Classes.InsetContent="True">
-								
+
 								<TreeView.Styles>
 									<Style Selector="TreeViewItem" x:DataType="treemodel:ITreeNode">
 										<Setter Property="IsExpanded"  Value="{Binding IsExpanded, Mode=TwoWay}"/>
@@ -350,34 +350,35 @@
 				</Border>
 			</SplitView.Pane>
 			<SplitView.Content>
-				<DockPanel>
-					<StackPanel DockPanel.Dock="Top"
+				<Grid RowDefinitions="Auto,*,Auto">
+					<!-- Toolbar -->
+					<StackPanel Grid.Row="0"
 						Orientation="Horizontal"
-						Height="32"
+						Height="30"
 						Spacing="5" Background="{DynamicResource ThemeBackgroundBrush}">
 						<Button Classes="IconButton" Command="{Binding TogglePanelCommand}"
 								ToolTip.Tip="Open/Close">
 							<Viewbox Width="22" Height="22">
-							<Path Data="{Binding OpenCloseIcon}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill"/>
-								</Viewbox>
+								<Path Data="{Binding OpenCloseIcon}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill"/>
+							</Viewbox>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding SaveCodeCommand}"
 								ToolTip.Tip="Save snippet&#xA;Ctrl+S">
 							<Viewbox Width="22" Height="22">
-							<Path Data="{x:Static res:Icons.Save}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill"/>
-								</Viewbox>
+								<Path Data="{x:Static res:Icons.Save}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill"/>
+							</Viewbox>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding AddSnippetCommand}"
 								ToolTip.Tip="Add snippet&#xA;Ctrl+Shift+A">
 							<Viewbox Width="22" Height="22">
-							<Path Data="{x:Static res:Icons.FileAdd}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill"/>
-								</Viewbox>
+								<Path Data="{x:Static res:Icons.FileAdd}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill"/>
+							</Viewbox>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding EditSnippetCommand}"
 								ToolTip.Tip="Edit snippet&#xA;Ctrl+Shift+E">
 							<Viewbox Width="22" Height="22">
-							<Path Data="{x:Static res:Icons.FileEdit}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill"/>
-								</Viewbox>
+								<Path Data="{x:Static res:Icons.FileEdit}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill"/>
+							</Viewbox>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding DeleteSnippetCommand}"
 								ToolTip.Tip="Delete snippet&#xA;Ctrl+Shift+D">
@@ -387,32 +388,32 @@
 										<ScaleTransform ScaleY="-1"/>
 									</Path.RenderTransform>
 								</Path>
-								</Viewbox>
+							</Viewbox>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding EditLanguageCategoryCommand}"
 								ToolTip.Tip="Language/Category edit&#xA;Ctrl+Shift+L">
 							<Viewbox Width="22" Height="22">
-							<Path Data="{x:Static res:Icons.TreeViewOutline}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill"/>
-								</Viewbox>
+								<Path Data="{x:Static res:Icons.TreeViewOutline}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill"/>
+							</Viewbox>
 						</Button>
 						<Button Classes="IconButton" ToolTip.Tip="Load snippets" IsEnabled="{Binding IsLoadSnippetEnabled}"
 								Command="{Binding LoadSnippetsDatabaseCommand}">
 							<Viewbox Width="22" Height="22">
-							<Path Data="{x:Static res:Icons.DatabaseRefreshOutline}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill"/>
-								</Viewbox>
+								<Path Data="{x:Static res:Icons.DatabaseRefreshOutline}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill"/>
+							</Viewbox>
 						</Button>
 						<Border Width="1" Height="22"  VerticalAlignment="Center" Background="{DynamicResource ThemeControlHighBrush}"/>
 						<Button Classes="IconButton" Command="{Binding OpenCodeRunnerViewCommand}"
 								ToolTip.Tip="Run&#xA;Ctrl+Shift+R">
 							<Viewbox Width="22" Height="22">
-							<Path Data="{x:Static res:Icons.DebugStart}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill"/>
-								</Viewbox>
+								<Path Data="{x:Static res:Icons.DebugStart}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill"/>
+							</Viewbox>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding OpenCompilerSettingsCommand}"
 								ToolTip.Tip="Compiler Explorer settings">
 							<Viewbox Width="22" Height="22">
-							<Path Data="{x:Static res:Icons.CompilerExplorer}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill"/>
-								</Viewbox>
+								<Path Data="{x:Static res:Icons.CompilerExplorer}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill"/>
+							</Viewbox>
 						</Button>
 						<Border Width="1" Height="22"  VerticalAlignment="Center" Background="{DynamicResource ThemeControlHighBrush}"/>
 						<Button Classes="IconButton" Command="{Binding IncreaseFontSizeCommand}"
@@ -423,38 +424,38 @@
 										<ScaleTransform ScaleY="-1"/>
 									</Path.RenderTransform>
 								</Path>
-								</Viewbox>
+							</Viewbox>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding DecreaseFontSizeCommand}"
 								ToolTip.Tip="Zoom Out&#xA;Ctrl+-">
 							<Viewbox Width="22" Height="22">
-							<Path Data="{x:Static res:Icons.ZoomOutOutline}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill">
-								<Path.RenderTransform>
-									<ScaleTransform ScaleY="-1"/>
-								</Path.RenderTransform>
-							</Path>
-								</Viewbox>
+								<Path Data="{x:Static res:Icons.ZoomOutOutline}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill">
+									<Path.RenderTransform>
+										<ScaleTransform ScaleY="-1"/>
+									</Path.RenderTransform>
+								</Path>
+							</Viewbox>
 						</Button>
 						<Button Classes="IconButton" Command="{Binding ResetFontSizeCommand}"
 								ToolTip.Tip="Reset Zoom&#xA;Ctrl+0">
 							<Viewbox Width="22" Height="22">
-							<Path Data="{x:Static res:Icons.ZoomOutMap}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill">
-								<Path.RenderTransform>
-									<ScaleTransform ScaleY="-1"/>
-								</Path.RenderTransform>
-							</Path>
-								</Viewbox>
+								<Path Data="{x:Static res:Icons.ZoomOutMap}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill">
+									<Path.RenderTransform>
+										<ScaleTransform ScaleY="-1"/>
+									</Path.RenderTransform>
+								</Path>
+							</Viewbox>
 						</Button>
 						<ToggleButton Classes="ToggleIconButton"  ToolTip.Tip="Disable Intendation" IsChecked="{Binding DisableIndentation, Mode=TwoWay}">
 							<Viewbox Width="22" Height="22">
-							<Path Data="{x:Static res:Icons.FormatIndentDecrease}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill"/>
-								</Viewbox>
+								<Path Data="{x:Static res:Icons.FormatIndentDecrease}" Fill="{DynamicResource HighlightBrush}" Stretch="UniformToFill"/>
+							</Viewbox>
 						</ToggleButton>
 						<ToggleButton Classes="ToggleIconButton" ToolTip.Tip="Word Wrap" IsChecked="{Binding #textEditor.WordWrap}">
 							<ToggleButton.Content>
 								<Viewbox Width="22" Height="22">
-								<Path Fill="{DynamicResource HighlightBrush}" Data="{x:Static res:Icons.WrapText}" Stretch="UniformToFill"/>
-									</Viewbox>
+									<Path Fill="{DynamicResource HighlightBrush}" Data="{x:Static res:Icons.WrapText}" Stretch="UniformToFill"/>
+								</Viewbox>
 							</ToggleButton.Content>
 						</ToggleButton>
 						<Button Classes="IconButton" Click="FormatAll_Click"
@@ -475,53 +476,9 @@
 							</Viewbox>
 						</Button>
 					</StackPanel>
-					<Border DockPanel.Dock="Bottom"
-							BorderBrush="{DynamicResource ThemeBorderLowBrush}"
-							BorderThickness="0 1 0 0"
-							Height="28"
-							Background="{DynamicResource ThemeBackgroundBrush}">
-						<DockPanel LastChildFill="False">
-							<TextBlock DockPanel.Dock="Left"
-									   VerticalAlignment="Center"
-									   Margin="10,0"
-									   Text="{Binding StatusMessage}" />
-							<Button DockPanel.Dock="Right"
-									Classes="IconButton"
-									ToolTip.Tip="{Binding DatabaseStatusTooltip}"
-									Margin="5,0"
-									Width="28"
-									Height="28"
-									IsVisible="{Binding IsDatabaseAlertActive}">
-								<PathIcon Data="{x:Static res:Icons.DatabaseAlert}"
-										  Width="20" Height="20"
-										  Foreground="{DynamicResource ErrorBrush}"/>
-								<Button.Flyout>
-									<Flyout Placement="Top">
-										<StackPanel Width="250" MaxHeight="200">
-											<!-- Detaljna poruka -->
-											<TextBlock Text="{Binding DatabaseStatusPopupMessage}"
-													   TextWrapping="Wrap"
-													   Margin="0,0,0,12"/>
-
-											<!-- VACUUM Button -->
-											<Button Command="{Binding VacuumDatabaseCommand}"
-													Background="{DynamicResource HighlightBrush}"
-													Foreground="White"
-													CornerRadius="4"
-													Padding="12,6"
-													HorizontalContentAlignment="Center">
-												<StackPanel Orientation="Horizontal" Spacing="6">
-													<PathIcon Data="{x:Static res:Icons.Reload}" Width="14" Height="14"/>
-													<TextBlock Text="Run VACUUM" FontWeight="Medium"/>
-												</StackPanel>
-											</Button>
-										</StackPanel>
-									</Flyout>
-								</Button.Flyout>
-							</Button>
-						</DockPanel>
-					</Border>
+					<!-- Text Editor -->
 					<AvaloniaEdit:TextEditor
+								   Grid.Row="1"
 								   Name="textEditor"
 								   FontSize="{Binding EditorFontSize}"
 								   FontFamily="{Binding EditorFontFamily, Mode=TwoWay}"
@@ -833,7 +790,54 @@
 							</Style>
 						</AvaloniaEdit:TextEditor.Styles>
 					</AvaloniaEdit:TextEditor>
-				</DockPanel>
+					<!-- Status Bar -->
+					<Border Grid.Row="2"
+							BorderBrush="{DynamicResource ThemeBorderLowBrush}"
+							BorderThickness="0 1 0 0"
+							Height="28"
+							Background="{DynamicResource ThemeBackgroundBrush}">
+						<DockPanel LastChildFill="False">
+							<TextBlock DockPanel.Dock="Left"
+									   VerticalAlignment="Center"
+									   Margin="10,0"
+									   Text="{Binding StatusMessage}" />
+							<Button DockPanel.Dock="Right"
+									Classes="IconButton"
+									ToolTip.Tip="{Binding DatabaseStatusTooltip}"
+									Margin="5,0"
+									Width="28"
+									Height="28"
+									IsVisible="{Binding IsDatabaseAlertActive}">
+								<PathIcon Data="{x:Static res:Icons.DatabaseAlert}"
+										  Width="20" Height="20"
+										  Foreground="{DynamicResource ErrorBrush}"/>
+								<Button.Flyout>
+									<Flyout Placement="Top">
+										<StackPanel Width="250" MaxHeight="200">
+											<!-- Detaljna poruka -->
+											<TextBlock Text="{Binding DatabaseStatusPopupMessage}"
+													   TextWrapping="Wrap"
+													   Margin="0,0,0,12"/>
+
+											<!-- VACUUM Button -->
+											<Button Command="{Binding VacuumDatabaseCommand}"
+													Background="{DynamicResource HighlightBrush}"
+													Foreground="White"
+													CornerRadius="4"
+													Padding="12,6"
+													HorizontalContentAlignment="Center">
+												<StackPanel Orientation="Horizontal" Spacing="6">
+													<PathIcon Data="{x:Static res:Icons.Reload}" Width="14" Height="14"/>
+													<TextBlock Text="Run VACUUM" FontWeight="Medium"/>
+												</StackPanel>
+											</Button>
+										</StackPanel>
+									</Flyout>
+								</Button.Flyout>
+							</Button>
+						</DockPanel>
+					</Border>
+				</Grid>
 			</SplitView.Content>
 		</SplitView>
 		<!-- LEFT OVERLAY PANEL -->
