@@ -81,6 +81,7 @@
 	<codesnip:Window.Resources>
 		<helpers:EnumToBooleanConverter x:Key="EnumToBooleanConverter"/>
 		<helpers:LanguageToBoolConverter x:Key="LanguageToBoolConverter"/>
+		<helpers:UtcStringToLocalConverter x:Key="UtcStringToLocalConverter"/>
 
 		<Flyout x:Key="SearchFilterFlyout" Placement="Bottom">
 			<Grid Grid.RowDefinitions="Auto,Auto" Margin="10,0">
@@ -353,8 +354,12 @@
 									<!-- Tag TextBox -->
 									<TextBox x:Name="txtTag" Grid.Row="3" Text="{Binding SelectedSnippet.Tag}"
 											 IsReadOnly="True"  BorderThickness="0.5" />
-									<TextBlock Grid.Row="4"  Text="{Binding SelectedSnippet.DateCreated, StringFormat='Created:  {0}'}" Margin="0,5,0,2"/>
-									<TextBlock Grid.Row="5" Text="{Binding SelectedSnippet.DateModified, StringFormat='Modified: {0}'}" Margin="0,0,0,2"/>
+									<TextBlock Grid.Row="4"  Text="{Binding SelectedSnippet.DateCreated,
+																	Converter={StaticResource UtcStringToLocalConverter},
+																	StringFormat='Created: {0}'}" Margin="0,5,0,2"/>
+									<TextBlock Grid.Row="5" Text="{Binding SelectedSnippet.DateModified,
+																   Converter={StaticResource UtcStringToLocalConverter},
+																   StringFormat='Modified: {0}'}" Margin="0,0,0,2"/>
 								</Grid>
 							</Expander>
 						</Grid>

@@ -340,7 +340,7 @@ public partial class MainWindowViewModel : ObservableObject
         if (snippetInCollection != null)
         {
             snippetInCollection.Code = snippet.Code;
-            snippetInCollection.DateModified = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            snippetInCollection.DateModified = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
         }
     }
 

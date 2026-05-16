@@ -7,8 +7,12 @@
     xmlns:vm="clr-namespace:CodeSnip.Views.SnippetView"
     x:DataType="vm:SnippetViewModel"
 	xmlns:res="using:CodeSnip.Resources"
+	xmlns:helpers="clr-namespace:CodeSnip.Helpers"
 	Background="{DynamicResource ThemeBackgroundBrush}">
 
+	<UserControl.Resources>
+		<helpers:UtcStringToLocalConverter x:Key="UtcStringToLocalConverter"/>
+	</UserControl.Resources>
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
@@ -86,24 +90,30 @@
 						<!-- Date Modified label -->
 					</Grid.RowDefinitions>
 					<TextBlock Text="Title:" FontWeight="Bold" Grid.Row="0" Margin="0,10,0,2"/>
-					<TextBox Grid.Row="1" 
+					<TextBox Grid.Row="1"
 							  Text="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 							 Watermark="Enter title" />
 					<TextBlock Text="Description:" FontWeight="Bold" Grid.Row="2" Margin="0,10,0,2"/>
-					<TextBox Grid.Row="3" 
+					<TextBox Grid.Row="3"
 							 AcceptsReturn="True"
 							 Text="{Binding SelectedSnippet.Description, Mode=TwoWay}"
 							 Watermark="Enter description"
-							 TextWrapping="Wrap" 
+							 TextWrapping="Wrap"
 							 Height="200"/>
 					<TextBlock Text="Tags:" FontWeight="Bold" Grid.Row="4" Margin="0,10,0,2"/>
-					<TextBox Grid.Row="5" 
+					<TextBox Grid.Row="5"
 							 Text="{Binding SelectedSnippet.Tag, Mode=TwoWay}"
 							 Watermark="Enter tags"
 							 ToolTip.Tip="Tags can be separated by space, hyphen or underscore." />
-					<TextBlock Grid.Row="6" Text="{Binding SelectedSnippet.DateCreated, StringFormat='Created:  {0}'}" Margin="0,10"/>
-					<TextBlock Grid.Row="7" 
-							   Text="{Binding SelectedSnippet.DateModified, StringFormat='Modified: {0}'}"/>
+					<TextBlock Grid.Row="6"
+							   Text="{Binding SelectedSnippet.DateCreated, 
+									  Converter={StaticResource UtcStringToLocalConverter}, 
+									  StringFormat='Created:  {0}'}"
+							   Margin="0,10"/>
+					<TextBlock Grid.Row="7"
+							   Text="{Binding SelectedSnippet.DateModified, 
+									  Converter={StaticResource UtcStringToLocalConverter}, 
+									  StringFormat='Modified: {0}'}"/>
 				</Grid>
 				<!-- BLOK 3: Buttons -->
 				<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="20" Margin="0,10" VerticalAlignment="Top">
