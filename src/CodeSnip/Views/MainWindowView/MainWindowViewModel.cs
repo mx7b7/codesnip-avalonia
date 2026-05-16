@@ -1095,6 +1095,28 @@ public partial class MainWindowViewModel : ObservableObject
 
     #region CONTEXT MENU COMMANDS
 
+    [RelayCommand(CanExecute = nameof(CanReselectSnippet))]
+    private void ReselectSnippet()
+    {
+        var languageId = SelectedSnippet!.Category!.Language!.Id;
+        var categoryId = SelectedSnippet.CategoryId;
+        var snippetId = SelectedSnippet.Id;
+
+        foreach (var lang in Languages)
+        {
+            lang.IsSelected = false;
+            foreach (var cat in lang.Categories)
+            {
+                cat.IsSelected = false;
+                foreach (var snip in cat.Snippets)
+                    snip.IsSelected = false;
+            }
+        }
+
+        ExpandAndSelectSnippet(languageId, categoryId, snippetId);
+    }
+    private bool CanReselectSnippet() => SelectedSnippet != null;
+
     [RelayCommand(CanExecute = nameof(CanUndo))]
     private void Undo() => Editor!.Document.UndoStack.Undo();
     private bool CanUndo() => Editor!.Document.UndoStack.CanUndo;

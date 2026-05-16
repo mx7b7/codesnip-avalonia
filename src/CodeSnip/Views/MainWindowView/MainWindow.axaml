@@ -268,31 +268,43 @@
 									<MenuFlyout>
 										<MenuItem Header="Add Snippet" Command="{Binding AddSnippetCommand}">
 											<MenuItem.Icon>
-												<PathIcon Data="{x:Static res:Icons.FileAdd}" Width="16" Height="16"
-														  Foreground="{DynamicResource ThemeAccentBrush}"/>
+												<Viewbox Width="16" Height="16">
+													<Path Data="{x:Static res:Icons.FileAdd}" Fill="{DynamicResource ThemeAccentBrush}" Stretch="UniformToFill"/>
+												</Viewbox>
 											</MenuItem.Icon>
 										</MenuItem>
 										<MenuItem Header="Edit Snippet" Command="{Binding EditSnippetCommand}">
 											<MenuItem.Icon>
-												<PathIcon Data="{x:Static res:Icons.FileEdit}" Width="16" Height="16"
-														  Foreground="{DynamicResource ThemeAccentBrush}"/>
+												<Viewbox Width="16" Height="16">
+													<Path Data="{x:Static res:Icons.FileEdit}" Fill="{DynamicResource ThemeAccentBrush}" Stretch="UniformToFill"/>
+												</Viewbox>
 											</MenuItem.Icon>
 										</MenuItem>
 										<MenuItem Header="Delete Snippet" Command="{Binding DeleteSnippetCommand}">
 											<MenuItem.Icon>
-												<PathIcon Data="{x:Static res:Icons.Trash}" Width="16" Height="16"
-														  Foreground="{DynamicResource ThemeAccentBrush}"/>
+												<Viewbox Width="16" Height="16">
+													<Path Data="{x:Static res:Icons.TrashOutline}" Fill="{DynamicResource ThemeAccentBrush}" Stretch="UniformToFill">
+														<Path.RenderTransform>
+															<ScaleTransform ScaleY="-1"/>
+														</Path.RenderTransform>
+													</Path>
+												</Viewbox>
+											</MenuItem.Icon>
+										</MenuItem>
+										<Separator />
+										<MenuItem Header="Re-select Snippet" Command="{Binding ReselectSnippetCommand}">
+											<MenuItem.Icon>
+												<Viewbox Width="16" Height="16">
+													<Path Data="{x:Static res:Icons.Reload}" Fill="{DynamicResource ThemeAccentBrush}" Stretch="UniformToFill"/>
+												</Viewbox>
 											</MenuItem.Icon>
 										</MenuItem>
 										<Separator />
 										<MenuItem Header="Edit LangCat" Command="{Binding EditLanguageCategoryCommand}">
 											<MenuItem.Icon>
-												<PathIcon Data="{x:Static res:Icons.CategoryEdit}" Width="16" Height="16"
-														  Foreground="{DynamicResource ThemeAccentBrush}">
-													<PathIcon.RenderTransform>
-														<ScaleTransform ScaleY="-1"/>
-													</PathIcon.RenderTransform>
-												</PathIcon>
+												<Viewbox Width="16" Height="16">
+													<Path Data="{x:Static res:Icons.TreeViewOutline}" Fill="{DynamicResource ThemeAccentBrush}" Stretch="UniformToFill"/>
+												</Viewbox>
 											</MenuItem.Icon>
 										</MenuItem>
 									</MenuFlyout>
