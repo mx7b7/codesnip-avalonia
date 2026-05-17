@@ -260,10 +260,7 @@ public partial class CodeRunnerViewModel : ObservableObject, IOverlayViewModel
                     await RunProcessAsync_Dynamic_Reading(interpreterPath, arguments, Code, timeout,
                                           outputLine => Dispatcher.UIThread.InvokeAsync(() => StdOut += outputLine + "\n"),
                                           errorLine => Dispatcher.UIThread.InvokeAsync(() => ErrorText += errorLine + "\n"));
-                    // Old way of reading all output at once after process ends
-                    //var (success, output, error) = await RunProcessAsync(interpreterPath, arguments, Code, timeout);
-                    //StdOut = output ?? "";
-                    //ErrorText = error ?? "";
+
                     break;
             }
         }
@@ -310,7 +307,7 @@ public partial class CodeRunnerViewModel : ObservableObject, IOverlayViewModel
         string toolsDir = Path.Combine(appDir, "Tools", "Interpreters");
         string interpreterPath = Path.Combine(toolsDir, exe);
 
-        if(!Directory.Exists(toolsDir))
+        if (!Directory.Exists(toolsDir))
             Directory.CreateDirectory(toolsDir);
 
         return File.Exists(interpreterPath)
@@ -322,74 +319,6 @@ public partial class CodeRunnerViewModel : ObservableObject, IOverlayViewModel
     private bool CanRunLocal()
     {
         return !string.IsNullOrWhiteSpace(GetLocalInterpreter(Extension).path);
-    }
-
-    /// <summary>
-    /// Runs an external process asynchronously with the specified input and captures its standard output and error
-    /// streams.
-    /// </summary>
-    /// <remarks>If the process does not exit within the specified timeout, it is forcefully
-    /// terminated and the Error field contains a timeout message. The method redirects standard input, output, and
-    /// error streams. The working directory is set to the directory containing the executable file, or the
-    /// application's base directory if not specified.</remarks>
-    /// <param name="fileName">The path to the executable file to run. Cannot be null or empty.</param>
-    /// <param name="arguments">The command-line arguments to pass to the process, or null to pass no arguments.</param>
-    /// <param name="input">The text to write to the standard input stream of the process. Can be an empty string if no input is
-    /// required.</param>
-    /// <param name="timeoutMs">The maximum time, in milliseconds, to wait for the process to complete before terminating it. Must be
-    /// greater than zero.</param>
-    /// <returns>A tuple containing a boolean indicating whether the process completed successfully, the captured standard
-    /// output (or null if none), and the captured standard error (or null if none). If the process fails to start
-    /// or times out, Success is false and Error contains a descriptive message.</returns>
-    private async Task<(bool Success, string? Output, string? Error)> RunProcessAsync(string fileName, string? arguments, string input, int timeoutMs)
-    {
-        var psi = new ProcessStartInfo
-        {
-            FileName = fileName,
-            Arguments = arguments ?? "",
-            RedirectStandardInput = true,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            UseShellExecute = false,
-            CreateNoWindow = true,
-            WorkingDirectory = Path.GetDirectoryName(fileName) ?? AppContext.BaseDirectory
-        };
-
-        using var process = new Process { StartInfo = psi };
-        RunningProcess = process;
-        if (!process.Start())
-        {
-            return (false, null, $"Failed to start process: {fileName}");
-        }
-
-        await process.StandardInput.WriteAsync(input);
-        process.StandardInput.Close();
-
-        var outputTask = process.StandardOutput.ReadToEndAsync();
-        var errorTask = process.StandardError.ReadToEndAsync();
-
-        using var cts = new CancellationTokenSource(timeoutMs);
-        try
-        {
-            await process.WaitForExitAsync(cts.Token);
-
-            string output = await outputTask;
-            string error = await errorTask;
-
-            return (process.ExitCode == 0,
-                    string.IsNullOrWhiteSpace(output) ? null : output,
-                    string.IsNullOrWhiteSpace(error) ? null : error);
-        }
-        catch (OperationCanceledException)
-        {
-            try
-            {
-                process.Kill(entireProcessTree: true);
-            }
-            catch { /* Ignore errors during forceful termination */ }
-
-            return (false, null, $"Timeout: The process '{process.ProcessName}' (PID: {process.Id}) took too long to respond and was terminated.");
-        }
     }
 
     /// <summary>
@@ -428,6 +357,8 @@ public partial class CodeRunnerViewModel : ObservableObject, IOverlayViewModel
             CreateNoWindow = true,
             WorkingDirectory = workingDirectory
         };
+
+        ApplyEncodingProfile(psi, Extension);
 
         var process = new Process { StartInfo = psi, EnableRaisingEvents = true };
         RunningProcess = process;
@@ -506,6 +437,37 @@ public partial class CodeRunnerViewModel : ObservableObject, IOverlayViewModel
         finally
         {
             process.Dispose();
+        }
+    }
+
+    private void ApplyEncodingProfile(ProcessStartInfo psi, string ext)
+    {
+        switch (ext)
+        {
+            case "py":
+                psi.StandardInputEncoding = Encoding.UTF8;
+                psi.StandardOutputEncoding = Encoding.UTF8;
+                psi.StandardErrorEncoding = Encoding.UTF8;
+                psi.EnvironmentVariables["PYTHONIOENCODING"] = "utf-8";
+                psi.EnvironmentVariables["PYTHONUTF8"] = "1";
+                break;
+
+            case "lua":
+            case "js":
+            case "rb":
+            case "pl":
+            case "php":
+            case "sh":
+                psi.StandardInputEncoding = Encoding.UTF8;
+                psi.StandardOutputEncoding = Encoding.UTF8;
+                psi.StandardErrorEncoding = Encoding.UTF8;
+                break;
+
+            default:
+                psi.StandardInputEncoding = Encoding.Default;
+                psi.StandardOutputEncoding = Encoding.Default;
+                psi.StandardErrorEncoding = Encoding.Default;
+                break;
         }
     }
 

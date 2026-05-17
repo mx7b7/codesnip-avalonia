@@ -76,7 +76,8 @@
 											 Height="30"
 											 HexInputAlphaPosition="Leading"
 											 ColorSpectrumShape="Ring"
-											 SelectedIndex="1">
+											 SelectedIndex="1"
+											 HorizontalAlignment="Left">
 									<ColorPicker.Palette>
 										<controls:MaterialColorPalette/>
 									</ColorPicker.Palette>
