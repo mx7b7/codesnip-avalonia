@@ -462,7 +462,9 @@ public partial class CodeRunnerViewModel : ObservableObject, IOverlayViewModel
                 psi.StandardOutputEncoding = Encoding.UTF8;
                 psi.StandardErrorEncoding = Encoding.UTF8;
                 break;
-
+            case "cs":
+            case "fs":
+                break;
             default:
                 psi.StandardInputEncoding = Encoding.Default;
                 psi.StandardOutputEncoding = Encoding.Default;
