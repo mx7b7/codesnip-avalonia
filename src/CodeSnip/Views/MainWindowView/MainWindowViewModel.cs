@@ -79,6 +79,7 @@ public partial class MainWindowViewModel : ObservableObject
     private int _lastSnippetId = -1;
     private string _oldLangCode = string.Empty;
     private bool _isInternalTextUpdate = true;
+    private bool _isSafeToClose = false;
 
     #region SETTINGS PROPERTIES
 
@@ -495,13 +496,30 @@ public partial class MainWindowViewModel : ObservableObject
         await settingsService.SaveSettingsAsync();
     }
 
-    public void OnWindowClosing(CancelEventArgs e)
+    private async Task PerformShutdownAsync()
     {
         if (IsEditorModified && EditingSnippet != null)
         {
             PerformSave();
         }
-        _ = SaveSettings();
+
+        await SaveSettings();
+
+        _isSafeToClose = true;
+
+        if (Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            desktop.MainWindow?.Close();
+        }
+    }
+
+    public void OnWindowClosing(CancelEventArgs e)
+    {
+        if (!_isSafeToClose)
+        {
+            e.Cancel = true;
+            _ = PerformShutdownAsync();
+        }
     }
 
     partial void OnSelectedAccentColorChanged(Color value)
