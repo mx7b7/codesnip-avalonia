@@ -893,7 +893,14 @@ INSERT INTO Categories (LanguageId, Name) VALUES
 (25, 'Macros'),
 (25, 'Patterns'),
 (25, 'Unsafe Rust'),
-(25, 'FFI (Foreign Function Interface)');
+(25, 'FFI (Foreign Function Interface)'),
+-- Bash / Shell
+(36, 'Basic Syntax'),
+(36, 'Text Processing'),
+(36, 'Automation'),
+(36, 'System Info'),
+(36, 'Networking'),
+(36, 'Compression');
 ";
 
     private static void AddSnippet(int langId, InitialSnippet snippet)
@@ -913,15 +920,16 @@ INSERT INTO Categories (LanguageId, Name) VALUES
         AddSnippet(7, new InitialSnippet
         {
             Title = "Hello World",
-            Code = @"using System;
-
-class Program
-{
-    static void Main(string[] args)
-    {
-        Console.WriteLine(""Hello, World!"");
-    }
-}",
+            Code = """
+            using System;
+            class Program
+            {
+                static void Main(string[] args)
+                {
+                    Console.WriteLine("Hello, World!");
+                }
+            }
+            """,
             Description = "Hello World program in C#",
             Tag = "hello,world"
         });
@@ -930,13 +938,14 @@ class Program
         AddSnippet(7, new InitialSnippet
         {
             Title = "Roslyn Script Example",
-            Code = @"#r ""System.Net.Http""
-using System.Net.Http;
+            Code = """
+            #r "System.Net.Http"
+            using System.Net.Http;
 
-var client = new HttpClient();
-var response = await client.GetStringAsync(""https://example.com"");
-
-Console.WriteLine(response);",
+            var client = new HttpClient();
+            var response = await client.GetStringAsync("https://example.com");
+            Console.WriteLine(response);
+            """,
             Description = "Basic Roslyn C# script using #r directive and top-level statements.",
             Tag = "csharp,roslyn,script"
         });
@@ -945,7 +954,9 @@ Console.WriteLine(response);",
         AddSnippet(10, new InitialSnippet
         {
             Title = "Hello World",
-            Code = @"printfn ""Hello, World!""",
+            Code = """
+            printfn "Hello, World!"
+            """,
             Description = "Hello World program in F#",
             Tag = "hello,world"
         });
@@ -954,15 +965,16 @@ Console.WriteLine(response);",
         AddSnippet(10, new InitialSnippet
         {
             Title = "F# Script Example",
-            Code = @"#r ""nuget: Newtonsoft.Json""
-open Newtonsoft.Json
+            Code = """
+            #r "nuget: Newtonsoft.Json"
+            open Newtonsoft.Json
 
-type Person = { Name: string; Age: int }
+            type Person = { Name: string; Age: int }
 
-let json = ""{ \""Name\"": \""Ana\"", \""Age\"": 30 }""
-let person = JsonConvert.DeserializeObject<Person>(json)
-
-printfn ""%A"" person",
+            let json = "{ \"Name\": \"Ana\", \"Age\": 30 }"
+            let person = JsonConvert.DeserializeObject<Person>(json)
+            printfn "%A" person
+            """,
             Description = "F# script using #r directive and JSON deserialization.",
             Tag = "fsharp,script,fsx"
         });
@@ -971,13 +983,14 @@ printfn ""%A"" person",
         AddSnippet(6, new InitialSnippet
         {
             Title = "Hello World",
-            Code = @"#include <iostream>
-
-int main()
-{
-    std::cout << ""Hello, World!"" << std::endl;
-    return 0;
-}",
+            Code = """
+            #include <iostream>
+            int main()
+            {
+                std::cout << "Hello, World!" << std::endl;
+                return 0;
+            }
+            """,
             Description = "Hello World program in C++",
             Tag = "hello,world"
         });
@@ -986,12 +999,13 @@ int main()
         AddSnippet(9, new InitialSnippet
         {
             Title = "Hello World",
-            Code = @"import std.stdio;
-
-void main()
-{
-    writeln(""Hello, World!"");
-}",
+            Code = """
+            import std.stdio;
+            void main()
+            {
+                writeln("Hello, World!");
+            }
+            """,
             Description = "Hello World program in D",
             Tag = "hello,world"
         });
@@ -1000,15 +1014,147 @@ void main()
         AddSnippet(23, new InitialSnippet
         {
             Title = "Hello World",
-            Code = @"def main():
-    print(""Hello, World!"")
-    
-if __name__ == '__main__':
-    main()",
+            Code = """
+            def main():
+                print("Hello, World!")
+                
+            if __name__ == '__main__':
+                main()
+            """,
             Description = "Hello World program in Python",
             Tag = "hello,world"
         });
+        // Python - System Info & String Manipulation with Dev Slang
+        AddSnippet(23, new InitialSnippet
+        {
+            Title = "System & String manipulation",
+            Code = """
+            import platform
+            import sys
 
+            print("--- CodeSnip Runner: Raw Power Mode ---")
+            print(f"Python version: {sys.version.split()[0]}")
+            print(f"OS Platform: {platform.system()} {platform.release()} -> Smooth as butter!")
+
+            # Fast string cooking
+            status = "CodeSnip is absolute fire!"
+            print(f"Original: {status}")
+            print(f"Lowercase meta: {status.lower()}")
+            print(f"Reverse uno card: {status[::-1]}")
+            """,
+            Description = "Python runner demo showing system info and string manipulation with dev slang.",
+            Tag = "python,runner,slang,strings"
+        });
+
+        // Bash - System Check & BusyBox Flex
+        AddSnippet(36, new InitialSnippet
+        {
+            Title = "System Check & Flex",
+            Code = """
+            #!/bin/bash
+            echo "--- CodeSnip Terminal: Activated ---"
+            echo "Current workspace: $(pwd)"
+            echo "System kernel: $(uname -a)"
+
+            echo -e "\n[+] Hunting for essential dev tools..."
+            
+            for tool in ldc2 dotnet python node git awk grep sed; do
+                if command -v $tool >/dev/null 2>&1; then
+                    echo "  -> $tool is LOCKED AND LOADED"
+                else
+                    echo "  -> $tool is missing in action"
+                fi
+            done
+
+            echo -e "\n[+] Generating some lucky numbers with seq & grep..."
+            
+            seq 1 20 | grep -E "7|13|17"
+            """,
+            Description = "Bash script checking system tools and demonstrating BusyBox utilities.",
+            Tag = "bash,system,grep"
+        });
+
+        // Bash - Live Stream Demo
+        AddSnippet(36, new InitialSnippet
+        {
+            Title = "Live Output Stream Demo",
+            Code = """
+            #!/bin/bash
+            echo "Starting live stream test (5 seconds)..."
+            
+            for i in $(seq 1 5); do
+                echo "Processing chunk $i/5 ... (Smooth as butter)"
+                sleep 1
+            done
+
+            echo "Task completed successfully! CodeSnip rules."
+            """,
+            Description = "Demonstrates live stdout streaming from Bash scripts using a compatible seq loop.",
+            Tag = "bash,loop,live-output,sleep"
+        });
+
+        // Bash - Text Processing Masterclass
+        AddSnippet(36, new InitialSnippet
+        {
+            Title = "Log Parsing with Awk & Sed",
+            Code = """
+            #!/bin/bash
+            echo "--- CodeSnip Log Parser: Turbo Mode ---"
+            
+            # Simulating raw server logs within a variable
+            RAW_LOGS="
+            2026-06-09 10:11:02 [INFO] User 'neo' logged in successfully.
+            2026-06-09 10:12:45 [WARN] DB Connection latency high: 120ms.
+            2026-06-09 10:14:22 [ERROR] Critical: Out of memory in Worker-3.
+            2026-06-09 10:15:01 [INFO] Cache flushed by system.
+            "
+
+            echo "[+] Extracting only CRITICAL events using sed regex..."
+            # Sed changes 'ERROR' to a more catchy tag and filters the line
+            echo "$RAW_LOGS" | sed -n 's/\[ERROR\]/ [CRITICAL-ALARM]/p'
+
+            echo -e "\n[+] Summarizing log levels using awk arrays..."
+            echo "$RAW_LOGS" | awk '
+                NF > 0 { 
+                    gsub(/[\[\]]/, "", $3); # Cleaning up square brackets around INFO/WARN/ERROR
+                    stats[$3]++ 
+                } 
+                END { 
+                    for (level in stats) { 
+                        print "  -> Level [" level "]: hit " stats[level] " time(s)" 
+                    } 
+                }
+            '
+            """,
+            Description = "Advanced text manipulation demo using pipes, sed pattern matching, and associative arrays in awk.",
+            Tag = "bash,awk,sed,regex,logs"
+        });
+
+        // Bash - Stress test za Live Stream Output
+        AddSnippet(36, new InitialSnippet
+        {
+            Title = "UI Responsiveness & Stress Test",
+            Code = """
+            #!/bin/bash
+            echo "Launching asynchronous chunk generator..."
+            echo "If CodeSnip UI remains responsive, your async pipe architecture is solid!"
+            echo "--------------------------------------------------------"
+
+            for tick in $(seq 1 8); do
+                # Generating load through system noise and printing
+                SPIN="-\|/"
+                CHAR=${SPIN:$((tick % 4)):1}
+                
+                echo -n "[$CHAR] Working on matrix payload block #$tick... "
+                sleep 0.5
+                echo "DONE (Checksum: OK)"
+            done
+
+            echo -e "\n Boom! Terminal stream finished without blocking the main UI thread."
+            """,
+            Description = "Generates buffered output intervals to demonstrate that the runner does not block the UI thread.",
+            Tag = "bash,async,stream,ui-test"
+        });
 
     }
 
