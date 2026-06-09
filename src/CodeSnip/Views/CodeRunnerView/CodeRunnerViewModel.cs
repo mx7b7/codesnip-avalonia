@@ -244,7 +244,7 @@ public partial class CodeRunnerViewModel : ObservableObject, IOverlayViewModel
                 return;
             }
 
-            int timeout = Timeout.Infinite;
+            int timeout = Timeout.Infinite; // No timeout, rely on manual kill, beacuse some script may run long tasks
 
             // -- BUFFERED THROTTLING: Refresh the UI every 100 milliseconds to prevent log flooding --
             using var flushTimer = new System.Timers.Timer(100);
@@ -294,6 +294,7 @@ public partial class CodeRunnerViewModel : ObservableObject, IOverlayViewModel
                 case "ps1":
                     string base64Script = Convert.ToBase64String(Encoding.Unicode.GetBytes(Code));
                     arguments += base64Script;
+                    // For PS, the code is in the arguments, so the 'input' parameter is empty.
                     await RunProcessAsync_Dynamic_Reading(interpreterPath, arguments, "", timeout, onOutput, onError);
                     break;
 
