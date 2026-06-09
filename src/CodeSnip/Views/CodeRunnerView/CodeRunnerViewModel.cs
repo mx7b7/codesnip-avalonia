@@ -80,6 +80,10 @@ public partial class CodeRunnerViewModel : ObservableObject, IOverlayViewModel
         ["sh"] = ("bash.exe", "bash", "bash", "")
     };
 
+    private readonly StringBuilder _outputBuffer = new();
+    private readonly StringBuilder _errorBuffer = new();
+    private readonly Lock _bufferLock = new();
+
     public CodeRunnerViewModel(string languageExtension, string code, Func<string> getLatestCode)
     {
         Extension = languageExtension;// // Must set before triggering OnSelectedCompilerChanged (it depends on Extension)
@@ -240,28 +244,74 @@ public partial class CodeRunnerViewModel : ObservableObject, IOverlayViewModel
                 return;
             }
 
-            int timeout = Timeout.Infinite; // No timeout, rely on manual kill, beacuse some script may run long tasks
+            int timeout = Timeout.Infinite;
+
+            // -- BUFFERED THROTTLING: Refresh the UI every 100 milliseconds to prevent log flooding --
+            using var flushTimer = new System.Timers.Timer(100);
+            flushTimer.Elapsed += (s, e) =>
+            {
+                string? newOutput = null;
+                string? newError = null;
+
+                // Acquire lock, capture accumulated text chunks, and immediately clear the buffers
+                lock (_bufferLock)
+                {
+                    if (_outputBuffer.Length > 0)
+                    {
+                        newOutput = _outputBuffer.ToString();
+                        _outputBuffer.Clear();
+                    }
+                    if (_errorBuffer.Length > 0)
+                    {
+                        newError = _errorBuffer.ToString();
+                        _errorBuffer.Clear();
+                    }
+                }
+
+                // Dispatch the text block to the UI thread only if there is new data
+                if (newOutput != null)
+                    Dispatcher.UIThread.Post(() => StdOut += newOutput);
+
+                if (newError != null)
+                    Dispatcher.UIThread.Post(() => ErrorText += newError);
+            };
+
+            flushTimer.Start(); // Start the throttling timer before launching the process
+
+            // -- LOCAL FUNCTIONS: Append incoming lines to background buffers without blocking the UI thread --
+            void onOutput(string line)
+            {
+                lock (_bufferLock) { _outputBuffer.AppendLine(line); }
+            }
+
+            void onError(string line)
+            {
+                lock (_bufferLock) { _errorBuffer.AppendLine(line); }
+            }
+
             switch (Extension.ToLowerInvariant())
             {
-                case "ps1": // PowerShell case
-                    {
-                        string base64Script = Convert.ToBase64String(Encoding.Unicode.GetBytes(Code));
-                        arguments += base64Script;
-
-                        // For PS, the code is in the arguments, so the 'input' parameter is empty.
-                        await RunProcessAsync_Dynamic_Reading(interpreterPath, arguments, "", timeout,
-                                              outputLine => Dispatcher.UIThread.InvokeAsync(() => StdOut += outputLine + "\n"),
-                                              errorLine => Dispatcher.UIThread.InvokeAsync(() => ErrorText += errorLine + "\n"));
-
-                        break;
-                    }
-                default: // Default case for all other interpreters
-                         // New way of reading output dynamically
-                    await RunProcessAsync_Dynamic_Reading(interpreterPath, arguments, Code, timeout,
-                                          outputLine => Dispatcher.UIThread.InvokeAsync(() => StdOut += outputLine + "\n"),
-                                          errorLine => Dispatcher.UIThread.InvokeAsync(() => ErrorText += errorLine + "\n"));
-
+                case "ps1":
+                    string base64Script = Convert.ToBase64String(Encoding.Unicode.GetBytes(Code));
+                    arguments += base64Script;
+                    await RunProcessAsync_Dynamic_Reading(interpreterPath, arguments, "", timeout, onOutput, onError);
                     break;
+
+                default:
+                    await RunProcessAsync_Dynamic_Reading(interpreterPath, arguments, Code, timeout, onOutput, onError);
+                    break;
+            }
+
+            // Stop the timer once the process execution is complete
+            flushTimer.Stop();
+
+            // Flush any remaining data left in the buffers (accumulated within the last <100ms)
+            lock (_bufferLock)
+            {
+                if (_outputBuffer.Length > 0) StdOut += _outputBuffer.ToString();
+                if (_errorBuffer.Length > 0) ErrorText += _errorBuffer.ToString();
+                _outputBuffer.Clear();
+                _errorBuffer.Clear();
             }
         }
         catch (Exception ex)
