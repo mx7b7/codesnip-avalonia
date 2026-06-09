@@ -442,10 +442,12 @@ public partial class CodeRunnerViewModel : ObservableObject, IOverlayViewModel
 
     private void ApplyEncodingProfile(ProcessStartInfo psi, string ext)
     {
+        // Use UTF-8 without BOM to prevent corrupting script shebangs in POSIX/BusyBox shells
+        Encoding utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
         switch (ext)
         {
             case "py":
-                psi.StandardInputEncoding = Encoding.UTF8;
+                psi.StandardInputEncoding = utf8WithoutBom;
                 psi.StandardOutputEncoding = Encoding.UTF8;
                 psi.StandardErrorEncoding = Encoding.UTF8;
                 psi.EnvironmentVariables["PYTHONIOENCODING"] = "utf-8";
@@ -458,7 +460,7 @@ public partial class CodeRunnerViewModel : ObservableObject, IOverlayViewModel
             case "pl":
             case "php":
             case "sh":
-                psi.StandardInputEncoding = Encoding.UTF8;
+                psi.StandardInputEncoding = utf8WithoutBom;
                 psi.StandardOutputEncoding = Encoding.UTF8;
                 psi.StandardErrorEncoding = Encoding.UTF8;
                 break;
