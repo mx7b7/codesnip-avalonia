@@ -52,6 +52,9 @@ This project is a cross-platform port of the original **[CodeSnip (WPF) applicat
   
  - **Local Code Execution**
   - Run scripts using built‑in support for Shell scripts (.sh), C#, F#, PowerShell, Python, PHP, Perl, Lua, Ruby, Node.js, and Java (via `JShell`) directly using local interpreters.
+  - **Dual-Mode Runner**: Choose between quiet internal execution or launching an independent, external native OS terminal (available for supported script languages like Python, JavaScript, Lua, PowerShell, Bash, and Java).
+  - **Internal Mode**: Silent execution inside the app window, ideal for quick scripts that output to stdout/stderr immediately without requiring user interaction.
+  - **External Mode**: Launches a native OS shell (`cmd.exe` on Windows, `gnome-terminal`/`xterm` on Linux, `Terminal.app` on macOS). This mode enables full interactivity and supports commands requiring elevated privileges (e.g., entering passwords for `sudo` or interactive user input).
   - > **Note:** If an interpreter is not in your system's PATH, you can place its portable executable (e.g., `lua`, `node`, `csrunner`, `fsrunner`) in the `Tools/Interpreters` directory within the application's installation folder.
   - For C# and F# execution, you can use these custom wrappers:  
     - **C#**: [`csrunner`](https://gist.github.com/mx7b7/90013b77c1d0bcfb6b9e77399f62e409)  
