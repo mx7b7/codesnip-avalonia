@@ -136,7 +136,16 @@ public partial class CodeRunnerViewModel : ObservableObject, IOverlayViewModel
         try
         {
             IsRunning = true;
+
+            ErrorText = "";
+            AsmCode = "";
+            StdOut = "Sending code to Godbolt Compiler Explorer... Please wait.";
             await CompileSnippetAsync();
+        }
+        catch (Exception ex)
+        {
+            ErrorText = $"An unexpected error occurred:\n{ex.Message}";
+            StdOut = "";
         }
         finally
         {
@@ -366,7 +375,6 @@ public partial class CodeRunnerViewModel : ObservableObject, IOverlayViewModel
             : (exe, info.args);
     }
 
-
     private bool CanRunLocal()
     {
         return !string.IsNullOrWhiteSpace(GetLocalInterpreter(Extension).path);
@@ -488,6 +496,172 @@ public partial class CodeRunnerViewModel : ObservableObject, IOverlayViewModel
         finally
         {
             process.Dispose();
+        }
+    }
+
+    private ProcessStartInfo BuildExternalShellStartInfo(
+            string tempFilePath,
+            string interpreterPath,
+            string workingDirectory)
+    {
+        // === WINDOWS SECTION ===
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            // IMPORTANT: cmd.exe /K has specific quoting rules.
+            // If the expression contains inner quotes (around the interpreter and the file path),
+            // the entire command string after /K must be wrapped in outer double quotes.
+            // Example: /K ""C:\Path\node.exe" "C:\Temp\file.js""
+            string quotedCommand = $"\"\"{interpreterPath}\" \"{tempFilePath}\"\"";
+            return new ProcessStartInfo
+            {
+                FileName = "cmd.exe",
+                Arguments = $"/K {quotedCommand}",
+                UseShellExecute = true,  // Required to launch in a separate, visible window
+                CreateNoWindow = false,
+                WorkingDirectory = workingDirectory
+            };
+        }
+        // === LINUX SECTION ===
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
+            var shell = Environment.GetEnvironmentVariable("SHELL");
+            if (string.IsNullOrWhiteSpace(shell)) shell = "/bin/bash";
+
+            // Execute the interpreter on the script file, then call 'exec shell' to keep the terminal window open after completion
+            var innerCommand = $"\"{interpreterPath}\" \"{tempFilePath}\"; exec {shell}";
+
+            // Attempt to detect an installed GUI terminal emulator on the system (Mint, Ubuntu, Fedora...)
+            string[] terminalEmulators = { "gnome-terminal", "mate-terminal", "konsole", "xfce4-terminal", "xterm" };
+            string chosenTerminal = "xterm"; // Fallback if no modern terminal emulator is found
+
+            foreach (var term in terminalEmulators)
+            {
+                if (File.Exists($"/usr/bin/{term}") || File.Exists($"/bin/{term}"))
+                {
+                    chosenTerminal = term;
+                    break;
+                }
+            }
+
+            // Different terminal emulators require different flags to pass commands.
+            // Legacy xterm uses '-e', while modern ones (gnome, mate, konsole) use '--'.
+            string terminalArgs;
+            if (chosenTerminal == "xterm")
+            {
+                terminalArgs = $"-e \"{shell} -c '{innerCommand.Replace("\"", "\\\"")}'\"";
+            }
+            else
+            {
+                terminalArgs = $"-- {shell} -c \"{innerCommand.Replace("\"", "\\\"")}\"";
+            }
+
+            return new ProcessStartInfo
+            {
+                FileName = chosenTerminal,
+                Arguments = terminalArgs,
+                UseShellExecute = true, // Required to launch a GUI terminal application
+                CreateNoWindow = false,
+                WorkingDirectory = workingDirectory
+            };
+        }
+
+        // === macOS SECTION ===
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            var shell = Environment.GetEnvironmentVariable("SHELL");
+            if (string.IsNullOrWhiteSpace(shell)) shell = "/bin/zsh";
+
+            var innerCommand = $"\\\"{interpreterPath}\\\" \\\"{tempFilePath}\\\"; exec {shell}";
+
+            // Use AppleScript (osascript) to force Terminal.app to open a new window and execute the script
+            return new ProcessStartInfo
+            {
+                FileName = "osascript",
+                Arguments = $"-e \"tell application \\\"Terminal\\\" to do script \\\"{shell} -c '{innerCommand}'\\\"\" -e \"tell application \\\"Terminal\\\" to activate\"",
+                UseShellExecute = true,
+                CreateNoWindow = false,
+                WorkingDirectory = workingDirectory
+            };
+        }
+
+        // Fallback if the operating system is unrecognized
+        return new ProcessStartInfo
+        {
+            FileName = interpreterPath,
+            Arguments = $"\"{tempFilePath}\"",
+            UseShellExecute = true,
+            CreateNoWindow = false,
+            WorkingDirectory = workingDirectory
+        };
+    }
+
+    private bool CanRunLocalExternal()
+    {
+        var (interpreterPath, _) = GetLocalInterpreter(Extension);
+        if (string.IsNullOrWhiteSpace(interpreterPath)) return false;
+
+        string ext = Extension?.TrimStart('.').ToLowerInvariant() ?? "";
+        return ext is "py" or "lua" or "js" or "ps1" or "sh" or "java";
+    }
+
+    [RelayCommand(CanExecute = nameof(CanRunLocalExternal))]
+    private async Task RunLocalExternal()
+    {
+        try
+        {
+            StdOut = "";
+            ErrorText = "";
+
+            var (interpreterPath, _) = GetLocalInterpreter(Extension);
+            if (string.IsNullOrWhiteSpace(interpreterPath))
+            {
+                ErrorText = $"No local interpreter configured for extension '{Extension}'.";
+                return;
+            }
+
+            string tempFolder = Path.Combine(Path.GetTempPath(), "CodeSnip");
+            Directory.CreateDirectory(tempFolder);
+
+            // === AUTOMATIC CLEANUP OF OLD TEMP FILES ===
+            try
+            {
+                var directoryInfo = new DirectoryInfo(tempFolder);
+                // Delete files older than 7 days
+                var oldFiles = directoryInfo.GetFiles()
+                    .Where(f => DateTime.Now - f.LastWriteTime > TimeSpan.FromDays(7));
+
+                foreach (var file in oldFiles)
+                {
+                    file.Delete();
+                }
+            }
+            catch {}
+
+            string uniqueId = Guid.NewGuid().ToString("N")[..8];
+            string tempFilePath = Path.Combine(tempFolder, $"temp_run_{uniqueId}.{Extension.ToLowerInvariant()}");
+
+            await File.WriteAllTextAsync(tempFilePath, Code);
+
+            var psi = BuildExternalShellStartInfo(tempFilePath, interpreterPath, tempFolder);
+
+            var process = new Process
+            {
+                StartInfo = psi
+            };
+
+            if (!process.Start())
+            {
+                ErrorText = "Failed to start external process.";
+                process.Dispose();
+                return;
+            }
+
+            process.Dispose();
+            StdOut = $"Launched external terminal window.";
+        }
+        catch (Exception ex)
+        {
+            ErrorText = $"Failed to launch external process:\n{ex.Message}";
         }
     }
 
