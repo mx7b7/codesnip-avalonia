@@ -504,14 +504,17 @@ public partial class CodeRunnerViewModel : ObservableObject, IOverlayViewModel
             string interpreterPath,
             string workingDirectory)
     {
+        // Prepare the user arguments from the Flags textbox (if any)
+        string userArgs = string.IsNullOrWhiteSpace(Flags) ? "" : $" {Flags.Trim()}";
+
         // === WINDOWS SECTION ===
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            // IMPORTANT: cmd.exe /K has specific quoting rules.
+            // IMPORTANT: cmd.exe /K has strict quoting rules.
             // If the expression contains inner quotes (around the interpreter and the file path),
-            // the entire command string after /K must be wrapped in outer double quotes.
-            // Example: /K ""C:\Path\node.exe" "C:\Temp\file.js""
-            string quotedCommand = $"\"\"{interpreterPath}\" \"{tempFilePath}\"\"";
+            // the entire command string after /K must be wrapped in outer double quotes, including user arguments.
+            // Example: /K ""C:\Path\node.exe" "C:\Temp\file.js" arg1 arg2"
+            string quotedCommand = $"\"\"{interpreterPath}\" \"{tempFilePath}\"{userArgs}\"";
             return new ProcessStartInfo
             {
                 FileName = "cmd.exe",
@@ -528,7 +531,8 @@ public partial class CodeRunnerViewModel : ObservableObject, IOverlayViewModel
             if (string.IsNullOrWhiteSpace(shell)) shell = "/bin/bash";
 
             // Execute the interpreter on the script file, then call 'exec shell' to keep the terminal window open after completion
-            var innerCommand = $"\"{interpreterPath}\" \"{tempFilePath}\"; exec {shell}";
+            // We append userArgs after the tempFilePath
+            var innerCommand = $"\"{interpreterPath}\" \"{tempFilePath}\"{userArgs}; exec {shell}";
 
             // Attempt to detect an installed GUI terminal emulator on the system (Mint, Ubuntu, Fedora...)
             string[] terminalEmulators = { "gnome-terminal", "mate-terminal", "konsole", "xfce4-terminal", "xterm" };
@@ -571,7 +575,8 @@ public partial class CodeRunnerViewModel : ObservableObject, IOverlayViewModel
             var shell = Environment.GetEnvironmentVariable("SHELL");
             if (string.IsNullOrWhiteSpace(shell)) shell = "/bin/zsh";
 
-            var innerCommand = $"\\\"{interpreterPath}\\\" \\\"{tempFilePath}\\\"; exec {shell}";
+            // We append userArgs after the tempFilePath
+            var innerCommand = $"\\\"{interpreterPath}\\\" \\\"{tempFilePath}\\\"{userArgs}; exec {shell}";
 
             // Use AppleScript (osascript) to force Terminal.app to open a new window and execute the script
             return new ProcessStartInfo
@@ -588,7 +593,7 @@ public partial class CodeRunnerViewModel : ObservableObject, IOverlayViewModel
         return new ProcessStartInfo
         {
             FileName = interpreterPath,
-            Arguments = $"\"{tempFilePath}\"",
+            Arguments = $"\"{tempFilePath}\"{userArgs}",
             UseShellExecute = true,
             CreateNoWindow = false,
             WorkingDirectory = workingDirectory
@@ -635,7 +640,7 @@ public partial class CodeRunnerViewModel : ObservableObject, IOverlayViewModel
                     file.Delete();
                 }
             }
-            catch {}
+            catch { }
 
             string uniqueId = Guid.NewGuid().ToString("N")[..8];
             string tempFilePath = Path.Combine(tempFolder, $"temp_run_{uniqueId}.{Extension.ToLowerInvariant()}");
