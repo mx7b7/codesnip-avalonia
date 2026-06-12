@@ -49,10 +49,10 @@
 				<ComboBox ItemsSource="{Binding Compilers}"
 							SelectedItem="{Binding SelectedCompiler}"
 							DisplayMemberBinding="{Binding Name}" Grid.Column="0" Grid.Row="1" Width="160" IsTabStop="False"/>
-				<TextBlock Text="Compiler flags:" FontWeight="Bold" Margin="10,0,0,0" Grid.Column="1" Grid.Row="0" />
+				<TextBlock Text="Compiler flags / Script arguments:" FontWeight="Bold" Margin="10,0,0,0" Grid.Column="1" Grid.Row="0" />
 				<TextBox  Grid.Column="1" Grid.Row="1" Margin="10,0,0,0"
 						  Text="{Binding Flags}"
-						  Watermark="Enter compiler flags" />
+						  Watermark="Enter compiler flags or script arguments..." />
 			</Grid>
 
 			<!-- Short link row 2-->
@@ -95,26 +95,21 @@
 					</SplitButton.Flyout>
 				</SplitButton>
 
-				<Button Content="Kill"
-						MinWidth="65"
-						Command="{Binding KillRunningProcessCommand}"
-						ToolTip.Tip="Kill running process"
-						ToolTip.ShowDelay="500">
-				</Button>
-
 				<Button Content="Reload"
 						MinWidth="65"
 						Command="{Binding ReloadCommand}"
 						ToolTip.Tip="Reload snippet code"
-						ToolTip.ShowDelay="500">
+						ToolTip.ShowDelay="500"/>
 
-				</Button>
+				<Button Content="Kill"
+						MinWidth="65"
+						Command="{Binding KillRunningProcessCommand}"
+						ToolTip.Tip="Kill running process"
+						ToolTip.ShowDelay="500"/>
 
-				<ToggleSwitch IsChecked="{Binding ShowAsm, Mode=TwoWay}"
-							  HorizontalAlignment="Left"
-							  VerticalAlignment="Center"
-							  OnContent="ASM"
-							  OffContent="ASM"
+				<ToggleButton Content="ASM"
+							  MinWidth="65"
+							  IsChecked="{Binding ShowAsm, Mode=TwoWay}"
 							  ToolTip.Tip="Request ASM disassembly from Godbolt API"/>
 			</StackPanel>
 

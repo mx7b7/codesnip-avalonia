@@ -24,17 +24,17 @@ This project is a cross-platform port of the original **[CodeSnip (WPF) applicat
 - **Local storage with SQLite**  
   All snippets are stored privately on your device.
 
-- **Snippet organization**
+- **Snippet organization**:
   - Hierarchical: *Language → Category → Snippet* (TreeView)
   - Filter by name or tags
   - Instant search
 
-- **AvaloniaEdit integration**
+- **AvaloniaEdit integration**:
   - **Dual‑Mode syntax highlighting**: Support for both native XSHD and TextMateSharp tokenizers.
   - Syntax highlighting (light/dark mode)
   - Toggle single-line and multi-line comments
 
-- **Highlighting Editor**
+- **Highlighting Editor**:
   - **Dual-Mode Editing**: Tabbed interface for both visual tweaks (colors, font styles) and advanced source code editing.
   - **Direct XSHD Source Editing**: Edit raw `.xshd` XML for full control over rules, spans, and keywords.
   - **Preview on Demand**: Apply changes from the XSHD source to the main editor before saving.
@@ -50,16 +50,16 @@ This project is a cross-platform port of the original **[CodeSnip (WPF) applicat
   - **View assembly output** with syntax highlighting for supported languages
   - Generate shareable shortlinks to Compiler Explorer
   
- - **Local Code Execution**
-  - Run scripts using built‑in support for Shell scripts (.sh), C#, F#, PowerShell, Python, PHP, Perl, Lua, Ruby, Node.js, and Java (via `JShell`) directly using local interpreters.
-  - **Dual-Mode Runner**: Choose between quiet internal execution or launching an independent, external native OS terminal (available for supported script languages like Python, JavaScript, Lua, PowerShell, Bash, and Java).
-  - **Internal Mode**: Silent execution inside the app window, ideal for quick scripts that output to stdout/stderr immediately without requiring user interaction.
-  - **External Mode**: Launches a native OS shell (`cmd.exe` on Windows, `gnome-terminal`/`xterm` on Linux, `Terminal.app` on macOS). This mode enables full interactivity and supports commands requiring elevated privileges (e.g., entering passwords for `sudo` or interactive user input).
-  - > **Note:** If an interpreter is not in your system's PATH, you can place its portable executable (e.g., `lua`, `node`, `csrunner`, `fsrunner`) in the `Tools/Interpreters` directory within the application's installation folder.
-  - For C# and F# execution, you can use these custom wrappers:  
-    - **C#**: [`csrunner`](https://gist.github.com/mx7b7/90013b77c1d0bcfb6b9e77399f62e409)  
-    - **F#**: [`fsrunner`](https://gist.github.com/mx7b7/3d6ee8179ba435c2c1e1e19ee38dced9) or [`fsrunner-alt`](https://gist.github.com/mx7b7/1ca60b7e4f29b4220eeccda06f5ffc57)  
-    - > These wrappers are provided as Gists for convenience, as building for all platforms is not feasible.
+ - **Local Code Execution**:
+   - Run scripts using built‑in support for Shell scripts (.sh), C#, F#, PowerShell, Python, PHP, Perl, Lua, Ruby, Node.js, and Java (via `JShell`) directly using local interpreters.
+   - **Dual-Mode Runner**: Choose between quiet internal execution or launching an independent, external native OS terminal (available for supported script languages like Python, JavaScript, Lua, PowerShell, Bash, and Java).
+   - **Internal Mode**: Silent execution inside the app window, ideal for quick scripts that output to stdout/stderr immediately without requiring user interaction.
+   - **External Mode**: Launches a native OS shell (`cmd.exe` on Windows, `gnome-terminal`/`xterm` on Linux, `Terminal.app` on macOS). This mode enables full interactivity and supports commands requiring elevated privileges (e.g., entering passwords for `sudo` or interactive user input).
+   - > **Note:** If an interpreter is not in your system's PATH, you can place its portable executable (e.g., `lua`, `node`, `csrunner`, `fsrunner`) in the `Tools/Interpreters` directory within the application's installation folder.
+   - For C# and F# execution, you can use these custom wrappers:  
+     - **C#**: [`csrunner`](https://gist.github.com/mx7b7/90013b77c1d0bcfb6b9e77399f62e409)  
+     - **F#**: [`fsrunner`](https://gist.github.com/mx7b7/3d6ee8179ba435c2c1e1e19ee38dced9) or [`fsrunner-alt`](https://gist.github.com/mx7b7/1ca60b7e4f29b4220eeccda06f5ffc57)  
+     - > These wrappers are provided as Gists for convenience, as building for all platforms is not feasible.
 
 - **UI/UX**:
   - Responsive interface using Avalonia's SimpleTheme
