@@ -2,7 +2,7 @@
 
 **CodeSnip** — a snippet manager & local code runner with multi-language interpreter support and Compiler Explorer integration.
 
-This project is a cross-platform port of the original **[CodeSnip (WPF) application](https://github.com/mx7b7/codesnip-wpf)** to the UI framework **[Avalonia](https://github.com/AvaloniaUI/Avalonia)**.
+This project began as a port of the original **[CodeSnip (WPF) application](https://github.com/mx7b7/codesnip-wpf)** to **[Avalonia](https://github.com/AvaloniaUI/Avalonia)**, but has since grown beyond a direct port with new features and improvements.
 
 ![.NET](https://img.shields.io/badge/.NET-10.0-blue)
 ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey)
@@ -52,10 +52,11 @@ This project is a cross-platform port of the original **[CodeSnip (WPF) applicat
   
  - **Local Code Execution**:
    - Run scripts using built‑in support for Shell scripts (.sh), C#, F#, PowerShell, Python, PHP, Perl, Lua, Ruby, Node.js, and Java (via `JShell`) directly using local interpreters.
-   - **Dual-Mode Runner**: Choose between quiet internal execution or launching an independent, external native OS terminal (available for supported script languages like Python, JavaScript, Lua, PowerShell, Bash, and Java).
-   - **Internal Mode**: Silent execution inside the app window, ideal for quick scripts that output to stdout/stderr immediately without requiring user interaction.
-   - **External Mode**: Launches a native OS shell (`cmd.exe` on Windows, `gnome-terminal`/`xterm` on Linux, `Terminal.app` on macOS). This mode enables full interactivity and supports commands requiring elevated privileges (e.g., entering passwords for `sudo` or interactive user input).
-   - > **Note:** If an interpreter is not in your system's PATH, you can place its portable executable (e.g., `lua`, `node`, `csrunner`, `fsrunner`) in the `Tools/Interpreters` directory within the application's installation folder.
+   - **Dual-mode runner**: Internal execution or external native terminal.
+   - **Internal Mode**: Quiet execution inside the app.
+   - **External mode**: Native terminal, full interactivity, `sudo`/password input, and script arguments from the app.
+     - Supported languages: Python, JavaScript, Lua, PowerShell, Bash, and Java.
+   - > **Note:** If an interpreter is not in your system's `PATH`, you can place its portable executable (e.g., `lua`, `node`, `csrunner`, `fsrunner`) in the `Tools/Interpreters` directory within the application's installation folder.
    - For C# and F# execution, you can use these custom wrappers:  
      - **C#**: [`csrunner`](https://gist.github.com/mx7b7/90013b77c1d0bcfb6b9e77399f62e409)  
      - **F#**: [`fsrunner`](https://gist.github.com/mx7b7/3d6ee8179ba435c2c1e1e19ee38dced9) or [`fsrunner-alt`](https://gist.github.com/mx7b7/1ca60b7e4f29b4220eeccda06f5ffc57)  
@@ -78,7 +79,6 @@ This project is a cross-platform port of the original **[CodeSnip (WPF) applicat
 |--------|--------|-------------------|
 | **XSHD (AvaloniaEdit)** | Built‑in | 36+ bundled definitions (light/dark variants) • **Unlimited** via custom `.xshd` files |
 | **TextMateSharp** | Supported | 60+ bundled grammars from TextMateSharp.Grammars • **Unlimited** via local `.tmLanguage.json` files  |
-| **User‑Provided Definitions** | Fully Supported | **Unlimited** — users can add custom XSHD or TextMate grammars manually |
 
 ---
 
