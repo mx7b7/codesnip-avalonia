@@ -83,6 +83,7 @@ public partial class CodeRunnerViewModel : ObservableObject, IOverlayViewModel
     private readonly StringBuilder _outputBuffer = new();
     private readonly StringBuilder _errorBuffer = new();
     private readonly Lock _bufferLock = new();
+    private string? _tempFilePath;
 
     public CodeRunnerViewModel(string languageExtension, string code, Func<string> getLatestCode)
     {
@@ -363,12 +364,10 @@ public partial class CodeRunnerViewModel : ObservableObject, IOverlayViewModel
                      RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? info.mac :
                      info.win; // fallback
 
-        string appDir = Path.GetDirectoryName(Environment.ProcessPath)!;
-        string toolsDir = Path.Combine(appDir, "Tools", "Interpreters");
-        string interpreterPath = Path.Combine(toolsDir, exe);
+        string interpretersDir = AppPaths.Interpreters;
+        string interpreterPath = Path.Combine(interpretersDir, exe);
 
-        if (!Directory.Exists(toolsDir))
-            Directory.CreateDirectory(toolsDir);
+        Directory.CreateDirectory(interpretersDir);
 
         return File.Exists(interpreterPath)
             ? (interpreterPath, info.args)
@@ -624,30 +623,18 @@ public partial class CodeRunnerViewModel : ObservableObject, IOverlayViewModel
                 return;
             }
 
-            string tempFolder = Path.Combine(Path.GetTempPath(), "CodeSnip");
+            string tempFolder = AppPaths.CodeRunnerTemp;
             Directory.CreateDirectory(tempFolder);
 
-            // === AUTOMATIC CLEANUP OF OLD TEMP FILES ===
-            try
+            if (string.IsNullOrEmpty(_tempFilePath))
             {
-                var directoryInfo = new DirectoryInfo(tempFolder);
-                // Delete files older than 7 days
-                var oldFiles = directoryInfo.GetFiles()
-                    .Where(f => DateTime.Now - f.LastWriteTime > TimeSpan.FromDays(7));
-
-                foreach (var file in oldFiles)
-                {
-                    file.Delete();
-                }
+                string uniqueId = Guid.NewGuid().ToString("N")[..8];
+                _tempFilePath = Path.Combine(tempFolder, $"temp_run_{uniqueId}.{Extension.ToLowerInvariant()}");
             }
-            catch { }
 
-            string uniqueId = Guid.NewGuid().ToString("N")[..8];
-            string tempFilePath = Path.Combine(tempFolder, $"temp_run_{uniqueId}.{Extension.ToLowerInvariant()}");
+            await File.WriteAllTextAsync(_tempFilePath, Code);
 
-            await File.WriteAllTextAsync(tempFilePath, Code);
-
-            var psi = BuildExternalShellStartInfo(tempFilePath, interpreterPath, tempFolder);
+            var psi = BuildExternalShellStartInfo(_tempFilePath, interpreterPath, tempFolder);
 
             var process = new Process
             {

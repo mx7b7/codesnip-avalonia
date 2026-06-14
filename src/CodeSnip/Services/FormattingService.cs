@@ -185,7 +185,7 @@ namespace CodeSnip.Services
         /// <returns>A tuple containing a success flag, the formatted code if successful, and an error message if formatting fails.
         public static async Task<(bool Success, string? FormattedCode, string? ErrorMessage)> TryFormatCodeWithFantomasAsync(string code, int timeoutMs = 15000)
         {
-            string toolsDirectory = Path.Combine(AppContext.BaseDirectory, "Tools");
+            string toolsDirectory = AppPaths.Tools;
             string tempFilePath = Path.Combine(toolsDirectory, "temp.fs");
 
             try
@@ -250,15 +250,11 @@ namespace CodeSnip.Services
             string code,
             int timeoutMs = 5000)
         {
-            string baseDirectory = AppContext.BaseDirectory;
-            string toolsDirectory = Path.Combine(baseDirectory, "Tools");
+            string toolsDirectory = AppPaths.Tools;
 
             try
             {
-                if (!Directory.Exists(toolsDirectory))
-                {
-                    Directory.CreateDirectory(toolsDirectory);
-                }
+                Directory.CreateDirectory(toolsDirectory);
             }
             catch (Exception ex)
             {

@@ -18,7 +18,7 @@ namespace CodeSnip.Services;
 /// </summary>
 public class CompilerSettingsService
 {
-    private readonly string _settingsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "compilers.json");
+    private readonly string _settingsFilePath = AppPaths.CompilersSettingsFile;
 
     /// <summary>
     /// Gets the root object containing all compiler settings, including languages and their compilers.

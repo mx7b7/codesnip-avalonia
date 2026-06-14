@@ -77,7 +77,7 @@ namespace CodeSnip.Views.HighlightingEditorView
                     ? "Dark"
                     : "Light";
 
-                _customXshdPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Highlighting", _themeName, $"{_languageCode}.xshd");
+                _customXshdPath = Path.Combine(AppPaths.Highlighting, _themeName, $"{_languageCode}.xshd");
             }
 
             LoadHighlightingColors();

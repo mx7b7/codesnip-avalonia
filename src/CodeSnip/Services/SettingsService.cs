@@ -15,7 +15,7 @@ namespace CodeSnip.Services;
 
 public class SettingsService
 {
-    private const string SettingsFile = "codesnip.json";
+    private readonly string SettingsFile = AppPaths.AppSettingsFile;
     private AppSettings _settings;
 
     public bool LoadSnippetsOnStartup

@@ -197,27 +197,6 @@ public partial class MainWindowViewModel : ObservableObject
         PopulateLanguagesCollection(languages);
     }
 
-    private static void EnsureDirectoryStructure()
-    {
-        string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-
-        string[] requiredDirs =
-        {
-        Path.Combine(baseDir, "Tools"),
-        Path.Combine(baseDir, "Tools", "Interpreters"),
-        Path.Combine(baseDir, "Highlighting"),
-        Path.Combine(baseDir, "Highlighting", "Dark"),
-        Path.Combine(baseDir, "Highlighting", "Light"),
-        Path.Combine(baseDir, "Highlighting", "Grammars")
-    };
-
-        foreach (var dir in requiredDirs)
-        {
-            if (!Directory.Exists(dir))
-                Directory.CreateDirectory(dir);
-        }
-    }
-
     public async Task InitializeAsync()
     {
         await Task.Run(() => _databaseService.InitializeDatabaseIfNeeded());
@@ -245,7 +224,7 @@ public partial class MainWindowViewModel : ObservableObject
                 await UpdateDatabaseHealthStatusAsync();
             }
         }
-        EnsureDirectoryStructure();
+        AppPaths.EnsureDirectoriesExist();
     }
 
     public async Task UpdateDatabaseHealthStatusAsync()
@@ -504,6 +483,27 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         await SaveSettings();
+
+        // --- Automatic Cleanup of Old Temp Files ---
+        try
+        {
+            await Task.Run(() =>
+            {
+                string tempFolder = AppPaths.CodeRunnerTemp;
+                if (Directory.Exists(tempFolder))
+                {
+                    var directoryInfo = new DirectoryInfo(tempFolder);
+                    var oldFiles = directoryInfo.GetFiles()
+                        .Where(f => DateTime.Now - f.LastWriteTime > TimeSpan.FromDays(7));
+
+                    foreach (var file in oldFiles)
+                    {
+                        try { file.Delete(); } catch { }
+                    }
+                }
+            });
+        }
+        catch { }
 
         _isSafeToClose = true;
 
@@ -1268,9 +1268,8 @@ public partial class MainWindowViewModel : ObservableObject
                                             Editor.ShowLineNumbers
                                         ) ?? throw new Exception("Image exporter returned null.");
 
-            string exportsDir = Path.Combine(AppContext.BaseDirectory, "Exports");
+            string exportsDir = AppPaths.Exports;
             Directory.CreateDirectory(exportsDir);
-
             string filePath = Path.Combine(exportsDir, $"{fileNameTitle}.png");
 
             using var fs = File.Create(filePath);

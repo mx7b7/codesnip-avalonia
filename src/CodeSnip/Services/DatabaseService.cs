@@ -631,7 +631,7 @@ ORDER BY
 
     private void BackupDatabase()
     {
-        string backupFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Backups");
+        string backupFolder = AppPaths.Backups;
         Directory.CreateDirectory(backupFolder);
 
         var fileName = Path.GetFileNameWithoutExtension(_dbPath);
