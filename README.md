@@ -122,46 +122,44 @@ CodeSnip integrates various code formatters. The application first looks for the
 
 ## ⚙️ Build
 
-To build and run CodeSnip, you need the **.NET 10 SDK**. The main project is located in the `src/CodeSnip` directory.
+To build and run CodeSnip, you need the [**.NET 10 SDK**](https://dotnet.microsoft.com/en-us/download/dotnet/10.0).
+> **Note:** The application has been tested on Windows 10 and Linux Mint 22.3, macOS support is untested.
 
-1.  Clone the repository:
-    ```bash
-    git clone https://github.com/mx7b7/codesnip-avalonia.git
-    ```
-2.  Navigate to the root directory:
-    ```bash
-    cd codesnip-avalonia
-    ```
-3.  Run the application from your IDE or use the following command for a quick test:
-    ```bash
-    dotnet run --project src/CodeSnip
-    ```
+### 🚀 Quick Build (Recommended)
+Open your terminal in the `src/CodeSnip` directory and run the interactive script for your platform:
 
-### Creating a Self-Contained Release Package
+* **Windows:** Run `build.bat`
+* **Linux / macOS:** Run `./build.sh` (make sure it has execute permissions: `chmod +x build.sh`)
 
-You can create a portable, self-contained release package for your target platform using the `dotnet publish` command. Run these commands from the root of the repository.
+### 🛠️ Manual Build & Run
 
-> **Note:** The application has been tested on Windows 10 and Linux Mint 22.3. macOS support is untested.
+If you prefer using the standard .NET CLI inside the `src/CodeSnip` directory, use the following commands:
 
-#### Windows (x64)
+#### Run the application:
 ```bash
-dotnet publish src/CodeSnip -c Release --self-contained true
+dotnet run
+```
+#### Create a Release Build:
+
+##### Windows (x64)
+```bash
+dotnet build -c Release
 ```
 
-#### Linux (x64)
+##### Linux (x64)
 ```bash
-dotnet publish src/CodeSnip -c Release-Linux --self-contained true
+dotnet build -c Release-Linux
 ```
 
-#### macOS (ARM64)
+##### macOS (ARM64)
 ```bash
-dotnet publish src/CodeSnip -c Release-Mac-ARM --self-contained true
+dotnet build -c Release-Mac-ARM
 ```
 
-After publishing, the complete application will be available in the `bin/<configuration>/net10/<runtime>` directory.
+After building, the complete application will be available in the `bin/<configuration>/net10.0/<runtime>` directory.
 
 ---
-
+ 
 ## 📜 License
 
 This project is licensed under the MIT License.  
