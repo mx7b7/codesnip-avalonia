@@ -736,7 +736,7 @@ INSERT INTO Languages (ID, Code, Name, SupportsXshd, SupportsTextMate) VALUES
 (35, 'zig', 'Zig', 1, 0),
 (36, 'sh', 'Bash', 1, 1),
 -- new from textmate grammars
-(37, 'asciidoc', 'AsciiDoc', 0, 1),
+(37, 'adoc', 'AsciiDoc', 0, 1),
 (38, 'clojure', 'Clojure', 0, 1),
 (39, 'coffee', 'CoffeeScript', 0, 1),
 (40, 'cu', 'CUDA C++', 0, 1),
