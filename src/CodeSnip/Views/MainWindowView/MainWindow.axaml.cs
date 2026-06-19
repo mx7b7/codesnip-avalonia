@@ -389,6 +389,24 @@ public partial class MainWindow : ControlsEx.Window.Window
         }
     }
 
+    private async void FormatAsmfmt_Click(object? sender, RoutedEventArgs e)
+    {
+        string? code = ViewModel.SelectedSnippet?.Category?.Language?.Code;
+        if (code is not null and ("asm"))
+        {
+            string originalCode = textEditor.Text;
+            var (isSuccess, formatted, error) = await FormattingService.TryFormatCodeWithAsmFmtAsync(originalCode);
+            if (isSuccess)
+            {
+                textEditor.Document.Text = formatted;
+            }
+            else
+            {
+                await MessageBoxService.Instance.OkAsync("Formatting error", error ?? "", MsBox.Avalonia.Enums.Icon.Error);
+            }
+        }
+    }
+
     private async void FormatAll_Click(object? sender, RoutedEventArgs e)
     {
         string? code = ViewModel.SelectedSnippet?.Category?.Language?.Code;
@@ -396,6 +414,9 @@ public partial class MainWindow : ControlsEx.Window.Window
         {
             switch (code.ToLowerInvariant())
             {
+                case "asm":
+                    FormatAsmfmt_Click(sender, e);
+                    break;
                 case "cs":
                     FormatCSharpier_Click(sender, e);
                     break;

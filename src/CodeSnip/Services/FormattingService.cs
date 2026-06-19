@@ -236,6 +236,16 @@ namespace CodeSnip.Services
             return await TryFormatWithExternalProcessAsync("zig", arguments, code, timeoutMs);
         }
 
+        public static async Task<(bool Success, string? FormattedCode, string? ErrorMessage)> TryFormatCodeWithAsmFmtAsync(string code, int timeoutMs = 5000)
+        {
+            string configPath = Path.Combine(AppPaths.Tools, ".asmfmt.toml");
+            string arguments = File.Exists(configPath)
+                ? $"--config \"{configPath}\""
+                : "";
+
+            return await TryFormatWithExternalProcessAsync("asmfmt", arguments, code, timeoutMs);
+        }
+
         /// <summary>
         /// A generic helper method to run an external formatting tool from the 'Tools' directory.
         /// </summary>

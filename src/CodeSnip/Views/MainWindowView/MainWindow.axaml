@@ -653,6 +653,15 @@
 										<PathIcon Data="{x:Static res:Icons.FormatText}" Width="16" Height="16"
 												  Foreground="{DynamicResource ThemeAccentBrush}"/>
 									</MenuItem.Icon>
+									<MenuItem Header="asmfmt" Click="FormatAsmfmt_Click"
+											  IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
+										Converter={StaticResource LanguageToBoolConverter},
+										ConverterParameter='asm'}">
+										<MenuItem.Icon>
+											<PathIcon Data="{x:Static res:Icons.Indent}" Width="16" Height="16"
+													  Foreground="{DynamicResource ThemeAccentBrush}"/>
+										</MenuItem.Icon>
+									</MenuItem>
 									<MenuItem Header="black" Click="FormatBlack_Click"
 											IsVisible="{Binding SelectedSnippet?.Category?.Language?.Code,
 										Converter={StaticResource LanguageToBoolConverter},

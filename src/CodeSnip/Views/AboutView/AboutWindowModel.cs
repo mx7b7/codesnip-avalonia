@@ -41,13 +41,14 @@ namespace CodeSnip.Views.AboutView
 
         public ObservableCollection<ToolsInfo> Tools { get; } =
         [
+            new() { Name = "asmfmt", Url = new Uri("https://github.com/Mi-AIoT/asmfmt")},
             new() { Name = "autopep8", Url = new Uri("https://pypi.org/project/autopep8")},
             new() { Name = "black", Url = new Uri("https://black.readthedocs.io/en/stable/")},
             new() { Name = "clang-format", Url = new Uri("https://clang.llvm.org/docs/ClangFormat.html")},
             new() { Name = "csharpier", Url = new Uri("https://csharpier.com/")},
             new() { Name = "dfmt", Url = new Uri("https://github.com/dlang-community/dfmt")},
             new() { Name = "gofmt", Url = new Uri("https://pkg.go.dev/cmd/gofmt")},
-            new() { Name = "fantomas", Url = new Uri("https://github.com/fsprojects/fantomas")},
+            new() { Name = "fantomas", Url = new Uri("https://github.com/fsprojects/fantomas")}
     ];
 
         public ObservableCollection<ToolsInfo> Tools2 { get; } =
@@ -58,7 +59,8 @@ namespace CodeSnip.Views.AboutView
             new() { Name = "ruff", Url = new Uri("https://github.com/astral-sh/ruff")},
             new() { Name = "shfmt", Url = new Uri("https://github.com/mvdan/sh" ) },
             new() { Name = "stylua", Url = new Uri("https://github.com/JohnnyMorganz/StyLua" ) },
-            new() { Name = "sqlfmt", Url = new Uri("https://github.com/GrantFBarnes/sqlfmt" ) }
+            new() { Name = "sqlfmt", Url = new Uri("https://github.com/GrantFBarnes/sqlfmt" ) },
+            new() { Name = "zig fmt", Url = new Uri("https://ziglang.org") }
 
          ];
 
