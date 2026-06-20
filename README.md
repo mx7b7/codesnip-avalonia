@@ -101,6 +101,7 @@ CodeSnip integrates various code formatters. The application first looks for the
 
 ### Supported Formatters
 
+- [asmfmt](https://github.com/Mi-AIoT/asmfmt) – Assembly
 - [autopep8](https://pypi.org/project/autopep8) – Python
 - [black](https://black.readthedocs.io/en/stable) – Python
 - [clang-format](https://clang.llvm.org/docs/ClangFormat.html) – C, C++, C#, Java, and more
