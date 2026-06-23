@@ -55,12 +55,12 @@ This project began as a port of the original **[CodeSnip (WPF) application](http
    - **Dual-mode runner**: Internal execution or external native terminal.
    - **Internal Mode**: Quiet execution inside the app.
    - **External mode**: Native terminal, full interactivity, `sudo`/password input, and script arguments from the app.
-     - Supported languages: Python, JavaScript, Lua, PowerShell, Bash, and Java.
+     - Supported languages: C#, F#, Python, JavaScript, Lua, PowerShell, Bash, and Java.
    - > **Note:** If an interpreter is not in your system's `PATH`, you can place its portable executable (e.g., `lua`, `node`, `csrunner`, `fsrunner`) in the `Tools/Interpreters` directory within the application's installation folder.
    - For C# and F# execution, you can use these custom wrappers:  
      - **C#**: [`csrunner`](https://gist.github.com/mx7b7/90013b77c1d0bcfb6b9e77399f62e409)  
      - **F#**: [`fsrunner`](https://gist.github.com/mx7b7/3d6ee8179ba435c2c1e1e19ee38dced9) or [`fsrunner-alt`](https://gist.github.com/mx7b7/1ca60b7e4f29b4220eeccda06f5ffc57)  
-     - > These wrappers are provided as Gists for convenience, as building for all platforms is not feasible.
+     - > These wrappers are provided as Gists for convenience, as building and testing for all platforms is not feasible.
 
 - **UI/UX**:
   - Responsive interface using Avalonia's SimpleTheme

@@ -605,7 +605,7 @@ public partial class CodeRunnerViewModel : ObservableObject, IOverlayViewModel
         if (string.IsNullOrWhiteSpace(interpreterPath)) return false;
 
         string ext = Extension?.TrimStart('.').ToLowerInvariant() ?? "";
-        return ext is "py" or "lua" or "js" or "ps1" or "sh" or "java";
+        return ext is "py" or "lua" or "js" or "ps1" or "sh" or "java" or "cs" or "fs";
     }
 
     [RelayCommand(CanExecute = nameof(CanRunLocalExternal))]
