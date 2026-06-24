@@ -293,18 +293,18 @@
 											</MenuItem.Icon>
 										</MenuItem>
 										<Separator />
-										<MenuItem Header="Re-select Snippet" Command="{Binding ReselectSnippetCommand}">
-											<MenuItem.Icon>
-												<Viewbox Width="16" Height="16">
-													<Path Data="{x:Static res:Icons.Reload}" Fill="{DynamicResource ThemeAccentBrush}" Stretch="UniformToFill"/>
-												</Viewbox>
-											</MenuItem.Icon>
-										</MenuItem>
-										<Separator />
 										<MenuItem Header="Edit LangCat" Command="{Binding EditLanguageCategoryCommand}">
 											<MenuItem.Icon>
 												<Viewbox Width="16" Height="16">
 													<Path Data="{x:Static res:Icons.TreeViewOutline}" Fill="{DynamicResource ThemeAccentBrush}" Stretch="UniformToFill"/>
+												</Viewbox>
+											</MenuItem.Icon>
+										</MenuItem>
+										<Separator />
+										<MenuItem Header="Re-select Snippet" Command="{Binding ReselectSnippetCommand}">
+											<MenuItem.Icon>
+												<Viewbox Width="16" Height="16">
+													<Path Data="{x:Static res:Icons.Reload}" Fill="{DynamicResource ThemeAccentBrush}" Stretch="UniformToFill"/>
 												</Viewbox>
 											</MenuItem.Icon>
 										</MenuItem>
